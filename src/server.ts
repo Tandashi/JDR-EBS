@@ -4,10 +4,10 @@ import 'module-alias/register';
 import express from 'express';
 import mongoose from 'mongoose';
 
-import config from './config';
-
 import cors from 'cors';
 
+import config from '@base/config';
+import logger from '@base/logging';
 import BaseRouter from '@routes/router';
 
 const DEFAULT_MONGOOSE_CONNECTION_PARAMS = {
@@ -39,15 +39,19 @@ class Server {
 
   private mongo() {
     const connection = mongoose.connection;
+
     connection.on('connected', () => {
-      console.log('Mongo Connection Established');
+      logger.info('Mongo Connection Established');
     });
+
     connection.on('reconnected', () => {
-      console.log('Mongo Connection Reestablished');
+      logger.info('Mongo Connection Reestablished');
     });
+
     connection.on('disconnected', () => {
-      console.log('Mongo Connection Disconnected');
-      console.log('Trying to reconnect to Mongo ...');
+      logger.info('Mongo Connection Disconnected');
+      logger.info('Trying to reconnect to Mongo ...');
+
       setTimeout(() => {
         mongoose.connect(config.mongodb.uri, {
           socketTimeoutMS: 3000,
@@ -56,22 +60,25 @@ class Server {
         });
       }, 3000);
     });
+
     connection.on('close', () => {
-      console.log('Mongo Connection Closed');
+      logger.info('Mongo Connection Closed');
     });
+
     connection.on('error', (error: Error) => {
-      console.log('Mongo Connection ERROR: ' + error);
+      logger.error('Mongo Connection ERROR: ' + error);
     });
 
     const run = async () => {
       await mongoose.connect(config.mongodb.uri, DEFAULT_MONGOOSE_CONNECTION_PARAMS);
     };
-    run().catch((error) => console.error(error));
+
+    run().catch((error) => logger.error(error));
   }
 
   public start(): void {
     this.app.listen(config.app.port, config.app.hostname, () => {
-      console.log('API is running at %s://%s:%d', config.app.protocol, config.app.hostname, config.app.port);
+      logger.info(`API is running at ${config.app.protocol}://${config.app.hostname}:${config.app.port}`);
     });
   }
 }
