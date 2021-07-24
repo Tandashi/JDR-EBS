@@ -9,6 +9,7 @@
   "license": "MIT",
   "scripts": {
     "start": "yarn build && node -r dotenv/config dist/server.js",
+    "start-importer": "yarn build && node -r dotenv/config dist/importer.js",
     "build": "yarn build-ts && yarn tslint",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
@@ -16,9 +17,13 @@
   },
   "_moduleAliases": {
     "@base": "dist",
+    "@models": "dist/models",
     "@routes": "dist/routes"
   },
   "dependencies": {
+    "argparse": "^2.0.1",
+    "chalk": "^4.1.1",
+    "cli-progress": "^3.9.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
@@ -29,6 +34,8 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
+    "@types/argparse": "^2.0.10",
+    "@types/cli-progress": "^3.9.2",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/node": "^16.4.1",

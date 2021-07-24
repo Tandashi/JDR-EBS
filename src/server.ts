@@ -37,7 +37,7 @@ class Server {
     this.app.use(cors());
   }
 
-  private mongo() {
+  private mongo(): void {
     const connection = mongoose.connection;
 
     connection.on('connected', () => {
