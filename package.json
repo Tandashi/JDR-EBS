@@ -18,7 +18,8 @@
   "_moduleAliases": {
     "@base": "dist",
     "@models": "dist/models",
-    "@routes": "dist/routes"
+    "@routes": "dist/routes",
+    "@services": "dist/services"
   },
   "dependencies": {
     "argparse": "^2.0.1",

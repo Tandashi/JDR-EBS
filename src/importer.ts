@@ -10,7 +10,7 @@ import chalk from 'chalk';
 
 import config from '@base/config';
 
-import SongData from '@models/songdata';
+import SongData from '@base/models/schema/songdata';
 
 class Importer {
   private parser: argparse.ArgumentParser;
