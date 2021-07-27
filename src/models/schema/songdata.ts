@@ -15,7 +15,7 @@ export interface ISongData extends Document {
 
 const songDataSchema: Schema = new Schema({
   title: String,
-  arsist: String,
+  artist: String,
   original_source: String,
   source: String,
   img_url: String,
