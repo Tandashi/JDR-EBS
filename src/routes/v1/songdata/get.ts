@@ -14,7 +14,9 @@ export default class SongDataGetEndpoint {
         ResponseService.sendInternalError(res, error_response_code);
       })
       .then((songdatas: ISongData[]) => {
-        const dtos = songdatas.map((songdata) => new SongDataDTO().getJSON(songdata));
+        const dtos = songdatas
+          .map((songdata) => new SongDataDTO().getJSON(songdata))
+          .sort((a, b) => (a.title > b.title ? 1 : -1));
         ResponseService.sendOk(res, {
           data: dtos,
         });
