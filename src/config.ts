@@ -9,9 +9,14 @@ interface MongoDBConfig {
   uri: string;
 }
 
+interface TwitchConfig {
+  secret: string;
+}
+
 interface Config {
   app: AppConfig;
   mongodb: MongoDBConfig;
+  twitch: TwitchConfig;
 }
 //#endregion
 
@@ -21,6 +26,14 @@ interface Config {
 const APP_PROTOCOL = process.env['APP_PROTOCOL'] || 'http';
 const APP_HOSTNAME = process.env['APP_HOSTNAME'] || 'localhost';
 const APP_PORT = parseInt(process.env['APP_PORT'] || '3000');
+//#endregion
+
+//#region Twitch
+const JWT_SECRET = process.env['JWT_SECRET'];
+if (!JWT_SECRET) {
+  console.log('No jsonwebtoken secret provided. Set JWT_SECRET environment variable.');
+  process.exit(1);
+}
 //#endregion
 
 //#region MongoDB
@@ -41,6 +54,9 @@ const config: Config = {
   },
   mongodb: {
     uri: MONGODB_URI,
+  },
+  twitch: {
+    secret: JWT_SECRET,
   },
 };
 export default config;

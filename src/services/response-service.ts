@@ -2,10 +2,16 @@ import express from 'express';
 
 export enum ErrorResponseCode {
   COULD_NOT_RETRIVE_SONGDATA = 'E1000',
+  UNAUTHORIZED_REQUEST = 'E1001',
+  BAD_REQUEST = 'E1002',
+  COULD_NOT_GET_QUEUE = 'E1003',
+  COULD_NOT_ADD_TO_QUEUE = 'E1004',
 }
 
 enum HTTPCode {
   OK = 200,
+  BAD_REQUEST = 400,
+  UNAUTHORIZED = 401,
   INTERNAL_SERVER_ERROR = 500,
 }
 
@@ -53,5 +59,13 @@ export default class ResponseService {
 
   public static sendOk(res: express.Response, data: ResponseData): void {
     this.send(res, HTTPCode.OK, data);
+  }
+
+  public static sendUnauthorized(res: express.Response, message: string): void {
+    this.sendError(res, HTTPCode.UNAUTHORIZED, ErrorResponseCode.UNAUTHORIZED_REQUEST, message);
+  }
+
+  public static sendBadRequest(res: express.Response, message: string): void {
+    this.sendError(res, HTTPCode.BAD_REQUEST, ErrorResponseCode.BAD_REQUEST, message);
   }
 }

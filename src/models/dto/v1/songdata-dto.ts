@@ -1,7 +1,8 @@
 import { ISongData } from '@base/models/schema/songdata';
 import DTO from '@models/dto/dto';
 
-interface JSONStructure {
+export interface SongDataJSONStructure {
+  id: string;
   title: string;
   artist: string;
   original_source?: string;
@@ -14,9 +15,10 @@ interface JSONStructure {
   effort: number | null;
 }
 
-export default class SongDataDTO extends DTO<ISongData, JSONStructure> {
-  public getJSON(data: ISongData): JSONStructure {
+export default class SongDataDTO extends DTO<ISongData, SongDataJSONStructure> {
+  public getJSON(data: ISongData): SongDataJSONStructure {
     return {
+      id: data._id,
       title: data.title,
       artist: data.artist,
       original_source: data.original_source,

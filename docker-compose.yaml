@@ -6,6 +6,9 @@ services:
     ports:
       - '9970:3000'
     environment:
+      - APP_PROTOCOL=http
+      - APP_HOSTNAME=0.0.0.0
+      - APP_PORT=3000
       - MONGODB_URI=mongodb://mongodb/jd
     depends_on:
       - mongodb
@@ -13,4 +16,4 @@ services:
   mongodb:
     image: 'mongo:latest'
     volumes:
-      - ~/abouth/data:/data/db
+      - ~/JDR-EBS/data:/data/db
