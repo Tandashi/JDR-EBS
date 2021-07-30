@@ -34,6 +34,9 @@ export default class QueuePostEndpoint {
             } else if (err instanceof MaximumRequestsExceededError) {
               return ResponseService.sendBadRequest(res, 'Maximum number of songs to request exceeded.');
             }
+
+            logger.error(err);
+            return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_ADD_TO_QUEUE);
           });
       })
       .catch((err: Error) => {
