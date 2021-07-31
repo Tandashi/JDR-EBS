@@ -1,5 +1,5 @@
 import logger from '@base/logging';
-import Queue, { IQueue } from '@base/models/schema/queue';
+import Queue, { IQueue, IQueueEntry, IQueueEntrySongData } from '@base/models/schema/queue';
 import { ISongData } from '@base/models/schema/songdata';
 
 import InternalError from '@base/errors/internal-error';
@@ -33,7 +33,7 @@ export default class QueueService {
     });
   }
 
-  public static async addToQueue(channelId: string, songdata: ISongData, userId: string): Promise<void> {
+  public static async addToQueue(channelId: string, songdata: IQueueEntrySongData, userId: string): Promise<void> {
     return new Promise((resolve, reject) => {
       this.getQueue(channelId)
         .then((queue) => {
@@ -41,13 +41,13 @@ export default class QueueService {
             return reject(new MaximumRequestsExceededError('Too many requests already in queue.'));
           }
 
-          if (queue.entries.some((v) => v.song.id === songdata.id)) {
+          if (queue.entries.some((v) => v.song.id === songdata.id && songdata.fromChat !== true)) {
             return reject(new SongAlreadyInQueueError('Song is already queued.'));
           }
 
-          const entry = {
+          const entry: IQueueEntry = {
             userId: userId,
-            song: songdata.id,
+            song: songdata,
           };
 
           Queue.updateOne({ _id: queue._id }, { $push: { entries: entry } }, { new: true }).exec();

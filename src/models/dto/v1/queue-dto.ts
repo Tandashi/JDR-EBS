@@ -1,23 +1,17 @@
-import { IQueue } from '@base/models/schema/queue';
 import DTO from '@models/dto/dto';
-import SongDataDTO, { SongDataJSONStructure } from './songdata-dto';
+import { IQueue } from '@base/models/schema/queue';
+import QueueEntryDTO, { QueueEntryJSONStructure } from '@models/dto/v1/queue-entry-dto';
 
-interface JSONStructure {
+interface QueueJSONStructure {
   channelId: string;
-  entries: {
-    song: SongDataJSONStructure;
-  }[];
+  entries: QueueEntryJSONStructure[];
 }
 
-export default class QueueDTO extends DTO<IQueue, JSONStructure> {
-  public getJSON(data: IQueue): JSONStructure {
+export default class QueueDTO extends DTO<IQueue, QueueJSONStructure> {
+  public getJSON(data: IQueue): QueueJSONStructure {
     return {
       channelId: data.channelId,
-      entries: data.entries.map((e) => {
-        return {
-          song: new SongDataDTO().getJSON(e.song),
-        };
-      }),
+      entries: data.entries.map((v) => new QueueEntryDTO().getJSON(v)),
     };
   }
 }

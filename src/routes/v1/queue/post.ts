@@ -1,17 +1,19 @@
 import express from 'express';
 
 import logger from '@base/logging';
-import SongData, { ISongData } from '@base/models/schema/songdata';
+import { ISongData } from '@base/models/schema/songdata';
 import ResponseService, { ErrorResponseCode } from '@base/services/response-service';
 import SongDataService from '@base/services/song-service';
 import QueueService from '@base/services/queue-service';
+
 import InternalError from '@base/errors/internal-error';
 import SongAlreadyInQueueError from '@base/errors/song-already-in-queue-error';
 import MaximumRequestsExceededError from '@base/errors/maximum-requests-exceeded-error';
+import { IQueueEntrySongData } from '@base/models/schema/queue';
 
 export default class QueuePostEndpoint {
   public static add(req: express.Request, res: express.Response): void {
-    const songId = req.params.id;
+    const songId = req.body.id;
 
     if (!songId) {
       return ResponseService.sendBadRequest(res, 'No songId provided');
@@ -19,7 +21,13 @@ export default class QueuePostEndpoint {
 
     SongDataService.getSongData(songId)
       .then((songdata: ISongData) => {
-        QueueService.addToQueue(req.user.channel_id, songdata, req.user.user_id)
+        const queueSongData: IQueueEntrySongData = {
+          id: songdata.id,
+          title: songdata.title,
+          fromChat: false,
+        };
+
+        QueueService.addToQueue(req.user.channel_id, queueSongData, req.user.user_id)
           .then((queue) => {
             return ResponseService.sendOk(res, {
               data: queue,

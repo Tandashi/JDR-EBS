@@ -7,7 +7,13 @@ import QueueService from '@base/services/queue-service';
 
 export default class QueueGetEndpoint {
   public static get(req: express.Request, res: express.Response): void {
-    QueueService.getQueue(req.user.channel_id)
+    const channelId = req.params.channelId;
+
+    if (!channelId) {
+      return ResponseService.sendBadRequest(res, 'No channelId provided');
+    }
+
+    QueueService.getQueue(channelId)
       .then((queue) => {
         ResponseService.sendOk(res, {
           data: new QueueDTO().getJSON(queue),

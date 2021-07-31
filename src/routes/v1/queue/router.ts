@@ -6,7 +6,7 @@ import QueuePostEndpoint from './post';
 
 const router = Router();
 
-router.get('/:id', AuthJWT, QueueGetEndpoint.get);
-router.post('/:id', AuthJWT, QueuePostEndpoint.add);
+router.get('/:channelId', QueueGetEndpoint.get);
+router.post('/', AuthJWT, QueuePostEndpoint.add);
 
 export default router;

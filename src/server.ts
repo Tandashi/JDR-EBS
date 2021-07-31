@@ -17,7 +17,7 @@ const DEFAULT_MONGOOSE_CONNECTION_PARAMS = {
   useFindAndModify: false,
 };
 
-class Server {
+export default class Server {
   public app: express.Application;
 
   constructor() {
@@ -82,5 +82,3 @@ class Server {
     });
   }
 }
-
-new Server().start();

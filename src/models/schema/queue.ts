@@ -1,9 +1,24 @@
 import { Document, Schema, Model, model } from 'mongoose';
-import { ISongData } from './songdata';
+
+interface IQueueEntrySongDataBase {
+  title: string;
+}
+
+interface IQueueEntrySongDataFromExtension extends IQueueEntrySongDataBase {
+  fromChat: false;
+  id: string;
+}
+
+interface IQueueEntrySongDataFromChat extends IQueueEntrySongDataBase {
+  fromChat: true;
+  id?: string;
+}
+
+export type IQueueEntrySongData = IQueueEntrySongDataFromExtension | IQueueEntrySongDataFromChat;
 
 export interface IQueueEntry {
   userId: string;
-  song: ISongData;
+  song: IQueueEntrySongData;
 }
 
 export interface IQueue extends Document {
@@ -16,7 +31,11 @@ const queueSchema: Schema = new Schema({
   entries: [
     {
       userId: String,
-      song: { type: Schema.Types.ObjectId, ref: 'SongData' },
+      song: {
+        id: String,
+        fromChat: Boolean,
+        title: String,
+      },
     },
   ],
 });
