@@ -1,8 +1,6 @@
 import logger from '@base/logging';
 import Queue, { IQueue, IQueueEntry, IQueueEntrySongData } from '@base/models/schema/queue';
-import { ISongData } from '@base/models/schema/songdata';
 
-import InternalError from '@base/errors/internal-error';
 import MaximumRequestsExceededError from '@base/errors/maximum-requests-exceeded-error';
 import SongAlreadyInQueueError from '@base/errors/song-already-in-queue-error';
 
@@ -33,7 +31,7 @@ export default class QueueService {
     });
   }
 
-  public static async addToQueue(channelId: string, songdata: IQueueEntrySongData, userId: string): Promise<void> {
+  public static async addToQueue(channelId: string, songdata: IQueueEntrySongData, userId: string): Promise<IQueue> {
     return new Promise((resolve, reject) => {
       this.getQueue(channelId)
         .then((queue) => {
@@ -50,12 +48,17 @@ export default class QueueService {
             song: songdata,
           };
 
-          Queue.updateOne({ _id: queue._id }, { $push: { entries: entry } }, { new: true }).exec();
-          resolve();
+          Queue.findByIdAndUpdate(queue._id, { $push: { entries: entry } }, { new: true })
+            .exec()
+            .then(resolve)
+            .catch((err: Error) => {
+              logger.error(err);
+              reject(err);
+            });
         })
         .catch((err: Error) => {
           logger.error(err);
-          reject(new InternalError('Could not get queue.'));
+          reject(err);
         });
     });
   }

@@ -16,7 +16,7 @@ export default class SongDataGetEndpoint {
       })
       .then((songdatas: ISongData[]) => {
         const dtos = songdatas
-          .map((songdata) => new SongDataDTO().getJSON(songdata))
+          .map((songdata) => SongDataDTO.getJSON(songdata))
           .sort((a, b) => (a.title > b.title ? 1 : -1));
         ResponseService.sendOk(res, {
           data: dtos,

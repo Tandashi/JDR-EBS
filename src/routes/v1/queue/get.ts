@@ -16,7 +16,7 @@ export default class QueueGetEndpoint {
     QueueService.getQueue(channelId)
       .then((queue) => {
         ResponseService.sendOk(res, {
-          data: new QueueDTO().getJSON(queue),
+          data: QueueDTO.getJSON(queue),
         });
       })
       .catch((err: Error) => {

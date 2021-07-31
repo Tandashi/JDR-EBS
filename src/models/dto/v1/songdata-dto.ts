@@ -1,5 +1,5 @@
-import { ISongData } from '@base/models/schema/songdata';
 import DTO from '@models/dto/dto';
+import { ISongData } from '@base/models/schema/songdata';
 
 export interface SongDataJSONStructure {
   id: string;
@@ -15,8 +15,8 @@ export interface SongDataJSONStructure {
   effort: number | null;
 }
 
-export default class SongDataDTO extends DTO<ISongData, SongDataJSONStructure> {
-  public getJSON(data: ISongData): SongDataJSONStructure {
+const SongDatayDTO: DTO<ISongData, SongDataJSONStructure> = {
+  getJSON: (data: ISongData) => {
     return {
       id: data._id,
       title: data.title,
@@ -30,5 +30,7 @@ export default class SongDataDTO extends DTO<ISongData, SongDataJSONStructure> {
       coaches: data.coaches,
       effort: data.effort,
     };
-  }
-}
+  },
+};
+
+export default SongDatayDTO;

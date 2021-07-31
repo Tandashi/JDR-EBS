@@ -6,11 +6,13 @@ export interface QueueEntryJSONStructure {
   fromChat: boolean;
 }
 
-export default class QueueEntryDTO extends DTO<IQueueEntry, QueueEntryJSONStructure> {
-  public getJSON(data: IQueueEntry): QueueEntryJSONStructure {
+const QueueEntryDTO: DTO<IQueueEntry, QueueEntryJSONStructure> = {
+  getJSON: (data: IQueueEntry) => {
     return {
       title: data.song.title,
       fromChat: data.song.fromChat,
     };
-  }
-}
+  },
+};
+
+export default QueueEntryDTO;

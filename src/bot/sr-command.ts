@@ -4,7 +4,6 @@ import logger from '@base/logging';
 import TwitchBot from '@base/twitch-bot';
 import QueueService from '@base/services/queue-service';
 
-import InternalError from '@base/errors/internal-error';
 import MaximumRequestsExceededError from '@base/errors/maximum-requests-exceeded-error';
 import SongAlreadyInQueueError from '@base/errors/song-already-in-queue-error';
 
@@ -28,14 +27,7 @@ export default class SRCommand {
         bot.sendMessage(channel, `Song "${songTitle}" was added to the Queue`, userstate);
       })
       .catch((err: Error) => {
-        if (err instanceof InternalError) {
-          logger.error(err);
-          return bot.sendMessage(
-            channel,
-            'There was an error adding your song to the queue. I am sorry :(.',
-            userstate
-          );
-        } else if (err instanceof SongAlreadyInQueueError) {
+        if (err instanceof SongAlreadyInQueueError) {
           return bot.sendMessage(channel, 'This song is already in the queue.', userstate);
         } else if (err instanceof MaximumRequestsExceededError) {
           return bot.sendMessage(

@@ -7,11 +7,13 @@ interface QueueJSONStructure {
   entries: QueueEntryJSONStructure[];
 }
 
-export default class QueueDTO extends DTO<IQueue, QueueJSONStructure> {
-  public getJSON(data: IQueue): QueueJSONStructure {
+const QueueDTO: DTO<IQueue, QueueJSONStructure> = {
+  getJSON: (data: IQueue) => {
     return {
       channelId: data.channelId,
-      entries: data.entries.map((v) => new QueueEntryDTO().getJSON(v)),
+      entries: data.entries.map((v) => QueueEntryDTO.getJSON(v)),
     };
-  }
-}
+  },
+};
+
+export default QueueDTO;

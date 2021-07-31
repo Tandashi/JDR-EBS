@@ -1,3 +1,3 @@
-export default abstract class DTO<D, R> {
-  abstract getJSON(data: D): R;
+export default interface DTO<D, R> {
+  getJSON(data: D): R;
 }
