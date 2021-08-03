@@ -8,12 +8,13 @@
     "sourceMap": true,
     "outDir": "dist",
     "baseUrl": ".",
+    "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@base/*": ["src/*"],
-      "@bot/*": ["src/bot/*"],
-      "@models/*": ["src/models/*"],
-      "@routes/*": ["src/routes/*"],
-      "@services/*": ["src/services/*"]
+      "@twitch-bot/*": ["src/twitch-bot/*"],
+      "@api/*": ["src/api/*"],
+      "@common/*": ["src/common/*"],
+      "@db/*": ["src/common/db/*"],
+      "@services/*": ["src/common/services/*"]
     }
   },
   "include": ["src/**/*", "definitions/**/*"]

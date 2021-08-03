@@ -8,9 +8,9 @@ import argparse from 'argparse';
 import cliProgress from 'cli-progress';
 import chalk from 'chalk';
 
-import config from '@base/config';
+import config from '@common/config';
 
-import SongData from '@base/models/schema/songdata';
+import SongData from '@db/schema/song-data';
 
 class Importer {
   private parser: argparse.ArgumentParser;

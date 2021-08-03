@@ -8,7 +8,7 @@
   "repository": {},
   "license": "MIT",
   "scripts": {
-    "start": "yarn build && node -r dotenv/config dist/index.js",
+    "start": "yarn build && node -r dotenv/config dist/ebs.js",
     "start-importer": "yarn build && node -r dotenv/config dist/importer.js",
     "build": "yarn build-ts && yarn tslint",
     "build-ts": "tsc",
@@ -16,11 +16,11 @@
     "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
   "_moduleAliases": {
-    "@base": "dist",
-    "@bot": "dist/bot",
-    "@models": "dist/models",
-    "@routes": "dist/routes",
-    "@services": "dist/services"
+    "@twitch-bot": "dist/twitch-bot",
+    "@api": "dist/api",
+    "@common": "dist/common",
+    "@db": "dist/common/db",
+    "@services": "dist/common/services"
   },
   "dependencies": {
     "@types/tmi.js": "^1.7.2",
