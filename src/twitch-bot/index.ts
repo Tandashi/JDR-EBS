@@ -29,7 +29,6 @@ export default class TwitchBot {
     });
 
     this.configure();
-    this.connect();
   }
 
   public static getInstance(): TwitchBot {
@@ -44,6 +43,10 @@ export default class TwitchBot {
     this.client.on('message', (channel, userstate, message, self) =>
       this.handleOnMessage(channel, userstate, message, self)
     );
+
+    this.client.on('connected', () => {
+      this.connect();
+    });
   }
 
   private async connect(): Promise<void> {
