@@ -26,7 +26,7 @@ export const AuthJWT = (req: express.Request, res: express.Response, next: expre
     const token = authHeader.substring(BearerPrefix.length);
     // Verify if the token is correct
     // Decode the secret since Twitch provides it as a base64 string
-    const jwt = jsonwebtoken.verify(token, Buffer.from(config.twitch.jwtSecret, 'base64'), {
+    const jwt = jsonwebtoken.verify(token, Buffer.from(config.twitch.extension.jwtSecret, 'base64'), {
       algorithms: ['HS256'],
     });
 

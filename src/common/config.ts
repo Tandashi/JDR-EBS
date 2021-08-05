@@ -10,11 +10,17 @@ interface MongoDBConfig {
 }
 
 interface TwitchConfig {
+  api: {
+    clientId: string;
+    clientSecret: string;
+  };
+  extension: {
+    jwtSecret: string;
+  };
   bot: {
     username: string;
     oauthToken: string;
   };
-  jwtSecret: string;
 }
 
 interface Config {
@@ -45,6 +51,16 @@ if (!BOT_OAUTH_TOKEN) {
   process.exit(1);
 }
 
+const API_CLIENT_ID = process.env['API_CLIENT_ID'];
+if (!API_CLIENT_ID) {
+  console.log('No jsonwebtoken secret provided. Set API_CLIENT_ID environment variable.');
+}
+
+const API_CLIENT_SECRET = process.env['API_CLIENT_SECRET'];
+if (!API_CLIENT_SECRET) {
+  console.log('No jsonwebtoken secret provided. Set API_CLIENT_SECRET environment variable.');
+}
+
 const JWT_SECRET = process.env['JWT_SECRET'];
 if (!JWT_SECRET) {
   console.log('No jsonwebtoken secret provided. Set JWT_SECRET environment variable.');
@@ -72,11 +88,17 @@ const config: Config = {
     uri: MONGODB_URI,
   },
   twitch: {
+    api: {
+      clientId: API_CLIENT_ID,
+      clientSecret: API_CLIENT_SECRET,
+    },
+    extension: {
+      jwtSecret: JWT_SECRET,
+    },
     bot: {
       username: BOT_USERNAME,
       oauthToken: BOT_OAUTH_TOKEN,
     },
-    jwtSecret: JWT_SECRET,
   },
 };
 export default config;

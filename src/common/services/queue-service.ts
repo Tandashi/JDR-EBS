@@ -1,30 +1,27 @@
 import StreamerDataDao from '@db/dao/streamer-data-dao';
 
-import { DBResult, Failure, Success } from '@db/dao/dao';
+import { Result, Success, Failure } from '@common/result';
 import { IQueue, IQueueEntrySongData } from '@db/schema/queue';
 import QueueDao from '@common/db/dao/queue-dao';
 
 type AddToQueueErrors = 'maximum-requests-exceeded' | 'song-already-queued';
 
 export default class QueueService {
-  public static async getQueue(channelId: string): Promise<DBResult<IQueue>> {
+  public static async getQueue(channelId: string): Promise<Result<IQueue>> {
     const streamDataResult = await StreamerDataDao.getOrCreateStreamerData(channelId, ['queue']);
 
     if (streamDataResult.type === 'error') {
       return streamDataResult;
     }
 
-    return {
-      type: 'success',
-      data: streamDataResult.data.queue,
-    };
+    return Success(streamDataResult.data.queue);
   }
 
   public static async addToQueue(
     channelId: string,
     songdata: IQueueEntrySongData,
     userId: string
-  ): Promise<DBResult<IQueue, AddToQueueErrors>> {
+  ): Promise<Result<IQueue, AddToQueueErrors>> {
     const queueResult = await this.getQueue(channelId);
 
     if (queueResult.type === 'error') {

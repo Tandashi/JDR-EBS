@@ -6,11 +6,14 @@ import tmi from 'tmi.js';
 import logger from '@common/logging';
 import config from '@common/config';
 import SRCommand from '@twitch-bot/commands/sr-command';
+import StreamerConfigurationDao from '@common/db/dao/streamer-configuration-dao';
 
 export default class TwitchBot {
+  private static instance: TwitchBot;
+
   private client: tmi.Client;
 
-  constructor() {
+  private constructor() {
     this.client = new tmi.Client({
       options: { messagesLogLevel: 'info' },
       connection: {
@@ -19,19 +22,52 @@ export default class TwitchBot {
       },
       identity: {
         username: config.twitch.bot.username,
-        password: config.twitch.bot.oauthToken,
+        password: `oauth:${config.twitch.bot.oauthToken}`,
       },
-      channels: ['Tandashii'],
+      channels: [],
       logger,
     });
 
     this.configure();
+    this.connect();
+  }
+
+  public static getInstance(): TwitchBot {
+    if (!this.instance) {
+      this.instance = new TwitchBot();
+    }
+
+    return this.instance;
   }
 
   private configure(): void {
     this.client.on('message', (channel, userstate, message, self) =>
       this.handleOnMessage(channel, userstate, message, self)
     );
+  }
+
+  private async connect(): Promise<void> {
+    const configurationsResult = await StreamerConfigurationDao.getAllWithChatIntegrationEnabled();
+
+    if (configurationsResult.type === 'success') {
+      configurationsResult.data.forEach((c) => {
+        const channelName = c.chatIntegration.channelName;
+
+        if (channelName === '') {
+          return logger.error(
+            `Configuration (${c._id}) is malformed. Chat Integration is activated but channel name is emtpy.`
+          );
+        }
+
+        this.client.join(channelName);
+      });
+    }
+
+    if (configurationsResult.type === 'error') {
+      logger.error(
+        'Unable to connect to channels. StreamerConfigurationDao returned an error while fetching channels.'
+      );
+    }
   }
 
   private handleOnMessage(channel: string, userstate: tmi.Userstate, message: string, self: boolean): void {
@@ -42,6 +78,14 @@ export default class TwitchBot {
     if (message.toLowerCase().startsWith('!sr ')) {
       SRCommand.process(channel, userstate, message, this);
     }
+  }
+
+  public join(channelName: string): void {
+    this.client.join(channelName);
+  }
+
+  public part(channelName: string): void {
+    this.client.part(channelName);
   }
 
   public sendMessage(channelId: string, message: string, replyTo?: tmi.Userstate): void {

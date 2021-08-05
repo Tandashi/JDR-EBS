@@ -5,4 +5,4 @@ import APIServer from '@api/index';
 import TwitchBot from '@twitch-bot/index';
 
 new APIServer().start();
-new TwitchBot().start();
+TwitchBot.getInstance().start();
