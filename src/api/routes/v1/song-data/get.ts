@@ -1,6 +1,6 @@
 import express from 'express';
 
-import SongDataDto from '@db/dto/v1/songdata-dto';
+import SongDataDto from '@common/db/dto/v1/song-data-dto';
 import SongDataDao from '@common/db/dao/song-data-dao';
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
 

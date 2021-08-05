@@ -1,7 +1,7 @@
 import logger from '@common/logging';
 
 import { Result, Success, Failure } from '@common/result';
-import StreamerData, { IStreamerData } from '@db/schema/streamer-data';
+import StreamerData, { StreamerDataDoc, IStreamerData } from '@db/schema/streamer-data';
 import QueueDao from '@db/dao/queue-dao';
 import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
 
@@ -11,7 +11,7 @@ export default class StreamerDataDao {
   public static async getOrCreateStreamerData(
     channelId: string,
     populate?: PopulationParameters[]
-  ): Promise<Result<IStreamerData>> {
+  ): Promise<Result<StreamerDataDoc>> {
     try {
       const streamerData = await StreamerData.findOne({
         channelId: channelId,
@@ -32,7 +32,7 @@ export default class StreamerDataDao {
   public static async createStreamerData(
     channelId: string,
     populate?: PopulationParameters[]
-  ): Promise<Result<IStreamerData>> {
+  ): Promise<Result<StreamerDataDoc>> {
     const queueResult = await QueueDao.createQueue();
     if (queueResult.type === 'error') {
       return queueResult;
@@ -44,7 +44,7 @@ export default class StreamerDataDao {
     }
 
     try {
-      const streamerData = await new StreamerData({
+      const streamerData = await new StreamerData(<IStreamerData>{
         channelId: channelId,
         queue: queueResult.data._id,
         configuration: configurationResult.data._id,

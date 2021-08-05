@@ -21,9 +21,11 @@ export interface IQueueEntry {
   song: IQueueEntrySongData;
 }
 
-export interface IQueue extends Document {
+export interface IQueue {
   entries: IQueueEntry[];
 }
+
+export type QueueDoc = IQueue & Document;
 
 const queueSchema: Schema = new Schema({
   entries: [
@@ -38,5 +40,5 @@ const queueSchema: Schema = new Schema({
   ],
 });
 
-const Queue: Model<IQueue> = model<IQueue>('Queue', queueSchema);
+const Queue: Model<QueueDoc> = model<QueueDoc>('Queue', queueSchema);
 export default Queue;

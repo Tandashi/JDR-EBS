@@ -1,22 +1,29 @@
 import { Document, Schema, Model, model } from 'mongoose';
+import { BanlistDoc } from './banlist';
 
-export interface ChatIntegrationConfiguration {
+interface ChatIntegrationConfiguration {
   enabled: boolean;
   channelName: string;
 }
 
-export interface RequestConfiguration {
+interface RequestConfiguration {
   perUser: number;
   duplicates: boolean;
 }
 
-export interface RawStreamerConfiguration {
+interface BanlistConfiguration {
+  active: BanlistDoc;
+  banlists: BanlistDoc[];
+}
+
+export interface IStreamerConfiguration {
   version: string;
   chatIntegration: ChatIntegrationConfiguration;
   requests: RequestConfiguration;
+  banlist: BanlistConfiguration;
 }
 
-export type IStreamerConfiguration = Document & RawStreamerConfiguration;
+export type StreamerConfigurationDoc = IStreamerConfiguration & Document;
 
 const streamerConfigurationSchema: Schema = new Schema({
   version: {
@@ -31,9 +38,21 @@ const streamerConfigurationSchema: Schema = new Schema({
     perUser: Number,
     duplicates: Boolean,
   },
+  banlist: {
+    active: {
+      type: Schema.Types.ObjectId,
+      ref: 'Banlist',
+    },
+    banlists: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Banlist',
+      },
+    ],
+  },
 });
 
-const StreamerConfiguration: Model<IStreamerConfiguration> = model<IStreamerConfiguration>(
+const StreamerConfiguration: Model<StreamerConfigurationDoc> = model<StreamerConfigurationDoc>(
   'StreamerConfiguration',
   streamerConfigurationSchema
 );

@@ -1,12 +1,12 @@
 import logger from '@common/logging';
 
 import { Result, Success, Failure } from '@common/result';
-import SongData, { ISongData } from '@db/schema/song-data';
+import SongData, { SongDataDoc } from '@db/schema/song-data';
 
 type GetErrors = 'no-such-entity';
 
 export default class SongDataDao {
-  public static async getSong(songId: string): Promise<Result<ISongData, GetErrors>> {
+  public static async getSong(songId: string): Promise<Result<SongDataDoc, GetErrors>> {
     try {
       return Success(await SongData.findById(songId));
     } catch (e) {
@@ -16,7 +16,7 @@ export default class SongDataDao {
     }
   }
 
-  public static async getAllSongs(): Promise<Result<ISongData[]>> {
+  public static async getAllSongs(): Promise<Result<SongDataDoc[]>> {
     try {
       return Success(await SongData.find({}));
     } catch (e) {

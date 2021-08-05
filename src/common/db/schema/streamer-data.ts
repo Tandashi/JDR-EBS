@@ -1,13 +1,15 @@
 import { Document, Schema, Model, model } from 'mongoose';
 
-import { IQueue } from '@db/schema/queue';
-import { IStreamerConfiguration } from './streamer-configuration';
+import { QueueDoc } from '@db/schema/queue';
+import { StreamerConfigurationDoc } from './streamer-configuration';
 
-export interface IStreamerData extends Document {
+export interface IStreamerData {
   channelId: string;
-  configuration: IStreamerConfiguration;
-  queue: IQueue;
+  configuration: StreamerConfigurationDoc;
+  queue: QueueDoc;
 }
+
+export type StreamerDataDoc = IStreamerData & Document;
 
 const streamerDataSchema: Schema = new Schema({
   channelId: {
@@ -24,5 +26,5 @@ const streamerDataSchema: Schema = new Schema({
   },
 });
 
-const StreamerData: Model<IStreamerData> = model<IStreamerData>('StreamerData', streamerDataSchema);
+const StreamerData: Model<StreamerDataDoc> = model<StreamerDataDoc>('StreamerData', streamerDataSchema);
 export default StreamerData;

@@ -4,7 +4,7 @@ import TwitchBot from '@twitch-bot/index';
 
 import { Failure, Result, Success } from '@common/result';
 import TwitchAPIService from '@services/twitch-api-service';
-import { IStreamerConfiguration, RawStreamerConfiguration } from '@common/db/schema/streamer-configuration';
+import { StreamerConfigurationDoc, IStreamerConfiguration } from '@common/db/schema/streamer-configuration';
 import StreamerConfigurationDao from '@common/db/dao/streamer-configuration-dao';
 
 type UpdateErrors = 'invalid-request';
@@ -13,7 +13,7 @@ export default class StreamerConfigurationService {
   public static async updateChannelName(
     configurationId: string,
     channelId: string
-  ): Promise<Result<IStreamerConfiguration>> {
+  ): Promise<Result<StreamerConfigurationDoc>> {
     const channelInformationResult = await TwitchAPIService.getInstance().getChannelInfo(channelId);
 
     if (channelInformationResult.type === 'error') {
@@ -33,9 +33,9 @@ export default class StreamerConfigurationService {
   }
 
   public static async update(
-    oldConfiguration: IStreamerConfiguration,
+    oldConfiguration: StreamerConfigurationDoc,
     req: express.Request
-  ): Promise<Result<IStreamerConfiguration, UpdateErrors>> {
+  ): Promise<Result<StreamerConfigurationDoc, UpdateErrors>> {
     const chatIntegarationEnabled = req.body.chatIntegration?.enabled;
     if (chatIntegarationEnabled && typeof chatIntegarationEnabled !== 'boolean') {
       return Failure<UpdateErrors>(
@@ -57,7 +57,7 @@ export default class StreamerConfigurationService {
       );
     }
 
-    const updatedConfiguration: RawStreamerConfiguration = {
+    const updatedConfiguration: IStreamerConfiguration = {
       version: oldConfiguration.version,
       chatIntegration: {
         enabled: chatIntegarationEnabled || oldConfiguration.chatIntegration.enabled,
@@ -67,6 +67,11 @@ export default class StreamerConfigurationService {
         perUser: requestsPerUser || oldConfiguration.requests.perUser,
         duplicates: requestsDuplicates || oldConfiguration.requests.duplicates,
       },
+      /* TODO: add bandlist patch endpoint
+        Should update ids + name of list should be a param
+        Make sure banlist is owned by user
+        and user is broadcaster role */
+      banlist: oldConfiguration.banlist,
     };
 
     const updateResult = await StreamerConfigurationDao.update(oldConfiguration._id, updatedConfiguration);

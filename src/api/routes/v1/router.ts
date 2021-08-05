@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import songdataRouter from '@api/routes/v1/songdata/router';
+import songdataRouter from '@api/routes/v1/song-data/router';
 import queueRouter from '@api/routes/v1/queue/router';
 import configurationRouter from '@api/routes/v1/configuration/router';
 

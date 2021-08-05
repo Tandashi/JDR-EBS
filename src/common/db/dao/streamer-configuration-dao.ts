@@ -2,14 +2,15 @@ import logger from '@common/logging';
 
 import { Result, Success, Failure } from '@common/result';
 import StreamerConfiguration, {
+  StreamerConfigurationDoc,
   IStreamerConfiguration,
-  RawStreamerConfiguration,
 } from '@db/schema/streamer-configuration';
 import StreamerDataDao from '@db/dao/streamer-data-dao';
 import { UpdateQuery } from 'mongoose';
+import BanlistDao from './banlist-dao';
 
 export default class StreamerConfigurationDao {
-  private static DEFAULT_CONFIGURATION: RawStreamerConfiguration = {
+  private static DEFAULT_CONFIGURATION: IStreamerConfiguration = {
     version: 'v1.0',
     chatIntegration: {
       enabled: false,
@@ -19,9 +20,13 @@ export default class StreamerConfigurationDao {
       perUser: 1,
       duplicates: false,
     },
+    banlist: {
+      active: undefined,
+      banlists: [],
+    },
   };
 
-  public static async getAllWithChatIntegrationEnabled(): Promise<Result<IStreamerConfiguration[]>> {
+  public static async getAllWithChatIntegrationEnabled(): Promise<Result<StreamerConfigurationDoc[]>> {
     try {
       const streamerConfigurations = await StreamerConfiguration.find({
         'chatIntegration.enabled': true,
@@ -34,7 +39,7 @@ export default class StreamerConfigurationDao {
     }
   }
 
-  public static async get(channelId: string): Promise<Result<IStreamerConfiguration>> {
+  public static async get(channelId: string): Promise<Result<StreamerConfigurationDoc>> {
     const streamerDataResult = await StreamerDataDao.getOrCreateStreamerData(channelId, ['configuration']);
     if (streamerDataResult.type === 'error') {
       return streamerDataResult;
@@ -53,8 +58,8 @@ export default class StreamerConfigurationDao {
 
   public static async update(
     id: string,
-    updateQuery: UpdateQuery<RawStreamerConfiguration>
-  ): Promise<Result<IStreamerConfiguration>> {
+    updateQuery: UpdateQuery<IStreamerConfiguration>
+  ): Promise<Result<StreamerConfigurationDoc>> {
     try {
       const configuration = await StreamerConfiguration.findOneAndUpdate({ _id: id }, updateQuery, { new: true });
       return Success(configuration);
@@ -64,9 +69,21 @@ export default class StreamerConfigurationDao {
     }
   }
 
-  public static async createStreamerConfiguration(): Promise<Result<IStreamerConfiguration>> {
+  public static async createStreamerConfiguration(): Promise<Result<StreamerConfigurationDoc>> {
     try {
-      const configuration = await new StreamerConfiguration(this.DEFAULT_CONFIGURATION).save();
+      const defaultBanlistResult = await BanlistDao.createBanlist('default');
+      if (defaultBanlistResult.type === 'error') {
+        return defaultBanlistResult;
+      }
+
+      const defaultBanlist = defaultBanlistResult.data;
+      const configuration = await new StreamerConfiguration(<IStreamerConfiguration>{
+        ...this.DEFAULT_CONFIGURATION,
+        banlist: {
+          active: defaultBanlist._id,
+          banlists: [defaultBanlist._id],
+        },
+      }).save();
       return Success(configuration);
     } catch (e) {
       logger.error(e);

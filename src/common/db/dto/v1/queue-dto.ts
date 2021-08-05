@@ -1,13 +1,13 @@
 import Dto from '@db/dto/dto';
-import { IQueue } from '@db/schema/queue';
+import { QueueDoc } from '@db/schema/queue';
 import QueueEntryDto, { QueueEntryJSONStructure } from '@db/dto/v1/queue-entry-dto';
 
 interface QueueJSONStructure {
   entries: QueueEntryJSONStructure[];
 }
 
-const QueueDto: Dto<IQueue, QueueJSONStructure> = {
-  getJSON: (data: IQueue) => {
+const QueueDto: Dto<QueueDoc, QueueJSONStructure> = {
+  getJSON: (data: QueueDoc) => {
     return {
       entries: data.entries.map((v) => QueueEntryDto.getJSON(v)),
     };

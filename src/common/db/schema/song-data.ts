@@ -1,6 +1,6 @@
 import { Document, Schema, Model, model } from 'mongoose';
 
-export interface ISongData extends Document {
+export interface ISongData {
   title: string;
   artist: string;
   original_source?: string;
@@ -12,6 +12,8 @@ export interface ISongData extends Document {
   coaches: number;
   effort: number | null;
 }
+
+export type SongDataDoc = ISongData & Document;
 
 const songDataSchema: Schema = new Schema({
   title: String,
@@ -26,5 +28,5 @@ const songDataSchema: Schema = new Schema({
   effort: Number,
 });
 
-const SongData: Model<ISongData> = model<ISongData>('SongData', songDataSchema);
+const SongData: Model<SongDataDoc> = model<SongDataDoc>('SongData', songDataSchema);
 export default SongData;

@@ -1,5 +1,5 @@
 import Dto from '@db/dto/dto';
-import { ISongData } from '@db/schema/song-data';
+import { SongDataDoc } from '@db/schema/song-data';
 
 export interface SongDataJSONStructure {
   id: string;
@@ -15,8 +15,8 @@ export interface SongDataJSONStructure {
   effort: number | null;
 }
 
-const SongDatayDto: Dto<ISongData, SongDataJSONStructure> = {
-  getJSON: (data: ISongData) => {
+const SongDataDto: Dto<SongDataDoc, SongDataJSONStructure> = {
+  getJSON: (data: SongDataDoc) => {
     return {
       id: data._id,
       title: data.title,
@@ -33,4 +33,4 @@ const SongDatayDto: Dto<ISongData, SongDataJSONStructure> = {
   },
 };
 
-export default SongDatayDto;
+export default SongDataDto;
