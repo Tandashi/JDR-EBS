@@ -1,4 +1,5 @@
 import express from 'express';
+import { Schema } from 'express-validator';
 
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
 
@@ -7,13 +8,22 @@ import SongDataDao from '@common/db/dao/song-data-dao';
 import { IQueueEntrySongData } from '@common/db/schema/queue';
 import QueueService from '@common/services/queue-service';
 
+export const addRequestValidationSchema: Schema = {
+  id: {
+    in: 'body',
+    exists: {
+      errorMessage: 'Field `id` can not be empty',
+      bail: true,
+    },
+    isString: {
+      errorMessage: 'Field `id` must be a string',
+    },
+  },
+};
+
 export default class QueuePostEndpoint {
   public static async add(req: express.Request, res: express.Response): Promise<void> {
     const songId = req.body.id;
-
-    if (!songId) {
-      return ResponseService.sendBadRequest(res, 'No songId provided');
-    }
 
     const getSongResult = await SongDataDao.getSong(songId);
     if (getSongResult.type === 'error') {

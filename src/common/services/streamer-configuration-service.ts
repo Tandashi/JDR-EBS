@@ -2,12 +2,10 @@ import express from 'express';
 
 import TwitchBot from '@twitch-bot/index';
 
-import { Failure, Result, Success } from '@common/result';
+import { Result, Success } from '@common/result';
 import TwitchAPIService from '@services/twitch-api-service';
 import { StreamerConfigurationDoc, IStreamerConfiguration } from '@common/db/schema/streamer-configuration';
 import StreamerConfigurationDao from '@common/db/dao/streamer-configuration-dao';
-
-type UpdateErrors = 'invalid-request';
 
 export default class StreamerConfigurationService {
   public static async updateChannelName(
@@ -39,27 +37,10 @@ export default class StreamerConfigurationService {
   public static async update(
     oldConfiguration: StreamerConfigurationDoc,
     req: express.Request
-  ): Promise<Result<StreamerConfigurationDoc, UpdateErrors>> {
+  ): Promise<Result<StreamerConfigurationDoc>> {
     const chatIntegarationEnabled = req.body.chatIntegration?.enabled;
-    if (chatIntegarationEnabled && typeof chatIntegarationEnabled !== 'boolean') {
-      return Failure<UpdateErrors>(
-        'invalid-request',
-        "Invalid request. 'chatIntegration.enabled' should be of type boolean."
-      );
-    }
-
     const requestsPerUser = req.body.requests?.perUser;
-    if (requestsPerUser && typeof requestsPerUser !== 'number') {
-      return Failure<UpdateErrors>('invalid-request', "Invalid request. 'requests.perUser' should be of type number.");
-    }
-
     const requestsDuplicates = req.body.requests?.duplicates;
-    if (requestsDuplicates && typeof requestsDuplicates !== 'boolean') {
-      return Failure<UpdateErrors>(
-        'invalid-request',
-        "Invalid request. 'requests.duplicates' should be of type boolean."
-      );
-    }
 
     const updatedConfiguration: IStreamerConfiguration = {
       version: oldConfiguration.version,

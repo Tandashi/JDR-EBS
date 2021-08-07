@@ -76,6 +76,8 @@ export default class StreamerConfigurationDao {
     populate: ConfigurationBanlistPopulateOptions[]
   ): Promise<Result<StreamerConfigurationDoc>> {
     try {
+      // TODO: should return a entity-not-found if configuration with ID does not exist
+      // Currently it return a internal server error
       const configuration = await StreamerConfiguration.findOneAndUpdate({ _id: id }, updateQuery, { new: true });
 
       const populatedConfiguration = await configuration.populate(populate).execPopulate();

@@ -7,6 +7,19 @@ import ResponseService from '@services/response-service';
 
 const BearerPrefix = 'Bearer ';
 
+export const BroadcasterOnly = (req: express.Request, res: express.Response, next: express.NextFunction): void => {
+  if (!req.user) {
+    logger.error('No user present in broadcaster only middleware. Did you forget to authenticate jwt before?');
+    return ResponseService.sendUnauthorized(res, 'Unauthorized');
+  }
+
+  if (req.user.role !== 'broadcaster') {
+    return ResponseService.sendUnauthorized(res, 'Unauthorized. Only Broadcasters are allowed to use this endpoint.');
+  }
+
+  next();
+};
+
 export const AuthJWT = (req: express.Request, res: express.Response, next: express.NextFunction): void => {
   try {
     // Get the authorization header from the request

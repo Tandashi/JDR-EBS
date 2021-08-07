@@ -1,16 +1,53 @@
 import express from 'express';
+import { Schema } from 'express-validator';
 
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
 import StreamerConfigurationDao from '@common/db/dao/streamer-configuration-dao';
 import StreamerConfigurationDto from '@common/db/dto/v1/streamer-configuration-dto';
 import StreamerConfigurationService from '@common/services/streamer-configuration-service';
 
+export const updateRequestValidationSchema: Schema = {
+  chatIntegration: {
+    in: 'body',
+    optional: true,
+    isObject: {
+      errorMessage: 'Field `chatIntegration` must be an object',
+      bail: true,
+    },
+  },
+  'chatIntegration.enabled': {
+    optional: true,
+    isBoolean: {
+      errorMessage: 'Field `chatIntegration.enabled` must be a boolean',
+    },
+    toBoolean: true,
+  },
+  requests: {
+    in: 'body',
+    optional: true,
+    isObject: {
+      errorMessage: 'Field `requests` must be an object',
+      bail: true,
+    },
+  },
+  'requests.perUser': {
+    optional: true,
+    isInt: {
+      errorMessage: 'Field `requests.perUser` must be a number',
+    },
+    toInt: true,
+  },
+  'requests.duplicates': {
+    optional: true,
+    isBoolean: {
+      errorMessage: 'Field `requests.duplicates` must be a boolean',
+    },
+    toBoolean: true,
+  },
+};
+
 export default class StreamerConfigurationPatchEndpoint {
   public static async update(req: express.Request, res: express.Response): Promise<void> {
-    if (req.user.role !== 'broadcaster') {
-      return ResponseService.sendUnauthorized(res, 'Unauthorized. Only Broadcaster can update the configuration.');
-    }
-
     const configurationResult = await StreamerConfigurationDao.get(req.user.channel_id);
     if (configurationResult.type === 'error') {
       return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RETRIVE_STREAMER_CONFIGURATION);
@@ -32,12 +69,7 @@ export default class StreamerConfigurationPatchEndpoint {
 
     const updateResult = await StreamerConfigurationService.update(configuration, req);
     if (updateResult.type === 'error') {
-      switch (updateResult.error) {
-        case 'internal':
-          return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_UPDATE_CHANNEL_NAME);
-        case 'invalid-request':
-          return ResponseService.sendBadRequest(res, updateResult.message);
-      }
+      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_UPDATE_CHANNEL_NAME);
     }
 
     configuration = updateResult.data;

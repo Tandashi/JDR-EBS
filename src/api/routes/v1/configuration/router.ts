@@ -1,12 +1,22 @@
 import { Router } from 'express';
+import { checkSchema } from 'express-validator';
 
-import { AuthJWT } from '@api/middleware/auth';
+import { checkValidation } from '@api/middleware/validation';
+import { AuthJWT, BroadcasterOnly } from '@api/middleware/auth';
+
 import StreamerConfigurationGetEndpoint from './get';
-import StreamerConfigurationPatchEndpoint from './patch';
+import StreamerConfigurationPatchEndpoint, { updateRequestValidationSchema } from './patch';
 
 const router = Router();
 
-router.get('/', AuthJWT, StreamerConfigurationGetEndpoint.get);
-router.patch('/', AuthJWT, StreamerConfigurationPatchEndpoint.update);
+router.get('/', AuthJWT, BroadcasterOnly, StreamerConfigurationGetEndpoint.get);
+router.patch(
+  '/',
+  AuthJWT,
+  BroadcasterOnly,
+  checkSchema(updateRequestValidationSchema),
+  checkValidation,
+  StreamerConfigurationPatchEndpoint.update
+);
 
 export default router;
