@@ -1,3 +1,5 @@
+import { PopulateOptions } from 'mongoose';
+
 import logger from '@common/logging';
 
 import { Result, Success, Failure } from '@common/result';
@@ -5,12 +7,33 @@ import StreamerData, { StreamerDataDoc, IStreamerData } from '@db/schema/streame
 import QueueDao from '@db/dao/queue-dao';
 import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
 
-type PopulationParameters = 'queue' | 'configuration';
+type QueuePopulateOption = {
+  path: 'queue';
+} & PopulateOptions;
+
+type ConfigurationBanlistActivePopulateOption = {
+  path: 'banlist.active';
+} & PopulateOptions;
+
+type ConfigurationBanlistBanlistsPopulateOption = {
+  path: 'banlist.banlists';
+} & PopulateOptions;
+
+export type ConfigurationBanlistPopulateOptions =
+  | ConfigurationBanlistActivePopulateOption
+  | ConfigurationBanlistBanlistsPopulateOption;
+
+type ConfigurationPopulateOption = {
+  path: 'configuration';
+  populate?: ConfigurationBanlistPopulateOptions[];
+} & PopulateOptions;
+
+type PopulationParams = QueuePopulateOption | ConfigurationPopulateOption;
 
 export default class StreamerDataDao {
   public static async getOrCreateStreamerData(
     channelId: string,
-    populate?: PopulationParameters[]
+    populate?: PopulationParams[]
   ): Promise<Result<StreamerDataDoc>> {
     try {
       const streamerData = await StreamerData.findOne({
@@ -31,7 +54,7 @@ export default class StreamerDataDao {
 
   public static async createStreamerData(
     channelId: string,
-    populate?: PopulationParameters[]
+    populate?: PopulationParams[]
   ): Promise<Result<StreamerDataDoc>> {
     const queueResult = await QueueDao.createQueue();
     if (queueResult.type === 'error') {
@@ -50,13 +73,7 @@ export default class StreamerDataDao {
         configuration: configurationResult.data._id,
       }).save();
 
-      const populatedData = await streamerData
-        .populate(
-          populate.map((v) => {
-            return { path: v };
-          })
-        )
-        .execPopulate();
+      const populatedData = await streamerData.populate(populate).execPopulate();
 
       return Success(populatedData);
     } catch (e) {

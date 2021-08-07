@@ -8,7 +8,7 @@ type AddToQueueErrors = 'maximum-requests-exceeded' | 'song-already-queued';
 
 export default class QueueService {
   public static async getQueue(channelId: string): Promise<Result<QueueDoc>> {
-    const streamDataResult = await StreamerDataDao.getOrCreateStreamerData(channelId, ['queue']);
+    const streamDataResult = await StreamerDataDao.getOrCreateStreamerData(channelId, [{ path: 'queue' }]);
 
     if (streamDataResult.type === 'error') {
       return streamDataResult;

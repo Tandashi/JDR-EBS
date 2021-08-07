@@ -9,7 +9,7 @@ interface QueueJSONStructure {
 const QueueDto: Dto<QueueDoc, QueueJSONStructure> = {
   getJSON: (data: QueueDoc) => {
     return {
-      entries: data.entries.map((v) => QueueEntryDto.getJSON(v)),
+      entries: data.entries.map(QueueEntryDto.getJSON),
     };
   },
 };

@@ -1,3 +1,5 @@
+import { PopulateOptions, UpdateQuery } from 'mongoose';
+
 import logger from '@common/logging';
 
 import { Result, Success, Failure } from '@common/result';
@@ -5,9 +7,8 @@ import StreamerConfiguration, {
   StreamerConfigurationDoc,
   IStreamerConfiguration,
 } from '@db/schema/streamer-configuration';
-import StreamerDataDao from '@db/dao/streamer-data-dao';
-import { UpdateQuery } from 'mongoose';
-import BanlistDao from './banlist-dao';
+import StreamerDataDao, { ConfigurationBanlistPopulateOptions } from '@db/dao/streamer-data-dao';
+import BanlistDao from '@db/dao/banlist-dao';
 
 export default class StreamerConfigurationDao {
   private static DEFAULT_CONFIGURATION: IStreamerConfiguration = {
@@ -40,7 +41,20 @@ export default class StreamerConfigurationDao {
   }
 
   public static async get(channelId: string): Promise<Result<StreamerConfigurationDoc>> {
-    const streamerDataResult = await StreamerDataDao.getOrCreateStreamerData(channelId, ['configuration']);
+    const streamerDataResult = await StreamerDataDao.getOrCreateStreamerData(channelId, [
+      {
+        path: 'configuration',
+        populate: [
+          {
+            path: 'banlist.active',
+          },
+          {
+            path: 'banlist.banlists',
+          },
+        ],
+      },
+    ]);
+
     if (streamerDataResult.type === 'error') {
       return streamerDataResult;
     }
@@ -58,11 +72,14 @@ export default class StreamerConfigurationDao {
 
   public static async update(
     id: string,
-    updateQuery: UpdateQuery<IStreamerConfiguration>
+    updateQuery: UpdateQuery<IStreamerConfiguration>,
+    populate: ConfigurationBanlistPopulateOptions[]
   ): Promise<Result<StreamerConfigurationDoc>> {
     try {
       const configuration = await StreamerConfiguration.findOneAndUpdate({ _id: id }, updateQuery, { new: true });
-      return Success(configuration);
+
+      const populatedConfiguration = await configuration.populate(populate).execPopulate();
+      return Success(populatedConfiguration);
     } catch (e) {
       logger.error(e);
       return Failure('internal', 'Could not update Streamer Configuration');

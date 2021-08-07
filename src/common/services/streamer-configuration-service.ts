@@ -21,9 +21,13 @@ export default class StreamerConfigurationService {
     }
 
     const channelName = channelInformationResult.data.displayName;
-    const updateResult = await StreamerConfigurationDao.update(configurationId, {
-      $set: { 'chatIntegration.channelName': channelName },
-    });
+    const updateResult = await StreamerConfigurationDao.update(
+      configurationId,
+      {
+        $set: { 'chatIntegration.channelName': channelName },
+      },
+      []
+    );
 
     if (updateResult.type === 'error') {
       return updateResult;
@@ -67,14 +71,18 @@ export default class StreamerConfigurationService {
         perUser: requestsPerUser || oldConfiguration.requests.perUser,
         duplicates: requestsDuplicates || oldConfiguration.requests.duplicates,
       },
-      /* TODO: add bandlist patch endpoint
-        Should update ids + name of list should be a param
-        Make sure banlist is owned by user
-        and user is broadcaster role */
       banlist: oldConfiguration.banlist,
     };
 
-    const updateResult = await StreamerConfigurationDao.update(oldConfiguration._id, updatedConfiguration);
+    const updateResult = await StreamerConfigurationDao.update(oldConfiguration._id, updatedConfiguration, [
+      {
+        path: 'banlist.active',
+      },
+      {
+        path: 'banlist.banlists',
+      },
+    ]);
+
     if (updateResult.type === 'error') {
       return updateResult;
     }
