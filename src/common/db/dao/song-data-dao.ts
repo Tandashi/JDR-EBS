@@ -2,6 +2,7 @@ import logger from '@common/logging';
 
 import { Result, Success, Failure } from '@common/result';
 import SongData, { SongDataDoc } from '@db/schema/song-data';
+import { ObjectId } from 'mongoose';
 
 export type GetErrors = 'no-such-entity';
 
@@ -28,6 +29,16 @@ export default class SongDataDao {
       logger.error((e as Error).message);
 
       return Failure('internal', 'Could not retrive SongDatas');
+    }
+  }
+
+  public static async getAllExcept(ids: ObjectId[]): Promise<Result<SongDataDoc[]>> {
+    try {
+      return Success(await SongData.find({ _id: { $nin: ids } }));
+    } catch (e) {
+      logger.error((e as Error).message);
+
+      return Failure('internal', 'Could not retrive filtered SongDatas');
     }
   }
 }

@@ -1,6 +1,3 @@
-import express from 'express';
-import { ObjectId } from 'mongoose';
-
 import { Failure, FailureResult, Result, Success } from '@common/result';
 import BanlistDao from '@db/dao/banlist-dao';
 import { BanlistDoc } from '@db/schema/banlist';
@@ -90,5 +87,22 @@ export default class BanlistService {
     }
 
     return Success(updateResult.data);
+  }
+
+  public static async filterSongs(channelId: string): Promise<Result<SongDataDoc[]>> {
+    const configurationResult = await StreamerConfigurationDao.get(channelId);
+    if (configurationResult.type === 'error') {
+      return configurationResult;
+    }
+
+    const banlist = configurationResult.data.banlist.active;
+
+    const songResult = await SongDataDao.getAllExcept(banlist.entries.map((e) => e._id));
+    if (songResult.type === 'error') {
+      return songResult;
+    }
+
+    console.log(songResult.data);
+    return Success(songResult.data);
   }
 }
