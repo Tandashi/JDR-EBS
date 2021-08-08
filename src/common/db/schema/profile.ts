@@ -3,6 +3,7 @@ import { Document, Schema, Model, model, ObjectId } from 'mongoose';
 import { SongDataDoc } from '@db/schema/song-data';
 
 interface SongConfiguration {
+  game: string;
   unlimited: boolean;
 }
 
@@ -28,6 +29,7 @@ const profileSchema: Schema = new Schema({
   ],
   configuration: {
     song: {
+      game: String,
       unlimited: Boolean,
     },
   },

@@ -6,9 +6,10 @@ import Queue, { QueueDoc, IQueueEntry, IQueue } from '@db/schema/queue';
 export default class QueueDao {
   public static async createQueue(): Promise<Result<QueueDoc>> {
     try {
-      const queue = await new Queue(<IQueue>{
+      const queueData: IQueue = {
         entries: [],
-      }).save();
+      };
+      const queue = await new Queue(queueData).save();
 
       return Success(queue);
     } catch (e) {

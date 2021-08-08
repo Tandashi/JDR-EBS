@@ -40,6 +40,11 @@ export const updateRequestValidationSchema: Schema = {
       bail: true,
     },
   },
+  'configuration.song.game': {
+    isString: {
+      errorMessage: 'Field `configuration.song.game` must be a string',
+    },
+  },
   'configuration.song.unlimited': {
     isBoolean: {
       errorMessage: 'Field `configuration.song.unlimited` must be a boolean',

@@ -7,6 +7,7 @@ export interface ProfileJSONStructure {
   banlist: SongDataJSONStructure[];
   configuration: {
     song: {
+      game: string;
       unlimited: boolean;
     };
   };
@@ -19,6 +20,7 @@ const ProfileDto: Dto<IProfile, ProfileJSONStructure> = {
       banlist: data.banlist.map(SongDataDto.getJSON),
       configuration: {
         song: {
+          game: data.configuration.song.game,
           unlimited: data.configuration.song.unlimited,
         },
       },

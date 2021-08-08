@@ -11,15 +11,18 @@ type ProfilePopulateOptions = {
 export default class ProfileDao {
   public static async createProfile(name: string): Promise<Result<ProfileDoc>> {
     try {
-      const profile = await new Profile(<IProfile>{
+      const profileData: IProfile = {
         name: name,
         banlist: [],
         configuration: {
           song: {
+            game: '',
             unlimited: false,
           },
         },
-      }).save();
+      };
+
+      const profile = await new Profile(profileData).save();
 
       return Success(profile);
     } catch (e) {

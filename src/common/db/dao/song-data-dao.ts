@@ -38,7 +38,27 @@ export default class SongDataDao {
     return await this.getSongs();
   }
 
-  public static async getAllExcept(ids: ObjectId[], unlimited: boolean): Promise<Result<SongDataDoc[]>> {
-    return await this.getSongs({ _id: { $nin: ids }, unlimited: unlimited });
+  public static async getAllFiltered(
+    ids: ObjectId[],
+    game: string,
+    unlimited: boolean
+  ): Promise<Result<SongDataDoc[]>> {
+    if (unlimited) {
+      return await this.getSongs({ _id: { $nin: ids }, $or: [{ source: game }, { unlimited: unlimited }] });
+    } else {
+      return await this.getSongs({ _id: { $nin: ids }, source: game });
+    }
+  }
+
+  public static async getAllGames(): Promise<Result<string[]>> {
+    try {
+      const games = await SongData.distinct('source');
+
+      return Success(games);
+    } catch (e) {
+      logger.error((e as Error).message);
+
+      return Failure('internal', 'Could not retrive Games');
+    }
   }
 }

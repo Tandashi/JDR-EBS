@@ -90,6 +90,7 @@ export default class ProfileService {
       {
         $set: {
           banlist: songDatas,
+          'configuration.song.game': req.body.configuration.song.game ?? oldProfile.configuration.song.game,
           'configuration.song.unlimited':
             req.body.configuration.song.unlimited ?? oldProfile.configuration.song.unlimited,
         },
@@ -114,9 +115,11 @@ export default class ProfileService {
       return profileResult;
     }
 
-    const songResult = await SongDataDao.getAllExcept(
+    const songConfiguration = profileResult.data.configuration.song;
+    const songResult = await SongDataDao.getAllFiltered(
       excludeBanlist ? [] : profileResult.data.banlist.map((e) => e._id),
-      profileResult.data.configuration.song.unlimited
+      songConfiguration.game,
+      songConfiguration.unlimited
     );
 
     if (songResult.type === 'error') {

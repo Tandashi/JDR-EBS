@@ -99,13 +99,14 @@ export default class StreamerConfigurationDao {
       }
 
       const defaultProfile = defaultProfileResult.data;
-      const configuration = await new StreamerConfiguration(<IStreamerConfiguration>{
+      const configurationData: IStreamerConfiguration = {
         ...this.DEFAULT_CONFIGURATION,
         profile: {
           active: defaultProfile._id,
           profiles: [defaultProfile._id],
         },
-      }).save();
+      };
+      const configuration = await new StreamerConfiguration(configurationData).save();
       return Success(configuration);
     } catch (e) {
       logger.error((e as Error).message);
