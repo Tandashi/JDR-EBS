@@ -90,7 +90,8 @@ export default class ProfileService {
       {
         $set: {
           banlist: songDatas,
-          'configuration.song.unlimited': req.body.unlimited ?? oldProfile.configuration.song.unlimited,
+          'configuration.song.unlimited':
+            req.body.configuration.song.unlimited ?? oldProfile.configuration.song.unlimited,
         },
       },
       [
