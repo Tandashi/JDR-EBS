@@ -4,6 +4,7 @@ import { Result, Success, Failure } from '@common/result';
 import { QueueDoc, IQueueEntrySongData } from '@db/schema/queue';
 import QueueDao from '@common/db/dao/queue-dao';
 import BanlistService from './banlist-service';
+import StreamerConfigurationDao from '@common/db/dao/streamer-configuration-dao';
 
 type AddToQueueErrors = 'maximum-requests-exceeded' | 'song-already-queued' | 'song-is-banned';
 
@@ -27,22 +28,28 @@ export default class QueueService {
     if (queueResult.type === 'error') {
       return queueResult;
     }
-
     const queue = queueResult.data;
-    if (queue.entries.some((v) => v.userId === userId)) {
+
+    const configurationResult = await StreamerConfigurationDao.get(channelId);
+    if (configurationResult.type === 'error') {
+      return configurationResult;
+    }
+    const configuration = configurationResult.data;
+
+    const requestCount = queue.entries.filter((v) => v.userId === userId);
+    if (requestCount.length >= configuration.requests.perUser) {
       return Failure<AddToQueueErrors>('maximum-requests-exceeded', 'Too many songs in queue');
     }
 
-    if (queue.entries.some((v) => v.song.id === songdata.id && songdata.fromChat !== true)) {
+    if (
+      queue.entries.some((v) => v.song.id === songdata.id) &&
+      !configuration.requests.duplicates &&
+      songdata.fromChat !== true
+    ) {
       return Failure<AddToQueueErrors>('song-already-queued', 'Song already in queue');
     }
 
-    const banlistResult = await BanlistService.getActive(channelId);
-    if (banlistResult.type === 'error') {
-      return banlistResult;
-    }
-
-    const banlist = banlistResult.data;
+    const banlist = configuration.banlist.active;
     const banned = banlist.entries.some((e) => e._id.toString() === songdata.id);
 
     if (banned) {
