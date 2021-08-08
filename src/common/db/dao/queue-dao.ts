@@ -12,7 +12,7 @@ export default class QueueDao {
 
       return Success(queue);
     } catch (e) {
-      logger.error(e);
+      logger.error((e as Error).message);
       return Failure('internal', 'Could not create Queue');
     }
   }
@@ -22,7 +22,7 @@ export default class QueueDao {
       const newQueue = await Queue.findByIdAndUpdate(queue._id, { $push: { entries: entry } }, { new: true });
       return Success(newQueue);
     } catch (e) {
-      logger.error(e);
+      logger.error((e as Error).message);
       return Failure('internal', 'Could not add entry to the queue');
     }
   }

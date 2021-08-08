@@ -1,3 +1,5 @@
+import { ObjectId, SchemaType } from 'mongoose';
+
 import Dto from '@db/dto/dto';
 import { SongDataDoc } from '@db/schema/song-data';
 

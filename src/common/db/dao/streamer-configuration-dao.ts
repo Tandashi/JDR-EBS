@@ -1,4 +1,4 @@
-import { PopulateOptions, UpdateQuery } from 'mongoose';
+import { UpdateQuery } from 'mongoose';
 
 import logger from '@common/logging';
 
@@ -35,7 +35,7 @@ export default class StreamerConfigurationDao {
 
       return Success(streamerConfigurations);
     } catch (e) {
-      logger.error(e);
+      logger.error((e as Error).message);
       return Failure('internal', 'Could not retrive StreamerData');
     }
   }
@@ -76,14 +76,11 @@ export default class StreamerConfigurationDao {
     populate: ConfigurationBanlistPopulateOptions[]
   ): Promise<Result<StreamerConfigurationDoc>> {
     try {
-      // TODO: should return a entity-not-found if configuration with ID does not exist
-      // Currently it return a internal server error
       const configuration = await StreamerConfiguration.findOneAndUpdate({ _id: id }, updateQuery, { new: true });
 
       const populatedConfiguration = await configuration.populate(populate).execPopulate();
       return Success(populatedConfiguration);
     } catch (e) {
-      logger.error(e);
       return Failure('internal', 'Could not update Streamer Configuration');
     }
   }
@@ -105,7 +102,7 @@ export default class StreamerConfigurationDao {
       }).save();
       return Success(configuration);
     } catch (e) {
-      logger.error(e);
+      logger.error((e as Error).message);
       return Failure('internal', 'Could not create Streamer Configuration');
     }
   }

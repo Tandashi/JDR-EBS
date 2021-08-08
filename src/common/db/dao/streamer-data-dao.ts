@@ -46,7 +46,7 @@ export default class StreamerDataDao {
 
       return Success(streamerData);
     } catch (e) {
-      logger.error(e);
+      logger.error((e as Error).message);
 
       return Failure('internal', 'Could not retrive StreamerData');
     }
@@ -77,7 +77,7 @@ export default class StreamerDataDao {
 
       return Success(populatedData);
     } catch (e) {
-      logger.error(e);
+      logger.error((e as Error).message);
 
       return Failure('internal', 'Could not create Streamer Data');
     }

@@ -1,11 +1,11 @@
 import logger from '@common/logging';
 
-interface SuccessResult<T> {
+export interface SuccessResult<T> {
   type: 'success';
   data: T;
 }
 
-interface FailureResult<T> {
+export interface FailureResult<T> {
   type: 'error';
   error: T;
   message: string;

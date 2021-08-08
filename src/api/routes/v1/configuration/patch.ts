@@ -9,14 +9,12 @@ import StreamerConfigurationService from '@common/services/streamer-configuratio
 export const updateRequestValidationSchema: Schema = {
   chatIntegration: {
     in: 'body',
-    optional: true,
     isObject: {
       errorMessage: 'Field `chatIntegration` must be an object',
       bail: true,
     },
   },
   'chatIntegration.enabled': {
-    optional: true,
     isBoolean: {
       errorMessage: 'Field `chatIntegration.enabled` must be a boolean',
     },
@@ -24,21 +22,18 @@ export const updateRequestValidationSchema: Schema = {
   },
   requests: {
     in: 'body',
-    optional: true,
     isObject: {
       errorMessage: 'Field `requests` must be an object',
       bail: true,
     },
   },
   'requests.perUser': {
-    optional: true,
     isInt: {
       errorMessage: 'Field `requests.perUser` must be a number',
     },
     toInt: true,
   },
   'requests.duplicates': {
-    optional: true,
     isBoolean: {
       errorMessage: 'Field `requests.duplicates` must be a boolean',
     },

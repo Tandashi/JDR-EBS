@@ -29,7 +29,7 @@ export default class TwitchAPIService {
       const channelInfo = await this.apiClient.helix.channels.getChannelInfo(channelId);
       return Success(channelInfo);
     } catch (e) {
-      logger.error(e);
+      logger.error((e as Error).message);
       return Failure('internal', 'Could not get channel information from Twitch API');
     }
   }

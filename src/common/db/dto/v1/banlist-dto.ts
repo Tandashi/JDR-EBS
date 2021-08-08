@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongoose';
+
 import Dto from '@db/dto/dto';
 import { IBanlist } from '@db/schema/banlist';
 import SongDataDto, { SongDataJSONStructure } from '@common/db/dto/v1/song-data-dto';

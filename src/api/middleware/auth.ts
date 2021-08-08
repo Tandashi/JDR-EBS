@@ -47,7 +47,7 @@ export const AuthJWT = (req: express.Request, res: express.Response, next: expre
     req.user = jwt as TwitchUser;
     next();
   } catch (e) {
-    logger.error(e);
+    logger.error((e as Error).message);
     return ResponseService.sendUnauthorized(res, 'Unauthorized');
   }
 };
