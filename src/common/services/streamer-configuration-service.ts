@@ -38,19 +38,19 @@ export default class StreamerConfigurationService {
     oldConfiguration: StreamerConfigurationDoc,
     req: express.Request
   ): Promise<Result<StreamerConfigurationDoc>> {
-    const chatIntegarationEnabled = req.body.chatIntegration?.enabled;
-    const requestsPerUser = req.body.requests?.perUser;
-    const requestsDuplicates = req.body.requests?.duplicates;
+    const chatIntegarationEnabled = req.body.chatIntegration?.enabled ?? oldConfiguration.chatIntegration.enabled;
+    const requestsPerUser = req.body.requests?.perUser ?? oldConfiguration.requests.perUser;
+    const requestsDuplicates = req.body.requests?.duplicates ?? oldConfiguration.requests.duplicates;
 
     const updatedConfiguration: IStreamerConfiguration = {
       version: oldConfiguration.version,
       chatIntegration: {
-        enabled: chatIntegarationEnabled || oldConfiguration.chatIntegration.enabled,
+        enabled: chatIntegarationEnabled,
         channelName: oldConfiguration.chatIntegration.channelName,
       },
       requests: {
-        perUser: requestsPerUser || oldConfiguration.requests.perUser,
-        duplicates: requestsDuplicates || oldConfiguration.requests.duplicates,
+        perUser: requestsPerUser,
+        duplicates: requestsDuplicates,
       },
       banlist: oldConfiguration.banlist,
     };
