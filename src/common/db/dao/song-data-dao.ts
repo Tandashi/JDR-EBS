@@ -25,7 +25,8 @@ export default class SongDataDao {
 
   private static async getSongs(query: FilterQuery<ISongData> = {}): Promise<Result<SongDataDoc[]>> {
     try {
-      return Success(await SongData.find(query));
+      const songData = await SongData.find(query);
+      return Success(songData);
     } catch (e) {
       logger.error((e as Error).message);
 
@@ -38,6 +39,6 @@ export default class SongDataDao {
   }
 
   public static async getAllExcept(ids: ObjectId[], unlimited: boolean): Promise<Result<SongDataDoc[]>> {
-    return await this.getSongs({ _id: { $nin: ids }, 'song.unlimited': unlimited });
+    return await this.getSongs({ _id: { $nin: ids }, unlimited: unlimited });
   }
 }

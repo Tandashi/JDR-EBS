@@ -3,7 +3,7 @@ import StreamerDataDao from '@db/dao/streamer-data-dao';
 import { Result, Success, Failure } from '@common/result';
 import { QueueDoc, IQueueEntrySongData } from '@db/schema/queue';
 import QueueDao from '@common/db/dao/queue-dao';
-import BanlistService from './banlist-service';
+import ProfileService from './profile-service';
 import StreamerConfigurationDao from '@common/db/dao/streamer-configuration-dao';
 
 type AddToQueueErrors = 'maximum-requests-exceeded' | 'song-already-queued' | 'song-is-banned';
@@ -49,8 +49,8 @@ export default class QueueService {
       return Failure<AddToQueueErrors>('song-already-queued', 'Song already in queue');
     }
 
-    const banlist = configuration.banlist.active;
-    const banned = banlist.entries.some((e) => e._id.toString() === songdata.id);
+    const profile = configuration.profile.active;
+    const banned = profile.banlist.some((e) => e._id.toString() === songdata.id);
 
     if (banned) {
       return Failure<AddToQueueErrors>('song-is-banned', 'Song is banned. Not allowed to queue it.');

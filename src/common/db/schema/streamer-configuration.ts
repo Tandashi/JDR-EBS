@@ -1,5 +1,5 @@
 import { Document, Schema, Model, model } from 'mongoose';
-import { BanlistDoc } from './banlist';
+import { ProfileDoc } from './profile';
 
 interface ChatIntegrationConfiguration {
   enabled: boolean;
@@ -11,21 +11,16 @@ interface RequestConfiguration {
   duplicates: boolean;
 }
 
-interface BanlistConfiguration {
-  active: BanlistDoc;
-  banlists: BanlistDoc[];
-}
-
-interface SongConfiguration {
-  unlimited: boolean;
+interface ProfileConfiguration {
+  active: ProfileDoc;
+  profiles: ProfileDoc[];
 }
 
 export interface IStreamerConfiguration {
   version: string;
   chatIntegration: ChatIntegrationConfiguration;
   requests: RequestConfiguration;
-  banlist: BanlistConfiguration;
-  song: SongConfiguration;
+  profile: ProfileConfiguration;
 }
 
 export type StreamerConfigurationDoc = IStreamerConfiguration & Document;
@@ -43,20 +38,17 @@ const streamerConfigurationSchema: Schema = new Schema({
     perUser: Number,
     duplicates: Boolean,
   },
-  banlist: {
+  profile: {
     active: {
       type: Schema.Types.ObjectId,
-      ref: 'Banlist',
+      ref: 'Profile',
     },
-    banlists: [
+    profiles: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Banlist',
+        ref: 'Profile',
       },
     ],
-  },
-  song: {
-    unlimited: Boolean,
   },
 });
 

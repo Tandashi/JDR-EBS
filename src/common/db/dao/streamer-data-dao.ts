@@ -11,27 +11,27 @@ type QueuePopulateOption = {
   path: 'queue';
 } & PopulateOptions;
 
-type ConfigurationBanlistActivePopulateOption = {
-  path: 'banlist.active';
-  populate?: ConfigurationBanlistEntriesPopulateOption;
+type ConfigurationProfileActivePopulateOption = {
+  path: 'profile.active';
+  populate?: ConfigurationProfileBanlistPopulateOption;
 } & PopulateOptions;
 
-type ConfigurationBanlistEntriesPopulateOption = {
-  path: 'entries';
+type ConfigurationProfileBanlistPopulateOption = {
+  path: 'banlist';
 } & PopulateOptions;
 
-type ConfigurationBanlistBanlistsPopulateOption = {
-  path: 'banlist.banlists';
-  populate?: ConfigurationBanlistEntriesPopulateOption;
+type ConfigurationProfileProfilesPopulateOption = {
+  path: 'profile.profiles';
+  populate?: ConfigurationProfileBanlistPopulateOption;
 } & PopulateOptions;
 
-export type ConfigurationBanlistPopulateOptions =
-  | ConfigurationBanlistActivePopulateOption
-  | ConfigurationBanlistBanlistsPopulateOption;
+export type ConfigurationProfilePopulateOptions =
+  | ConfigurationProfileActivePopulateOption
+  | ConfigurationProfileProfilesPopulateOption;
 
 type ConfigurationPopulateOption = {
   path: 'configuration';
-  populate?: ConfigurationBanlistPopulateOptions[];
+  populate?: ConfigurationProfilePopulateOptions[];
 } & PopulateOptions;
 
 type PopulationParams = QueuePopulateOption | ConfigurationPopulateOption;

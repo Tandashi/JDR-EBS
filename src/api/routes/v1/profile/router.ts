@@ -4,7 +4,7 @@ import { checkSchema } from 'express-validator';
 import { checkValidation } from '@api/middleware/validation';
 import { AuthJWT, BroadcasterOnly } from '@api/middleware/auth';
 
-import BanlistPatchEndpoint, { updateRequestValidationSchema } from './patch';
+import ProfilePatchEndpoint, { updateRequestValidationSchema } from './patch';
 
 const router = Router();
 
@@ -14,7 +14,7 @@ router.patch(
   BroadcasterOnly,
   checkSchema(updateRequestValidationSchema),
   checkValidation,
-  BanlistPatchEndpoint.update
+  ProfilePatchEndpoint.update
 );
 
 export default router;

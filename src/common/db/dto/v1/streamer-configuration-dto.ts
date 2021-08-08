@@ -1,6 +1,6 @@
 import Dto from '@db/dto/dto';
 import { IStreamerConfiguration } from '@common/db/schema/streamer-configuration';
-import BanlistDto, { BanlistJSONStructure } from './banlist-dto';
+import ProfileDto, { ProfileJSONStructure } from './profile-dto';
 
 interface StreamerConfigurationJSONStructure {
   version: string;
@@ -15,13 +15,9 @@ interface StreamerConfigurationJSONStructure {
     duplicates: boolean;
   };
 
-  banlist: {
-    active: BanlistJSONStructure;
-    banlists: BanlistJSONStructure[];
-  };
-
-  song: {
-    unlimited: boolean;
+  profile: {
+    active: ProfileJSONStructure;
+    profiles: ProfileJSONStructure[];
   };
 }
 
@@ -31,12 +27,9 @@ const StreamerConfigurationDto: Dto<IStreamerConfiguration, StreamerConfiguratio
       version: data.version,
       chatIntegration: data.chatIntegration,
       requests: data.requests,
-      banlist: {
-        active: BanlistDto.getJSON(data.banlist.active),
-        banlists: data.banlist.banlists.map(BanlistDto.getJSON),
-      },
-      song: {
-        unlimited: data.song.unlimited,
+      profile: {
+        active: ProfileDto.getJSON(data.profile.active),
+        profiles: data.profile.profiles.map(ProfileDto.getJSON),
       },
     };
   },

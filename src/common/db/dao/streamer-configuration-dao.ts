@@ -7,8 +7,8 @@ import StreamerConfiguration, {
   StreamerConfigurationDoc,
   IStreamerConfiguration,
 } from '@db/schema/streamer-configuration';
-import StreamerDataDao, { ConfigurationBanlistPopulateOptions } from '@db/dao/streamer-data-dao';
-import BanlistDao from '@db/dao/banlist-dao';
+import StreamerDataDao, { ConfigurationProfilePopulateOptions } from '@db/dao/streamer-data-dao';
+import ProfileDao from './profile-dao';
 
 export default class StreamerConfigurationDao {
   private static DEFAULT_CONFIGURATION: IStreamerConfiguration = {
@@ -21,12 +21,9 @@ export default class StreamerConfigurationDao {
       perUser: 1,
       duplicates: false,
     },
-    banlist: {
+    profile: {
       active: undefined,
-      banlists: [],
-    },
-    song: {
-      unlimited: false,
+      profiles: [],
     },
   };
 
@@ -49,15 +46,15 @@ export default class StreamerConfigurationDao {
         path: 'configuration',
         populate: [
           {
-            path: 'banlist.active',
+            path: 'profile.active',
             populate: {
-              path: 'entries',
+              path: 'banlist',
             },
           },
           {
-            path: 'banlist.banlists',
+            path: 'profile.profiles',
             populate: {
-              path: 'entries',
+              path: 'banlist',
             },
           },
         ],
@@ -82,7 +79,7 @@ export default class StreamerConfigurationDao {
   public static async update(
     id: string,
     updateQuery: UpdateQuery<IStreamerConfiguration>,
-    populate: ConfigurationBanlistPopulateOptions[]
+    populate: ConfigurationProfilePopulateOptions[]
   ): Promise<Result<StreamerConfigurationDoc>> {
     try {
       const configuration = await StreamerConfiguration.findOneAndUpdate({ _id: id }, updateQuery, { new: true });
@@ -96,17 +93,17 @@ export default class StreamerConfigurationDao {
 
   public static async createStreamerConfiguration(): Promise<Result<StreamerConfigurationDoc>> {
     try {
-      const defaultBanlistResult = await BanlistDao.createBanlist('default');
-      if (defaultBanlistResult.type === 'error') {
-        return defaultBanlistResult;
+      const defaultProfileResult = await ProfileDao.createProfile('default');
+      if (defaultProfileResult.type === 'error') {
+        return defaultProfileResult;
       }
 
-      const defaultBanlist = defaultBanlistResult.data;
+      const defaultProfile = defaultProfileResult.data;
       const configuration = await new StreamerConfiguration(<IStreamerConfiguration>{
         ...this.DEFAULT_CONFIGURATION,
-        banlist: {
-          active: defaultBanlist._id,
-          banlists: [defaultBanlist._id],
+        profile: {
+          active: defaultProfile._id,
+          profiles: [defaultProfile._id],
         },
       }).save();
       return Success(configuration);

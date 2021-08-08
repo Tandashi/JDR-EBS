@@ -41,7 +41,6 @@ export default class StreamerConfigurationService {
     const chatIntegarationEnabled = req.body.chatIntegration?.enabled ?? oldConfiguration.chatIntegration.enabled;
     const requestsPerUser = req.body.requests?.perUser ?? oldConfiguration.requests.perUser;
     const requestsDuplicates = req.body.requests?.duplicates ?? oldConfiguration.requests.duplicates;
-    const songUnlimited = req.body.song?.unlimited ?? oldConfiguration.song.unlimited;
 
     const updatedConfiguration: IStreamerConfiguration = {
       version: oldConfiguration.version,
@@ -53,18 +52,15 @@ export default class StreamerConfigurationService {
         perUser: requestsPerUser,
         duplicates: requestsDuplicates,
       },
-      banlist: oldConfiguration.banlist,
-      song: {
-        unlimited: songUnlimited,
-      },
+      profile: oldConfiguration.profile,
     };
 
     const updateResult = await StreamerConfigurationDao.update(oldConfiguration._id, updatedConfiguration, [
       {
-        path: 'banlist.active',
+        path: 'profile.active',
       },
       {
-        path: 'banlist.banlists',
+        path: 'profile.profiles',
       },
     ]);
 

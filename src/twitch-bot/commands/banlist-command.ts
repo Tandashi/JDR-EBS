@@ -1,15 +1,15 @@
 import tmi from 'tmi.js';
 
 import TwitchBot from '@twitch-bot/index';
-import BanlistService from '@common/services/banlist-service';
+import ProfileService from '@common/services/profile-service';
 
 export default class BanlistCommand {
   public static async process(channel: string, userstate: tmi.Userstate, bot: TwitchBot): Promise<void> {
-    const banlistResult = await BanlistService.getActive(userstate['room-id']);
+    const profileResult = await ProfileService.getActive(userstate['room-id']);
 
-    if (banlistResult.type === 'error') {
+    if (profileResult.type === 'error') {
       let message;
-      switch (banlistResult.error) {
+      switch (profileResult.error) {
         case 'internal':
         default:
           message = 'There was an error retriving the banlist. I am sorry :(.';
@@ -19,7 +19,7 @@ export default class BanlistCommand {
       return bot.sendMessage(channel, message, userstate);
     }
 
-    const bannedSongs = banlistResult.data.entries.map((v) => `${v.title} - ${v.artist}`).join(', ') || '-';
+    const bannedSongs = profileResult.data.banlist.map((v) => `${v.title} - ${v.artist}`).join(', ') || '-';
     return bot.sendMessage(channel, `The following songs are banned: ${bannedSongs}`, userstate);
   }
 }
