@@ -11,6 +11,7 @@ import chalk from 'chalk';
 import config from '@common/config';
 
 import SongData from '@db/schema/song-data';
+import logger from '@common/logging';
 
 class Importer {
   private parser: argparse.ArgumentParser;
@@ -48,13 +49,13 @@ class Importer {
   private connect(callback: () => void): void {
     const connection = mongoose.connection;
     connection.on('connected', async () => {
-      console.log('Mongo Connection Established');
+      logger.info('Mongo Connection Established');
 
       callback();
     });
 
     connection.on('disconnected', () => {
-      console.log('Mongo Connection Disconnected');
+      logger.info('Mongo Connection Disconnected');
     });
 
     mongoose.connect(config.mongodb.uri, {
@@ -83,7 +84,7 @@ class Importer {
   }
 
   public importDirectory(directory_path: string): void {
-    console.log(chalk.white.bold(`Importing SongData from ${directory_path}`));
+    logger.info(chalk.white.bold(`Importing SongData from ${directory_path}`));
     fs.promises
       .readdir(directory_path)
       .catch(console.error)
@@ -111,7 +112,7 @@ class Importer {
 
       const clean = args.clean;
       if (clean) {
-        console.log(chalk.red.bold('SongData collection will be whiped...'));
+        logger.info(chalk.red.bold('SongData collection will be whiped...'));
         await SongData.deleteMany({}).exec();
       }
 

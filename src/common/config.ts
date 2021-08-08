@@ -1,3 +1,5 @@
+import logger from './logging';
+
 //#region Interface definitions
 interface AppConfig {
   protocol: string;
@@ -41,29 +43,31 @@ const APP_PORT = parseInt(process.env['APP_PORT'] || '3000');
 //#region Twitch
 const BOT_USERNAME = process.env['BOT_USERNAME'];
 if (!BOT_USERNAME) {
-  console.log('No bot username provided. Set BOT_USERNAME environment variable.');
+  logger.error('No bot username provided. Set BOT_USERNAME environment variable.');
   process.exit(1);
 }
 
 const BOT_OAUTH_TOKEN = process.env['BOT_OAUTH_TOKEN'];
 if (!BOT_OAUTH_TOKEN) {
-  console.log('No bot oauth token provided. Set BOT_OAUTH_TOKEN environment variable.');
+  logger.error('No bot oauth token provided. Set BOT_OAUTH_TOKEN environment variable.');
   process.exit(1);
 }
 
 const API_CLIENT_ID = process.env['API_CLIENT_ID'];
 if (!API_CLIENT_ID) {
-  console.log('No jsonwebtoken secret provided. Set API_CLIENT_ID environment variable.');
+  logger.error('No jsonwebtoken secret provided. Set API_CLIENT_ID environment variable.');
+  process.exit(1);
 }
 
 const API_CLIENT_SECRET = process.env['API_CLIENT_SECRET'];
 if (!API_CLIENT_SECRET) {
-  console.log('No jsonwebtoken secret provided. Set API_CLIENT_SECRET environment variable.');
+  logger.error('No jsonwebtoken secret provided. Set API_CLIENT_SECRET environment variable.');
+  process.exit(1);
 }
 
 const JWT_SECRET = process.env['JWT_SECRET'];
 if (!JWT_SECRET) {
-  console.log('No jsonwebtoken secret provided. Set JWT_SECRET environment variable.');
+  logger.error('No jsonwebtoken secret provided. Set JWT_SECRET environment variable.');
   process.exit(1);
 }
 //#endregion
@@ -71,7 +75,7 @@ if (!JWT_SECRET) {
 //#region MongoDB
 const MONGODB_URI = process.env['MONGODB_URI'];
 if (!MONGODB_URI) {
-  console.log('No mongo connection string. Set MONGODB_URI environment variable.');
+  logger.error('No mongo connection string. Set MONGODB_URI environment variable.');
   process.exit(1);
 }
 //#endregion
