@@ -13,10 +13,16 @@ type QueuePopulateOption = {
 
 type ConfigurationBanlistActivePopulateOption = {
   path: 'banlist.active';
+  populate?: ConfigurationBanlistEntriesPopulateOption;
+} & PopulateOptions;
+
+type ConfigurationBanlistEntriesPopulateOption = {
+  path: 'entries';
 } & PopulateOptions;
 
 type ConfigurationBanlistBanlistsPopulateOption = {
   path: 'banlist.banlists';
+  populate?: ConfigurationBanlistEntriesPopulateOption;
 } & PopulateOptions;
 
 export type ConfigurationBanlistPopulateOptions =

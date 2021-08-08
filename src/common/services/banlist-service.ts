@@ -9,7 +9,7 @@ type UpdateErrors = 'invalid-song-id';
 type GetErrors = 'no-such-name';
 
 export default class BanlistService {
-  public static async get(channelId: string, name: string): Promise<Result<BanlistDoc, GetErrors>> {
+  public static async getById(channelId: string, name: string): Promise<Result<BanlistDoc, GetErrors>> {
     const configurationResult = await StreamerConfigurationDao.get(channelId);
     if (configurationResult.type === 'error') {
       return configurationResult;
@@ -23,6 +23,15 @@ export default class BanlistService {
     }
 
     return Success(banlistsFiltered[0]);
+  }
+
+  public static async getActive(channelId: string): Promise<Result<BanlistDoc>> {
+    const configurationResult = await StreamerConfigurationDao.get(channelId);
+    if (configurationResult.type === 'error') {
+      return configurationResult;
+    }
+
+    return Success(configurationResult.data.banlist.active);
   }
 
   public static async update(oldBanlist: BanlistDoc, ids: string[]): Promise<Result<BanlistDoc, UpdateErrors>> {
@@ -90,19 +99,16 @@ export default class BanlistService {
   }
 
   public static async filterSongs(channelId: string): Promise<Result<SongDataDoc[]>> {
-    const configurationResult = await StreamerConfigurationDao.get(channelId);
-    if (configurationResult.type === 'error') {
-      return configurationResult;
+    const banlistResult = await this.getActive(channelId);
+    if (banlistResult.type === 'error') {
+      return banlistResult;
     }
 
-    const banlist = configurationResult.data.banlist.active;
-
-    const songResult = await SongDataDao.getAllExcept(banlist.entries.map((e) => e._id));
+    const songResult = await SongDataDao.getAllExcept(banlistResult.data.entries.map((e) => e._id));
     if (songResult.type === 'error') {
       return songResult;
     }
 
-    console.log(songResult.data);
     return Success(songResult.data);
   }
 }

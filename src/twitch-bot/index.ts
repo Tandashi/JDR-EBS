@@ -5,8 +5,11 @@ import tmi from 'tmi.js';
 
 import logger from '@common/logging';
 import config from '@common/config';
-import SRCommand from '@twitch-bot/commands/sr-command';
+
 import StreamerConfigurationDao from '@common/db/dao/streamer-configuration-dao';
+
+import SRCommand from '@twitch-bot/commands/sr-command';
+import BanlistCommand from './commands/banlist-command';
 
 export default class TwitchBot {
   private static instance: TwitchBot;
@@ -80,6 +83,10 @@ export default class TwitchBot {
 
     if (message.toLowerCase().startsWith('!sr ')) {
       SRCommand.process(channel, userstate, message, this);
+    }
+
+    if (message.toLocaleLowerCase().startsWith('!banlist')) {
+      BanlistCommand.process(channel, userstate, this);
     }
   }
 

@@ -47,9 +47,15 @@ export default class StreamerConfigurationDao {
         populate: [
           {
             path: 'banlist.active',
+            populate: {
+              path: 'entries',
+            },
           },
           {
             path: 'banlist.banlists',
+            populate: {
+              path: 'entries',
+            },
           },
         ],
       },

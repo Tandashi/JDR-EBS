@@ -33,7 +33,7 @@ export const updateRequestValidationSchema: Schema = {
 
 export default class BanlistPatchEndpoint {
   public static async update(req: express.Request, res: express.Response): Promise<void> {
-    const banlistResult = await BanlistService.get(req.user.channel_id, req.body.name);
+    const banlistResult = await BanlistService.getById(req.user.channel_id, req.body.name);
     if (banlistResult.type === 'error') {
       switch (banlistResult.error) {
         case 'no-such-name':
