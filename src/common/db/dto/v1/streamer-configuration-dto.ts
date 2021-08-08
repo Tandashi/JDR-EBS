@@ -19,6 +19,10 @@ interface StreamerConfigurationJSONStructure {
     active: BanlistJSONStructure;
     banlists: BanlistJSONStructure[];
   };
+
+  song: {
+    unlimited: boolean;
+  };
 }
 
 const StreamerConfigurationDto: Dto<IStreamerConfiguration, StreamerConfigurationJSONStructure> = {
@@ -30,6 +34,9 @@ const StreamerConfigurationDto: Dto<IStreamerConfiguration, StreamerConfiguratio
       banlist: {
         active: BanlistDto.getJSON(data.banlist.active),
         banlists: data.banlist.banlists.map(BanlistDto.getJSON),
+      },
+      song: {
+        unlimited: data.song.unlimited,
       },
     };
   },

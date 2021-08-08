@@ -39,6 +39,19 @@ export const updateRequestValidationSchema: Schema = {
     },
     toBoolean: true,
   },
+  song: {
+    in: 'body',
+    isObject: {
+      errorMessage: 'Field `song` must be an object',
+      bail: true,
+    },
+  },
+  'song.unlimited': {
+    isBoolean: {
+      errorMessage: 'Field `song.unlimited` must be a boolean',
+    },
+    toBoolean: true,
+  },
 };
 
 export default class StreamerConfigurationPatchEndpoint {

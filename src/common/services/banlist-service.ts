@@ -104,7 +104,11 @@ export default class BanlistService {
       return banlistResult;
     }
 
-    const songResult = await SongDataDao.getAllExcept(banlistResult.data.entries.map((e) => e._id));
+    // TODO: use profile unlimited variable
+    const songResult = await SongDataDao.getAllExcept(
+      banlistResult.data.entries.map((e) => e._id),
+      false
+    );
     if (songResult.type === 'error') {
       return songResult;
     }

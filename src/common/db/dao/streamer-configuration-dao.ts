@@ -25,6 +25,9 @@ export default class StreamerConfigurationDao {
       active: undefined,
       banlists: [],
     },
+    song: {
+      unlimited: false,
+    },
   };
 
   public static async getAllWithChatIntegrationEnabled(): Promise<Result<StreamerConfigurationDoc[]>> {

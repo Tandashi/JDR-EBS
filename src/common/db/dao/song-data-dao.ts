@@ -1,8 +1,9 @@
+import { FilterQuery, ObjectId } from 'mongoose';
+
 import logger from '@common/logging';
 
 import { Result, Success, Failure } from '@common/result';
-import SongData, { SongDataDoc } from '@db/schema/song-data';
-import { ObjectId } from 'mongoose';
+import SongData, { ISongData, SongDataDoc } from '@db/schema/song-data';
 
 export type GetErrors = 'no-such-entity';
 
@@ -22,9 +23,9 @@ export default class SongDataDao {
     }
   }
 
-  public static async getAllSongs(): Promise<Result<SongDataDoc[]>> {
+  private static async getSongs(query: FilterQuery<ISongData> = {}): Promise<Result<SongDataDoc[]>> {
     try {
-      return Success(await SongData.find({}));
+      return Success(await SongData.find(query));
     } catch (e) {
       logger.error((e as Error).message);
 
@@ -32,13 +33,11 @@ export default class SongDataDao {
     }
   }
 
-  public static async getAllExcept(ids: ObjectId[]): Promise<Result<SongDataDoc[]>> {
-    try {
-      return Success(await SongData.find({ _id: { $nin: ids } }));
-    } catch (e) {
-      logger.error((e as Error).message);
+  public static async getAllSongs(): Promise<Result<SongDataDoc[]>> {
+    return await this.getSongs();
+  }
 
-      return Failure('internal', 'Could not retrive filtered SongDatas');
-    }
+  public static async getAllExcept(ids: ObjectId[], unlimited: boolean): Promise<Result<SongDataDoc[]>> {
+    return await this.getSongs({ _id: { $nin: ids }, 'song.unlimited': unlimited });
   }
 }

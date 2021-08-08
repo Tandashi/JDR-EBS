@@ -16,11 +16,16 @@ interface BanlistConfiguration {
   banlists: BanlistDoc[];
 }
 
+interface SongConfiguration {
+  unlimited: boolean;
+}
+
 export interface IStreamerConfiguration {
   version: string;
   chatIntegration: ChatIntegrationConfiguration;
   requests: RequestConfiguration;
   banlist: BanlistConfiguration;
+  song: SongConfiguration;
 }
 
 export type StreamerConfigurationDoc = IStreamerConfiguration & Document;
@@ -49,6 +54,9 @@ const streamerConfigurationSchema: Schema = new Schema({
         ref: 'Banlist',
       },
     ],
+  },
+  song: {
+    unlimited: Boolean,
   },
 });
 
