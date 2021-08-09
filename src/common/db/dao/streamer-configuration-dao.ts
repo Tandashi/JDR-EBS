@@ -9,10 +9,12 @@ import StreamerConfiguration, {
 } from '@db/schema/streamer-configuration';
 import StreamerDataDao, { ConfigurationProfilePopulateOptions } from '@db/dao/streamer-data-dao';
 import ProfileDao from './profile-dao';
+import SecretService from '@common/services/secret-service';
 
 export default class StreamerConfigurationDao {
   private static DEFAULT_CONFIGURATION: IStreamerConfiguration = {
     version: 'v1.0',
+    secret: undefined,
     chatIntegration: {
       enabled: false,
       channelName: '',
@@ -101,6 +103,7 @@ export default class StreamerConfigurationDao {
       const defaultProfile = defaultProfileResult.data;
       const configurationData: IStreamerConfiguration = {
         ...this.DEFAULT_CONFIGURATION,
+        secret: SecretService.generateSecret(),
         profile: {
           active: defaultProfile._id,
           profiles: [defaultProfile._id],

@@ -6,6 +6,7 @@ import { Result, Success } from '@common/result';
 import TwitchAPIService from '@services/twitch-api-service';
 import { StreamerConfigurationDoc, IStreamerConfiguration } from '@common/db/schema/streamer-configuration';
 import StreamerConfigurationDao from '@common/db/dao/streamer-configuration-dao';
+import SecretService from './secret-service';
 
 export default class StreamerConfigurationService {
   public static async updateChannelName(
@@ -34,6 +35,20 @@ export default class StreamerConfigurationService {
     return Success(updateResult.data);
   }
 
+  public static async regenerateSecret(configurationId: string): Promise<Result<IStreamerConfiguration>> {
+    const updateResult = await StreamerConfigurationDao.update(
+      configurationId,
+      {
+        $set: {
+          secret: SecretService.generateSecret(),
+        },
+      },
+      []
+    );
+
+    return updateResult;
+  }
+
   public static async update(
     oldConfiguration: StreamerConfigurationDoc,
     req: express.Request
@@ -44,6 +59,7 @@ export default class StreamerConfigurationService {
 
     const updatedConfiguration: IStreamerConfiguration = {
       version: oldConfiguration.version,
+      secret: oldConfiguration.secret,
       chatIntegration: {
         enabled: chatIntegarationEnabled,
         channelName: oldConfiguration.chatIntegration.channelName,
