@@ -2,7 +2,7 @@ import Dto from '@db/dto/dto';
 import { IStreamerConfiguration } from '@common/db/schema/streamer-configuration';
 import ProfileDto, { ProfileJSONStructure } from './profile-dto';
 
-interface StreamerConfigurationJSONStructure {
+export interface StreamerConfigurationJSONStructure {
   version: string;
 
   chatIntegration: {

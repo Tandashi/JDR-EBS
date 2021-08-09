@@ -2,7 +2,7 @@ import Dto from '@db/dto/dto';
 import { QueueDoc } from '@db/schema/queue';
 import QueueEntryDto, { QueueEntryJSONStructure } from '@db/dto/v1/queue-entry-dto';
 
-interface QueueJSONStructure {
+export interface QueueJSONStructure {
   entries: QueueEntryJSONStructure[];
 }
 
