@@ -18,13 +18,13 @@ export default class QueueDao {
     }
   }
 
-  public static async addToQueue(queue: QueueDoc, entry: IQueueEntry): Promise<Result<QueueDoc>> {
+  public static async setQueue(queue: QueueDoc, entries: IQueueEntry[]): Promise<Result<QueueDoc>> {
     try {
-      const newQueue = await Queue.findByIdAndUpdate(queue._id, { $push: { entries: entry } }, { new: true });
+      const newQueue = await Queue.findByIdAndUpdate(queue._id, { $set: { entries: entries } }, { new: true });
       return Success(newQueue);
     } catch (e) {
       logger.error((e as Error).message);
-      return Failure('internal', 'Could not add entry to the queue');
+      return Failure('internal', 'Could not set queue entries');
     }
   }
 }

@@ -37,10 +37,17 @@ type ConfigurationPopulateOption = {
 
 type PopulationParams = QueuePopulateOption | ConfigurationPopulateOption;
 
+type GetBySecretErrors = 'no-such-entity';
+
 export default class StreamerDataDao {
-  public static async getBySecret(secret: string): Promise<Result<StreamerDataDoc>> {
+  public static async getBySecret(secret: string): Promise<Result<StreamerDataDoc, GetBySecretErrors>> {
     try {
       const streamerData = await StreamerData.findOne({ secret: secret });
+
+      if (!streamerData) {
+        return Failure<GetBySecretErrors>('no-such-entity', 'Invalid secret');
+      }
+
       return Success(streamerData);
     } catch (e) {
       logger.error((e as Error).message);

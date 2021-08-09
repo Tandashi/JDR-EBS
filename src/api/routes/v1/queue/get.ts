@@ -7,7 +7,7 @@ import QueueDto from '@common/db/dto/v1/queue-dto';
 
 export const getRequestValidationSchema: Schema = {
   channelId: {
-    in: ['params', 'query'],
+    in: ['params'],
     exists: {
       errorMessage: 'Field `channelId` can not be empty',
       bail: true,
@@ -22,13 +22,13 @@ export default class QueueGetEndpoint {
   public static async get(req: express.Request, res: express.Response): Promise<void> {
     const channelId = req.params.channelId;
 
-    const getQueueResult = await QueueService.getQueue(channelId);
-    if (getQueueResult.type === 'error') {
+    const queueResult = await QueueService.getQueue(channelId);
+    if (queueResult.type === 'error') {
       return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_GET_QUEUE);
     }
 
     ResponseService.sendOk(res, {
-      data: QueueDto.getJSON(getQueueResult.data),
+      data: QueueDto.getJSON(queueResult.data),
     });
   }
 }

@@ -3,9 +3,44 @@ import jsonwebtoken from 'jsonwebtoken';
 
 import logger from '@common/logging';
 import config from '@common/config';
-import ResponseService from '@services/response-service';
+import ResponseService, { ErrorResponseCode } from '@services/response-service';
+import StreamerDataDao from '@common/db/dao/streamer-data-dao';
 
 const BearerPrefix = 'Bearer ';
+
+export const AuthSecret = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+): Promise<void> => {
+  // Get the authorization header from the request
+  const authHeader = req.headers['x-api-key'];
+
+  // If no header is specified they are not authorized
+  if (!authHeader) {
+    return ResponseService.sendUnauthorized(res, 'Unauthorized');
+  }
+
+  const streamerDataResult = await StreamerDataDao.getBySecret(authHeader as string);
+  if (streamerDataResult.type === 'error') {
+    switch (streamerDataResult.error) {
+      case 'no-such-entity':
+        return ResponseService.sendUnauthorized(res, 'Unauthorized');
+      case 'internal':
+      default:
+        return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_AUTH_WITH_SECRET);
+    }
+  }
+
+  req.user = {
+    channel_id: streamerDataResult.data.channelId,
+    role: 'broadcaster',
+    user_id: '-1',
+    opaque_user_id: '-1',
+  };
+
+  next();
+};
 
 export const BroadcasterOnly = (req: express.Request, res: express.Response, next: express.NextFunction): void => {
   if (!req.user) {

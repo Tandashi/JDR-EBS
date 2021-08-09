@@ -3,7 +3,6 @@ import StreamerDataDao from '@db/dao/streamer-data-dao';
 import { Result, Success, Failure } from '@common/result';
 import { QueueDoc, IQueueEntrySongData } from '@db/schema/queue';
 import QueueDao from '@common/db/dao/queue-dao';
-import ProfileService from './profile-service';
 import StreamerConfigurationDao from '@common/db/dao/streamer-configuration-dao';
 
 type AddToQueueErrors = 'maximum-requests-exceeded' | 'song-already-queued' | 'song-is-banned';
@@ -17,6 +16,23 @@ export default class QueueService {
     }
 
     return Success(streamDataResult.data.queue);
+  }
+
+  public static async removeFromQueue(channelId: string, index: number): Promise<Result<QueueDoc>> {
+    const queueResult = await this.getQueue(channelId);
+    if (queueResult.type === 'error') {
+      return queueResult;
+    }
+    const queue = queueResult.data;
+    const entries = queue.entries;
+    entries.splice(index, 1);
+
+    const queueSetResult = await QueueDao.setQueue(queue, entries);
+    if (queueSetResult.type === 'error') {
+      return queueSetResult;
+    }
+
+    return Success(queueSetResult.data);
   }
 
   public static async addToQueue(
@@ -56,15 +72,17 @@ export default class QueueService {
       return Failure<AddToQueueErrors>('song-is-banned', 'Song is banned. Not allowed to queue it.');
     }
 
-    const queueAddResult = await QueueDao.addToQueue(queue, {
+    const entries = queue.entries;
+    entries.push({
       userId: userId,
       song: songdata,
     });
 
-    if (queueAddResult.type === 'error') {
-      return queueAddResult;
+    const queueSetResult = await QueueDao.setQueue(queue, entries);
+    if (queueSetResult.type === 'error') {
+      return queueSetResult;
     }
 
-    return Success(queueAddResult.data);
+    return Success(queueSetResult.data);
   }
 }
