@@ -5,6 +5,7 @@ import { StreamerConfigurationDoc } from './streamer-configuration';
 
 export interface IStreamerData {
   channelId: string;
+  secret: string;
   configuration: StreamerConfigurationDoc;
   queue: QueueDoc;
 }
@@ -13,6 +14,10 @@ export type StreamerDataDoc = IStreamerData & Document;
 
 const streamerDataSchema: Schema = new Schema({
   channelId: {
+    type: String,
+    unique: true,
+  },
+  secret: {
     type: String,
     unique: true,
   },

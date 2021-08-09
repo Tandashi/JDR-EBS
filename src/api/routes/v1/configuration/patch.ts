@@ -42,20 +42,6 @@ export const updateRequestValidationSchema: Schema = {
 };
 
 export default class StreamerConfigurationPatchEndpoint {
-  public static async updateSecret(req: express.Request, res: express.Response): Promise<void> {
-    const configurationResult = await StreamerConfigurationDao.get(req.user.channel_id);
-    if (configurationResult.type === 'error') {
-      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RETRIVE_STREAMER_CONFIGURATION);
-    }
-
-    const updateResult = await StreamerConfigurationService.regenerateSecret(configurationResult.data.id);
-    if (updateResult.type === 'error') {
-      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_UPDATE_SECRET);
-    }
-
-    ResponseService.sendOk(res, { data: true });
-  }
-
   public static async update(req: express.Request, res: express.Response): Promise<void> {
     const configurationResult = await StreamerConfigurationDao.get(req.user.channel_id);
     if (configurationResult.type === 'error') {

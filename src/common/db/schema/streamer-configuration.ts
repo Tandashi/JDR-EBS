@@ -18,7 +18,6 @@ interface ProfileConfiguration {
 
 export interface IStreamerConfiguration {
   version: string;
-  secret: string;
   chatIntegration: ChatIntegrationConfiguration;
   requests: RequestConfiguration;
   profile: ProfileConfiguration;
@@ -30,10 +29,6 @@ const streamerConfigurationSchema: Schema = new Schema({
   version: {
     type: String,
     enum: ['v1.0'],
-  },
-  secret: {
-    type: String,
-    unique: true,
   },
   chatIntegration: {
     enabled: Boolean,

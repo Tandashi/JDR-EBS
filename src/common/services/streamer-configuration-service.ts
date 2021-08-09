@@ -35,20 +35,6 @@ export default class StreamerConfigurationService {
     return Success(updateResult.data);
   }
 
-  public static async regenerateSecret(configurationId: string): Promise<Result<IStreamerConfiguration>> {
-    const updateResult = await StreamerConfigurationDao.update(
-      configurationId,
-      {
-        $set: {
-          secret: SecretService.generateSecret(),
-        },
-      },
-      []
-    );
-
-    return updateResult;
-  }
-
   public static async update(
     oldConfiguration: StreamerConfigurationDoc,
     req: express.Request
@@ -59,7 +45,6 @@ export default class StreamerConfigurationService {
 
     const updatedConfiguration: IStreamerConfiguration = {
       version: oldConfiguration.version,
-      secret: oldConfiguration.secret,
       chatIntegration: {
         enabled: chatIntegarationEnabled,
         channelName: oldConfiguration.chatIntegration.channelName,

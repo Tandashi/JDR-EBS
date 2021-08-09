@@ -19,6 +19,4 @@ router.patch(
   StreamerConfigurationPatchEndpoint.update
 );
 
-router.patch('/secret', AuthJWT, BroadcasterOnly, StreamerConfigurationPatchEndpoint.updateSecret);
-
 export default router;

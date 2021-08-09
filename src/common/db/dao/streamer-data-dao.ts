@@ -3,6 +3,7 @@ import { PopulateOptions } from 'mongoose';
 import logger from '@common/logging';
 
 import { Result, Success, Failure } from '@common/result';
+import SecretService from '@common/services/secret-service';
 import StreamerData, { StreamerDataDoc, IStreamerData } from '@db/schema/streamer-data';
 import QueueDao from '@db/dao/queue-dao';
 import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
@@ -37,6 +38,33 @@ type ConfigurationPopulateOption = {
 type PopulationParams = QueuePopulateOption | ConfigurationPopulateOption;
 
 export default class StreamerDataDao {
+  public static async getBySecret(secret: string): Promise<Result<StreamerDataDoc>> {
+    try {
+      const streamerData = await StreamerData.findOne({ secret: secret });
+      return Success(streamerData);
+    } catch (e) {
+      logger.error((e as Error).message);
+
+      return Failure('internal', 'Could not get Streamer Data with secret');
+    }
+  }
+
+  public static async updateSecret(channelId: string, newSecret: string): Promise<Result<StreamerDataDoc>> {
+    try {
+      const streamerData = await StreamerData.findOneAndUpdate(
+        { channelId: channelId },
+        { $set: { secret: newSecret } },
+        { new: true }
+      );
+
+      return Success(streamerData);
+    } catch (e) {
+      logger.error((e as Error).message);
+
+      return Failure('internal', 'Could not update StreamerData secret');
+    }
+  }
+
   public static async getOrCreateStreamerData(
     channelId: string,
     populate?: PopulationParams[]
@@ -73,11 +101,14 @@ export default class StreamerDataDao {
     }
 
     try {
-      const streamerData = await new StreamerData(<IStreamerData>{
+      const streamerDataData: IStreamerData = {
         channelId: channelId,
+        secret: SecretService.generateSecret(),
         queue: queueResult.data._id,
         configuration: configurationResult.data._id,
-      }).save();
+      };
+
+      const streamerData = await new StreamerData(streamerDataData).save();
 
       const populatedData = await streamerData.populate(populate).execPopulate();
 
