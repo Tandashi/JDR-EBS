@@ -14,14 +14,14 @@ export const AuthSecret = async (
   next: express.NextFunction
 ): Promise<void> => {
   // Get the authorization header from the request
-  const authHeader = req.headers['x-api-key'];
+  const token = req.query.apiKey;
 
   // If no header is specified they are not authorized
-  if (!authHeader) {
+  if (!token) {
     return ResponseService.sendUnauthorized(res, 'Unauthorized');
   }
 
-  const streamerDataResult = await StreamerDataDao.getBySecret(authHeader as string);
+  const streamerDataResult = await StreamerDataDao.getBySecret(token as string);
   if (streamerDataResult.type === 'error') {
     switch (streamerDataResult.error) {
       case 'no-such-entity':
