@@ -4,6 +4,7 @@ import { QueueDoc, IQueueEntrySongData } from '@db/schema/queue';
 import StreamerDataDao from '@db/dao/streamer-data-dao';
 import QueueDao from '@db/dao/queue-dao';
 import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
+import AnnounceService from './announce-service';
 
 type AddToQueueErrors = 'maximum-requests-exceeded' | 'song-already-queued' | 'song-is-banned' | 'queue-is-closed';
 
@@ -30,6 +31,7 @@ export default class QueueService {
       return queueSetResult;
     }
 
+    AnnounceService.announce(channelId, 'Queue is now ' + (enabled ? 'open' : 'closed'));
     return Success(queueSetResult.data);
   }
 
@@ -45,6 +47,7 @@ export default class QueueService {
       return queueSetResult;
     }
 
+    AnnounceService.announce(channelId, 'Queue has been cleared');
     return Success(queueSetResult.data);
   }
 

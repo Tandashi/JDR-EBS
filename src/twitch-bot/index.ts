@@ -98,11 +98,11 @@ export default class TwitchBot {
     this.client.part(channelName);
   }
 
-  public sendMessage(channelId: string, message: string, replyTo?: tmi.Userstate): void {
+  public sendMessage(channelName: string, message: string, replyTo?: tmi.Userstate): void {
     if (!replyTo) {
-      this.client.say(channelId, message);
+      this.client.say(channelName, message);
     } else {
-      this.client.say(channelId, `[@${replyTo['display-name']}] ${message}`);
+      this.client.say(channelName, `[@${replyTo['display-name']}] ${message}`);
     }
   }
 
