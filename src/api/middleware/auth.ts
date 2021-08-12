@@ -8,20 +8,44 @@ import StreamerDataDao from '@db/dao/streamer-data-dao';
 
 const BearerPrefix = 'Bearer ';
 
+export const AuthJWTOrSecret = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+): Promise<void> => {
+  // Get the authorization header from the request
+  const apiKey = req.headers['x-api-key'];
+
+  // If no header is specified they are not authorized
+  if (apiKey) {
+    return AuthSecret(req, res, next);
+  }
+
+  // Get the authorization header from the request
+  const authHeader = req.headers.authorization;
+
+  // If no header is specified they are not authorized
+  if (authHeader) {
+    return AuthJWT(req, res, next);
+  }
+
+  return ResponseService.sendUnauthorized(res, 'Unauthorized');
+};
+
 export const AuthSecret = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ): Promise<void> => {
   // Get the authorization header from the request
-  const token = req.query.apiKey;
+  const apiKey = req.headers['x-api-key'];
 
   // If no header is specified they are not authorized
-  if (!token) {
+  if (!apiKey) {
     return ResponseService.sendUnauthorized(res, 'Unauthorized');
   }
 
-  const streamerDataResult = await StreamerDataDao.getBySecret(token as string);
+  const streamerDataResult = await StreamerDataDao.getBySecret(apiKey as string);
   if (streamerDataResult.type === 'error') {
     switch (streamerDataResult.error) {
       case 'no-such-entity':
