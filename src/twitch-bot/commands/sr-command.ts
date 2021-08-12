@@ -36,6 +36,10 @@ export default class SRCommand {
           message = 'This song is already in the queue.';
           break;
 
+        case 'queue-is-closed':
+          message = 'The queue is currently closed';
+          break;
+
         case 'internal':
         default:
           message = 'There was an error adding your song to the queue. I am sorry :(.';

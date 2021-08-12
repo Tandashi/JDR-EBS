@@ -16,12 +16,15 @@ export enum ErrorResponseCode {
   COULD_NOT_UPDATE_SECRET = 'E1012',
   COULD_NOT_AUTH_WITH_SECRET = 'E1013',
   COULD_NOT_REMOVE_FROM_QUEUE = 'E1014',
+  CONFLICT = 'E1015',
+  COULD_NOT_UPDATE_ENABLED_QUEUE = 'E1016',
 }
 
 enum HTTPCode {
   OK = 200,
   BAD_REQUEST = 400,
   UNAUTHORIZED = 401,
+  CONFLICT = 409,
   INTERNAL_SERVER_ERROR = 500,
 }
 
@@ -77,5 +80,9 @@ export default class ResponseService {
 
   public static sendBadRequest(res: express.Response, message: string): void {
     this.sendError(res, HTTPCode.BAD_REQUEST, ErrorResponseCode.BAD_REQUEST, message);
+  }
+
+  public static sendConflictRequest(res: express.Response, message: string): void {
+    this.sendError(res, HTTPCode.CONFLICT, ErrorResponseCode.CONFLICT, message);
   }
 }

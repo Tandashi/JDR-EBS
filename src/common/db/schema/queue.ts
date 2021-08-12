@@ -22,12 +22,14 @@ export interface IQueueEntry {
 }
 
 export interface IQueue {
+  enabled: boolean;
   entries: IQueueEntry[];
 }
 
 export type QueueDoc = IQueue & Document;
 
 const queueSchema: Schema = new Schema({
+  enabled: Boolean,
   entries: [
     {
       userId: String,

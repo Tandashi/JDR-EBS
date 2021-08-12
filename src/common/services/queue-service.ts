@@ -5,7 +5,7 @@ import StreamerDataDao from '@db/dao/streamer-data-dao';
 import QueueDao from '@db/dao/queue-dao';
 import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
 
-type AddToQueueErrors = 'maximum-requests-exceeded' | 'song-already-queued' | 'song-is-banned';
+type AddToQueueErrors = 'maximum-requests-exceeded' | 'song-already-queued' | 'song-is-banned' | 'queue-is-closed';
 
 export default class QueueService {
   public static async getQueue(channelId: string): Promise<Result<QueueDoc>> {
@@ -18,6 +18,21 @@ export default class QueueService {
     return Success(streamDataResult.data.queue);
   }
 
+  public static async setQueueStatus(channelId: string, enabled: boolean): Promise<Result<QueueDoc>> {
+    const queueResult = await this.getQueue(channelId);
+    if (queueResult.type === 'error') {
+      return queueResult;
+    }
+
+    const queue = queueResult.data;
+    const queueSetResult = await QueueDao.setQueue(queue, enabled, queue.entries);
+    if (queueSetResult.type === 'error') {
+      return queueSetResult;
+    }
+
+    return Success(queueSetResult.data);
+  }
+
   public static async removeFromQueue(channelId: string, index: number): Promise<Result<QueueDoc>> {
     const queueResult = await this.getQueue(channelId);
     if (queueResult.type === 'error') {
@@ -27,7 +42,7 @@ export default class QueueService {
     const entries = queue.entries;
     entries.splice(index, 1);
 
-    const queueSetResult = await QueueDao.setQueue(queue, entries);
+    const queueSetResult = await QueueDao.setQueue(queue, queue.enabled, entries);
     if (queueSetResult.type === 'error') {
       return queueSetResult;
     }
@@ -45,6 +60,10 @@ export default class QueueService {
       return queueResult;
     }
     const queue = queueResult.data;
+
+    if (!queue.enabled) {
+      return Failure<AddToQueueErrors>('queue-is-closed', 'The queue is closed');
+    }
 
     const configurationResult = await StreamerConfigurationDao.get(channelId);
     if (configurationResult.type === 'error') {
@@ -78,7 +97,7 @@ export default class QueueService {
       song: songdata,
     });
 
-    const queueSetResult = await QueueDao.setQueue(queue, entries);
+    const queueSetResult = await QueueDao.setQueue(queue, queue.enabled, entries);
     if (queueSetResult.type === 'error') {
       return queueSetResult;
     }

@@ -57,6 +57,9 @@ export default class QueuePostEndpoint {
         case 'song-is-banned':
           return ResponseService.sendBadRequest(res, 'Song is banned.');
 
+        case 'queue-is-closed':
+          return ResponseService.sendConflictRequest(res, 'Queue is currently closed.');
+
         case 'internal':
         default:
           return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_ADD_TO_QUEUE);
