@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { checkSchema } from 'express-validator';
 
-import { AuthJWTOrSecret, AuthJWT, AuthSecret } from '@api/middleware/auth';
+import { AuthJWTOrSecret, AuthJWT } from '@api/middleware/auth';
 import { checkValidation } from '@api/middleware/validation';
 
 import QueueGetEndpoint from './get';
@@ -12,7 +12,10 @@ import QueueDeleteEndpoint, { deleteRequestValidationSchema } from './delete';
 const router = Router();
 
 router.get('/', AuthJWTOrSecret, QueueGetEndpoint.get);
+
 router.post('/', AuthJWT, checkSchema(addRequestValidationSchema), checkValidation, QueuePostEndpoint.add);
+router.post('/clear', AuthJWTOrSecret, QueuePostEndpoint.clear);
+
 router.patch(
   '/',
   AuthJWTOrSecret,
@@ -20,6 +23,7 @@ router.patch(
   checkValidation,
   QueuePatchEndpoint.patch
 );
+
 router.delete(
   '/',
   AuthJWTOrSecret,

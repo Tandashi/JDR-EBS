@@ -23,6 +23,18 @@ export const addRequestValidationSchema: Schema = {
 };
 
 export default class QueuePostEndpoint {
+  public static async clear(req: express.Request, res: express.Response): Promise<void> {
+    const clearResult = await QueueService.clearQueue(req.user.channel_id);
+
+    if (clearResult.type === 'error') {
+      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_CLEAR_QUEUE);
+    }
+
+    return ResponseService.sendOk(res, {
+      data: QueueDto.getJSON(clearResult.data),
+    });
+  }
+
   public static async add(req: express.Request, res: express.Response): Promise<void> {
     const songId = req.body.id;
 

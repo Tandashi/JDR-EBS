@@ -18,6 +18,7 @@ export enum ErrorResponseCode {
   COULD_NOT_REMOVE_FROM_QUEUE = 'E1014',
   CONFLICT = 'E1015',
   COULD_NOT_UPDATE_ENABLED_QUEUE = 'E1016',
+  COULD_NOT_CLEAR_QUEUE = 'E1017',
 }
 
 enum HTTPCode {

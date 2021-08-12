@@ -33,12 +33,28 @@ export default class QueueService {
     return Success(queueSetResult.data);
   }
 
+  public static async clearQueue(channelId: string): Promise<Result<QueueDoc>> {
+    const queueResult = await this.getQueue(channelId);
+    if (queueResult.type === 'error') {
+      return queueResult;
+    }
+
+    const queue = queueResult.data;
+    const queueSetResult = await QueueDao.setQueue(queue, queue.enabled, []);
+    if (queueSetResult.type === 'error') {
+      return queueSetResult;
+    }
+
+    return Success(queueSetResult.data);
+  }
+
   public static async removeFromQueue(channelId: string, index: number): Promise<Result<QueueDoc>> {
     const queueResult = await this.getQueue(channelId);
     if (queueResult.type === 'error') {
       return queueResult;
     }
     const queue = queueResult.data;
+
     const entries = queue.entries;
     entries.splice(index, 1);
 

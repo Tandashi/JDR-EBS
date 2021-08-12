@@ -25,8 +25,6 @@ export default class QueuePatchEndpoint {
   public static async patch(req: express.Request, res: express.Response): Promise<void> {
     const enabled = req.body.enabled;
 
-    console.log(enabled);
-
     const queueResult = await QueueService.setQueueStatus(req.user.channel_id, enabled);
     if (queueResult.type === 'error') {
       return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_UPDATE_ENABLED_QUEUE);
