@@ -66,14 +66,14 @@ export default class APIServer {
     });
 
     connection.on('error', (error: Error) => {
-      logger.error('Mongo Connection ERROR: ' + error);
+      logger.error('Mongo Connection ERROR: ' + error.message);
     });
 
     const run = async () => {
       await mongoose.connect(config.mongodb.uri, DEFAULT_MONGOOSE_CONNECTION_PARAMS);
     };
 
-    run().catch(logger.error);
+    run().catch((e) => logger.error((e as Error).message));
   }
 
   public start(): void {

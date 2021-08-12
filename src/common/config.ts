@@ -55,13 +55,13 @@ if (!BOT_OAUTH_TOKEN) {
 
 const API_CLIENT_ID = process.env['API_CLIENT_ID'];
 if (!API_CLIENT_ID) {
-  logger.error('No jsonwebtoken secret provided. Set API_CLIENT_ID environment variable.');
+  logger.error('No api client id provided. Set API_CLIENT_ID environment variable.');
   process.exit(1);
 }
 
 const API_CLIENT_SECRET = process.env['API_CLIENT_SECRET'];
 if (!API_CLIENT_SECRET) {
-  logger.error('No jsonwebtoken secret provided. Set API_CLIENT_SECRET environment variable.');
+  logger.error('No api client secret provided. Set API_CLIENT_SECRET environment variable.');
   process.exit(1);
 }
 

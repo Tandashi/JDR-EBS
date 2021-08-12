@@ -114,7 +114,7 @@ export default class TwitchBot {
         logger.info('Twitch Bot started successfully');
       })
       .catch((err: Error) => {
-        logger.error(err);
+        logger.error(err.message);
       });
   }
 }
