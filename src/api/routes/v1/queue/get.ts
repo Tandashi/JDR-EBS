@@ -2,8 +2,9 @@ import express from 'express';
 import { Schema } from 'express-validator';
 
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
-import QueueService from '@common/services/queue-service';
-import QueueDto from '@common/db/dto/v1/queue-dto';
+import QueueService from '@services/queue-service';
+
+import QueueDto from '@db/dto/v1/queue-dto';
 
 export const getRequestValidationSchema: Schema = {
   channelId: {

@@ -1,8 +1,9 @@
 import express from 'express';
 
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
-import StreamerConfigurationDao from '@common/db/dao/streamer-configuration-dao';
-import StreamerConfigurationDto from '@common/db/dto/v1/streamer-configuration-dto';
+
+import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
+import StreamerConfigurationDto from '@db/dto/v1/streamer-configuration-dto';
 
 export default class StreamerConfigurationGetEndpoint {
   public static async get(req: express.Request, res: express.Response): Promise<void> {

@@ -1,14 +1,14 @@
 import { UpdateQuery } from 'mongoose';
 
 import logger from '@common/logging';
-
 import { Result, Success, Failure } from '@common/result';
+
 import StreamerConfiguration, {
   StreamerConfigurationDoc,
   IStreamerConfiguration,
 } from '@db/schema/streamer-configuration';
 import StreamerDataDao, { ConfigurationProfilePopulateOptions } from '@db/dao/streamer-data-dao';
-import ProfileDao from './profile-dao';
+import ProfileDao from '@db/dao/profile-dao';
 
 export default class StreamerConfigurationDao {
   private static DEFAULT_CONFIGURATION: IStreamerConfiguration = {

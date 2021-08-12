@@ -1,5 +1,6 @@
 import { Document, Schema, Model, model } from 'mongoose';
-import { ProfileDoc } from './profile';
+
+import { ProfileDoc } from '@db/schema/profile';
 
 interface ChatIntegrationConfiguration {
   enabled: boolean;

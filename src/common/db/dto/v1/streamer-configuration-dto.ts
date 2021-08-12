@@ -1,6 +1,6 @@
 import Dto from '@db/dto/dto';
-import { IStreamerConfiguration } from '@common/db/schema/streamer-configuration';
-import ProfileDto, { ProfileJSONStructure } from './profile-dto';
+import { IStreamerConfiguration } from '@db/schema/streamer-configuration';
+import ProfileDto, { ProfileJSONStructure } from '@db/dto/v1/profile-dto';
 
 export interface StreamerConfigurationJSONStructure {
   version: string;

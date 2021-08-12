@@ -1,7 +1,8 @@
 import express from 'express';
 
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
-import SongDataDao from '@common/db/dao/song-data-dao';
+
+import SongDataDao from '@db/dao/song-data-dao';
 
 export default class GamesGetEndpoint {
   public static async get(req: express.Request, res: express.Response): Promise<void> {

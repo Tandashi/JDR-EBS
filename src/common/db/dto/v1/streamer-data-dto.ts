@@ -1,8 +1,7 @@
 import Dto from '@db/dto/dto';
-
-import { IStreamerData } from '@common/db/schema/streamer-data';
-import StreamerConfigurationDto, { StreamerConfigurationJSONStructure } from './streamer-configuration-dto';
-import QueueDto, { QueueJSONStructure } from './queue-dto';
+import { IStreamerData } from '@db/schema/streamer-data';
+import StreamerConfigurationDto, { StreamerConfigurationJSONStructure } from '@db/dto/v1/streamer-configuration-dto';
+import QueueDto, { QueueJSONStructure } from '@db/dto/v1/queue-dto';
 
 export interface StreamerDataJSONStructure {
   channelId: string;

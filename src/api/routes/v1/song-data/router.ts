@@ -1,9 +1,10 @@
 import { Router } from 'express';
+import { checkSchema } from 'express-validator';
 
 import { AuthJWT } from '@api/middleware/auth';
-import SongDataGetEndpoint, { getRequestValidationSchema } from './get';
 import { checkValidation } from '@api/middleware/validation';
-import { checkSchema } from 'express-validator';
+
+import SongDataGetEndpoint, { getRequestValidationSchema } from './get';
 
 const router = Router();
 

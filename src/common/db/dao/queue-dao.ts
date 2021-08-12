@@ -1,6 +1,6 @@
 import logger from '@common/logging';
-
 import { Result, Success, Failure } from '@common/result';
+
 import Queue, { QueueDoc, IQueueEntry, IQueue } from '@db/schema/queue';
 
 export default class QueueDao {

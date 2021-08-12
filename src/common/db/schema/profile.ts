@@ -1,4 +1,4 @@
-import { Document, Schema, Model, model, ObjectId } from 'mongoose';
+import { Document, Schema, Model, model } from 'mongoose';
 
 import { SongDataDoc } from '@db/schema/song-data';
 

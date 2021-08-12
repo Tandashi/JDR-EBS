@@ -2,8 +2,9 @@ import express from 'express';
 import { Schema } from 'express-validator';
 
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
-import ProfileService from '@common/services/profile-service';
-import ProfileDto from '@common/db/dto/v1/profile-dto';
+import ProfileService from '@services/profile-service';
+
+import ProfileDto from '@db/dto/v1/profile-dto';
 
 export const updateRequestValidationSchema: Schema = {
   name: {

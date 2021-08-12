@@ -1,8 +1,9 @@
-import logger from '@common/logging';
-
-import { Result, Success, Failure } from '@common/result';
-import Profile, { ProfileDoc, IProfile } from '@common/db/schema/profile';
 import { PopulateOptions, UpdateQuery } from 'mongoose';
+
+import logger from '@common/logging';
+import { Result, Success, Failure } from '@common/result';
+
+import Profile, { ProfileDoc, IProfile } from '@db/schema/profile';
 
 type ProfilePopulateOptions = {
   path: 'banlist';

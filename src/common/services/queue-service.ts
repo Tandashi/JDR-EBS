@@ -1,9 +1,9 @@
-import StreamerDataDao from '@db/dao/streamer-data-dao';
-
 import { Result, Success, Failure } from '@common/result';
+
 import { QueueDoc, IQueueEntrySongData } from '@db/schema/queue';
-import QueueDao from '@common/db/dao/queue-dao';
-import StreamerConfigurationDao from '@common/db/dao/streamer-configuration-dao';
+import StreamerDataDao from '@db/dao/streamer-data-dao';
+import QueueDao from '@db/dao/queue-dao';
+import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
 
 type AddToQueueErrors = 'maximum-requests-exceeded' | 'song-already-queued' | 'song-is-banned';
 

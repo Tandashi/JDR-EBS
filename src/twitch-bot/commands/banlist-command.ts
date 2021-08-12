@@ -1,7 +1,7 @@
 import tmi from 'tmi.js';
 
 import TwitchBot from '@twitch-bot/index';
-import ProfileService from '@common/services/profile-service';
+import ProfileService from '@services/profile-service';
 
 export default class BanlistCommand {
   public static async process(channel: string, userstate: tmi.Userstate, bot: TwitchBot): Promise<void> {

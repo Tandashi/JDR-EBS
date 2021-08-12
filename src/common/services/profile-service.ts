@@ -1,11 +1,12 @@
 import express from 'express';
 
 import { Failure, FailureResult, Result, Success } from '@common/result';
+
+import { ProfileDoc } from '@db/schema/profile';
+import { SongDataDoc } from '@db/schema/song-data';
 import ProfileDao from '@db/dao/profile-dao';
-import { ProfileDoc } from '@common/db/schema/profile';
-import SongDataDao, { GetErrors as SongDataGetErrors } from '@common/db/dao/song-data-dao';
-import { SongDataDoc } from '@common/db/schema/song-data';
-import StreamerConfigurationDao from '@common/db/dao/streamer-configuration-dao';
+import SongDataDao, { GetErrors as SongDataGetErrors } from '@db/dao/song-data-dao';
+import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
 
 type UpdateErrors = 'invalid-song-id';
 type GetErrors = 'no-such-name';

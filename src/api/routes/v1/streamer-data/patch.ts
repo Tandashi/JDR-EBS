@@ -1,7 +1,7 @@
 import express from 'express';
 
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
-import StreamerDataService from '@common/services/streamer-data-service';
+import StreamerDataService from '@services/streamer-data-service';
 
 export default class StreamerDataPatchEndpoint {
   public static async updateSecret(req: express.Request, res: express.Response): Promise<void> {

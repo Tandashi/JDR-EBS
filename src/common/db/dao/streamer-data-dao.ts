@@ -1,9 +1,10 @@
 import { PopulateOptions } from 'mongoose';
 
 import logger from '@common/logging';
-
 import { Result, Success, Failure } from '@common/result';
-import SecretService from '@common/services/secret-service';
+
+import SecretService from '@services/secret-service';
+
 import StreamerData, { StreamerDataDoc, IStreamerData } from '@db/schema/streamer-data';
 import QueueDao from '@db/dao/queue-dao';
 import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';

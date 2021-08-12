@@ -9,9 +9,9 @@ import cliProgress from 'cli-progress';
 import chalk from 'chalk';
 
 import config from '@common/config';
+import logger from '@common/logging';
 
 import SongData from '@db/schema/song-data';
-import logger from '@common/logging';
 
 class Importer {
   private parser: argparse.ArgumentParser;

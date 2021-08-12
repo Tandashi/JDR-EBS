@@ -2,9 +2,10 @@ import express from 'express';
 import { Schema } from 'express-validator';
 
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
-import StreamerConfigurationDao from '@common/db/dao/streamer-configuration-dao';
-import StreamerConfigurationDto from '@common/db/dto/v1/streamer-configuration-dto';
-import StreamerConfigurationService from '@common/services/streamer-configuration-service';
+import StreamerConfigurationService from '@services/streamer-configuration-service';
+
+import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
+import StreamerConfigurationDto from '@db/dto/v1/streamer-configuration-dto';
 
 export const updateRequestValidationSchema: Schema = {
   chatIntegration: {

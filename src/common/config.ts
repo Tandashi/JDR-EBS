@@ -1,4 +1,4 @@
-import logger from './logging';
+import logger from '@common/logging';
 
 //#region Interface definitions
 interface AppConfig {

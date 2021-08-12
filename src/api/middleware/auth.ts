@@ -4,7 +4,7 @@ import jsonwebtoken from 'jsonwebtoken';
 import logger from '@common/logging';
 import config from '@common/config';
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
-import StreamerDataDao from '@common/db/dao/streamer-data-dao';
+import StreamerDataDao from '@db/dao/streamer-data-dao';
 
 const BearerPrefix = 'Bearer ';
 

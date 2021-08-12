@@ -2,8 +2,9 @@ import express from 'express';
 import { Schema } from 'express-validator';
 
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
-import StreamerDataDao from '@common/db/dao/streamer-data-dao';
-import StreamerDataDto from '@common/db/dto/v1/streamer-data-dto';
+
+import StreamerDataDao from '@db/dao/streamer-data-dao';
+import StreamerDataDto from '@db/dto/v1/streamer-data-dto';
 
 export const getRequestValidationSchema: Schema = {
   channelId: {

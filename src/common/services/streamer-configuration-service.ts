@@ -3,10 +3,11 @@ import express from 'express';
 import TwitchBot from '@twitch-bot/index';
 
 import { Result, Success } from '@common/result';
+
 import TwitchAPIService from '@services/twitch-api-service';
-import { StreamerConfigurationDoc, IStreamerConfiguration } from '@common/db/schema/streamer-configuration';
-import StreamerConfigurationDao from '@common/db/dao/streamer-configuration-dao';
-import SecretService from './secret-service';
+
+import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
+import { StreamerConfigurationDoc, IStreamerConfiguration } from '@db/schema/streamer-configuration';
 
 export default class StreamerConfigurationService {
   public static async updateChannelName(

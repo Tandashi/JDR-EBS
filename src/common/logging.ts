@@ -1,4 +1,5 @@
 import winston from 'winston';
+
 const { combine, timestamp, printf } = winston.format;
 
 const customFormat = printf(({ level, message, timestamp }) => {

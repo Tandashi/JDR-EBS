@@ -2,11 +2,11 @@ import express from 'express';
 import { Schema } from 'express-validator';
 
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
+import QueueService from '@services/queue-service';
 
 import QueueDto from '@db/dto/v1/queue-dto';
-import SongDataDao from '@common/db/dao/song-data-dao';
-import { IQueueEntrySongData } from '@common/db/schema/queue';
-import QueueService from '@common/services/queue-service';
+import SongDataDao from '@db/dao/song-data-dao';
+import { IQueueEntrySongData } from '@db/schema/queue';
 
 export const addRequestValidationSchema: Schema = {
   id: {

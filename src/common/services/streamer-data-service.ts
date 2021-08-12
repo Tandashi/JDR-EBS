@@ -1,8 +1,9 @@
 import { Result } from '@common/result';
 
-import { IStreamerData } from '@common/db/schema/streamer-data';
-import StreamerDataDao from '@common/db/dao/streamer-data-dao';
-import SecretService from './secret-service';
+import SecretService from '@services/secret-service';
+
+import StreamerDataDao from '@db/dao/streamer-data-dao';
+import { IStreamerData } from '@db/schema/streamer-data';
 
 export default class StreamerDataService {
   public static async regenerateSecret(channelId: string): Promise<Result<IStreamerData>> {
