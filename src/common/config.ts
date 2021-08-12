@@ -1,10 +1,16 @@
 import logger from '@common/logging';
 
 //#region Interface definitions
+interface StaticConfig {
+  rootDir: string;
+}
+
 interface AppConfig {
   protocol: string;
   hostname: string;
   port: number;
+
+  static: StaticConfig;
 }
 
 interface MongoDBConfig {
@@ -38,6 +44,8 @@ interface Config {
 const APP_PROTOCOL = process.env['APP_PROTOCOL'] || 'http';
 const APP_HOSTNAME = process.env['APP_HOSTNAME'] || 'localhost';
 const APP_PORT = parseInt(process.env['APP_PORT'] || '3000');
+
+const STATIC_ROOT_DIR = process.env['STATIC_ROOT_DIR'] || 'static';
 //#endregion
 
 //#region Twitch
@@ -87,6 +95,9 @@ const config: Config = {
     protocol: APP_PROTOCOL,
     hostname: APP_HOSTNAME,
     port: APP_PORT,
+    static: {
+      rootDir: STATIC_ROOT_DIR,
+    },
   },
   mongodb: {
     uri: MONGODB_URI,

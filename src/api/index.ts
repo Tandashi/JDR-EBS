@@ -34,6 +34,7 @@ export default class APIServer {
   public config(): void {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
+    this.app.use('/static', express.static(config.app.static.rootDir));
     this.app.use(cors());
   }
 
