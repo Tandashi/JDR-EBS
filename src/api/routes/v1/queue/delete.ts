@@ -14,6 +14,7 @@ export const deleteRequestValidationSchema: Schema = {
     },
     isInt: {
       errorMessage: 'Field `index` must be a number',
+      bail: true,
     },
   },
 };

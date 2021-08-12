@@ -8,6 +8,10 @@ import ProfileDto from '@common/db/dto/v1/profile-dto';
 export const updateRequestValidationSchema: Schema = {
   name: {
     in: 'body',
+    exists: {
+      errorMessage: 'Field `name` can not be empty',
+      bail: true,
+    },
     isString: {
       errorMessage: 'Field `name` must be a string',
       bail: true,
@@ -15,12 +19,17 @@ export const updateRequestValidationSchema: Schema = {
   },
   ids: {
     in: 'body',
+    exists: {
+      errorMessage: 'Field `ids` can not be empty',
+      bail: true,
+    },
     isArray: {
       errorMessage: 'Field `ids` must be an array',
       bail: true,
     },
   },
   'ids.*': {
+    in: 'body',
     isString: {
       errorMessage: 'Field `ids` values must be a string',
       bail: true,
@@ -28,6 +37,10 @@ export const updateRequestValidationSchema: Schema = {
   },
   configuration: {
     in: 'body',
+    exists: {
+      errorMessage: 'Field `configuration` can not be empty',
+      bail: true,
+    },
     isObject: {
       errorMessage: 'Field `configuration` must be an object',
       bail: true,
@@ -35,19 +48,35 @@ export const updateRequestValidationSchema: Schema = {
   },
   'configuration.song': {
     in: 'body',
+    exists: {
+      errorMessage: 'Field `configuration.song` can not be empty',
+      bail: true,
+    },
     isObject: {
       errorMessage: 'Field `configuration.song` must be an object',
       bail: true,
     },
   },
   'configuration.song.game': {
+    in: 'body',
+    exists: {
+      errorMessage: 'Field `configuration.song.game` can not be empty',
+      bail: true,
+    },
     isString: {
       errorMessage: 'Field `configuration.song.game` must be a string',
+      bail: true,
     },
   },
   'configuration.song.unlimited': {
+    in: 'body',
+    exists: {
+      errorMessage: 'Field `configuration.song.unlimited` can not be empty',
+      bail: true,
+    },
     isBoolean: {
       errorMessage: 'Field `configuration.song.unlimited` must be a boolean',
+      bail: true,
     },
     toBoolean: true,
   },

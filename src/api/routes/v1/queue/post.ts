@@ -17,6 +17,7 @@ export const addRequestValidationSchema: Schema = {
     },
     isString: {
       errorMessage: 'Field `id` must be a string',
+      bail: true,
     },
   },
 };

@@ -14,6 +14,7 @@ export const getRequestValidationSchema: Schema = {
     },
     isInt: {
       errorMessage: 'Field `channelId` must be a number',
+      bail: true,
     },
   },
 };

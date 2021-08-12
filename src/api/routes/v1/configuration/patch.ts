@@ -9,33 +9,59 @@ import StreamerConfigurationService from '@common/services/streamer-configuratio
 export const updateRequestValidationSchema: Schema = {
   chatIntegration: {
     in: 'body',
+    exists: {
+      errorMessage: 'Field `chatIntegration` can not be empty',
+      bail: true,
+    },
     isObject: {
       errorMessage: 'Field `chatIntegration` must be an object',
       bail: true,
     },
   },
   'chatIntegration.enabled': {
+    in: 'body',
+    exists: {
+      errorMessage: 'Field `chatIntegration.enabled` can not be empty',
+      bail: true,
+    },
     isBoolean: {
       errorMessage: 'Field `chatIntegration.enabled` must be a boolean',
+      bail: true,
     },
     toBoolean: true,
   },
   requests: {
     in: 'body',
+    exists: {
+      errorMessage: 'Field `requests` can not be empty',
+      bail: true,
+    },
     isObject: {
       errorMessage: 'Field `requests` must be an object',
       bail: true,
     },
   },
   'requests.perUser': {
+    in: 'body',
+    exists: {
+      errorMessage: 'Field `requests.perUser` can not be empty',
+      bail: true,
+    },
     isInt: {
       errorMessage: 'Field `requests.perUser` must be a number',
+      bail: true,
     },
     toInt: true,
   },
   'requests.duplicates': {
+    in: 'body',
+    exists: {
+      errorMessage: 'Field `requests.duplicates` can not be empty',
+      bail: true,
+    },
     isBoolean: {
       errorMessage: 'Field `requests.duplicates` must be a boolean',
+      bail: true,
     },
     toBoolean: true,
   },
