@@ -3,6 +3,7 @@ import { Schema } from 'express-validator';
 
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
 import QueueService from '@services/queue-service';
+import AnnounceService from '@services/announce-service';
 
 import QueueDto from '@db/dto/v1/queue-dto';
 import SongDataDao from '@db/dao/song-data-dao';
@@ -22,7 +23,39 @@ export const addRequestValidationSchema: Schema = {
   },
 };
 
+export const announceRequestValidationSchema: Schema = {
+  index: {
+    in: ['body'],
+    exists: {
+      errorMessage: 'Field `index` can not be empty',
+      bail: true,
+    },
+    isInt: {
+      errorMessage: 'Field `index` must be a number',
+      bail: true,
+    },
+  },
+};
+
 export default class QueuePostEndpoint {
+  public static async announce(req: express.Request, res: express.Response): Promise<void> {
+    const index = req.body.index;
+    const queueResult = await QueueService.getQueue(req.user.channel_id);
+
+    if (queueResult.type === 'error') {
+      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_GET_QUEUE);
+    }
+
+    const entry = queueResult.data.entries[index];
+    if (entry) {
+      AnnounceService.announce(req.user.channel_id, `Next up: ${entry.song.title}`);
+    }
+
+    return ResponseService.sendOk(res, {
+      data: QueueDto.getJSON(queueResult.data),
+    });
+  }
+
   public static async clear(req: express.Request, res: express.Response): Promise<void> {
     const clearResult = await QueueService.clearQueue(req.user.channel_id);
 
@@ -53,7 +86,7 @@ export default class QueuePostEndpoint {
     const songdata = getSongResult.data;
     const queueSongData: IQueueEntrySongData = {
       id: songdata.id,
-      title: songdata.title,
+      title: `${songdata.title} - ${songdata.artist}`,
       fromChat: false,
     };
 

@@ -5,7 +5,7 @@ import { AuthJWTOrSecret, AuthJWT } from '@api/middleware/auth';
 import { checkValidation } from '@api/middleware/validation';
 
 import QueueGetEndpoint from './get';
-import QueuePostEndpoint, { addRequestValidationSchema } from './post';
+import QueuePostEndpoint, { addRequestValidationSchema, announceRequestValidationSchema } from './post';
 import QueuePatchEndpoint, { patchRequestValidationSchema } from './patch';
 import QueueDeleteEndpoint, { deleteRequestValidationSchema } from './delete';
 
@@ -15,6 +15,13 @@ router.get('/', AuthJWTOrSecret, QueueGetEndpoint.get);
 
 router.post('/', AuthJWT, checkSchema(addRequestValidationSchema), checkValidation, QueuePostEndpoint.add);
 router.post('/clear', AuthJWTOrSecret, QueuePostEndpoint.clear);
+router.post(
+  '/announce',
+  AuthJWTOrSecret,
+  checkSchema(announceRequestValidationSchema),
+  checkValidation,
+  QueuePostEndpoint.announce
+);
 
 router.patch(
   '/',
