@@ -41,7 +41,7 @@ export default class StreamerDataGetEndpoint {
     ]);
 
     if (streamerDataResult.type === 'error') {
-      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_GET_QUEUE);
+      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RETRIVE_QUEUE);
     }
 
     ResponseService.sendOk(res, {

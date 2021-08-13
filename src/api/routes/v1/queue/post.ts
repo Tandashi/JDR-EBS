@@ -43,7 +43,7 @@ export default class QueuePostEndpoint {
     const queueResult = await QueueService.getQueue(req.user.channel_id);
 
     if (queueResult.type === 'error') {
-      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_GET_QUEUE);
+      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RETRIVE_QUEUE);
     }
 
     const entry = queueResult.data.entries[index];

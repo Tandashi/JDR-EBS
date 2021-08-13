@@ -9,7 +9,7 @@ export default class QueueGetEndpoint {
   public static async get(req: express.Request, res: express.Response): Promise<void> {
     const queueResult = await QueueService.getQueue(req.user.channel_id);
     if (queueResult.type === 'error') {
-      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_GET_QUEUE);
+      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RETRIVE_QUEUE);
     }
 
     ResponseService.sendOk(res, {

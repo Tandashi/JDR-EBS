@@ -92,7 +92,7 @@ export default class ProfilePatchEndpoint {
           return ResponseService.sendBadRequest(res, `There is no profile with the name: ${req.body.name}`);
         case 'internal':
         default:
-          return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_GET_PROFILE);
+          return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RETRIVE_PROFILE);
       }
     }
 
