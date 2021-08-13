@@ -9,13 +9,19 @@ services:
       - APP_PROTOCOL=http
       - APP_HOSTNAME=0.0.0.0
       - APP_PORT=3000
-      - BOT_USERNAME=
-      - BOT_OAUTH_TOKEN=
+      - STATIC_ROOT_DIR=/data/static
+      # - API_CLIENT_ID=
+      # - API_CLIENT_SECRET=
+      # - BOT_USERNAME=
+      # - BOT_OAUTH_TOKEN=
+      # - JWT_SECRET=
       - MONGODB_URI=mongodb://mongodb/jd
     depends_on:
       - mongodb
+    volumes:
+      - ~/JDR-EBS/static-data:/data/static
 
   mongodb:
     image: 'mongo:latest'
     volumes:
-      - ~/JDR-EBS/data:/data/db
+      - ~/JDR-EBS/db-data:/data/db
