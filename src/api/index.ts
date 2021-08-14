@@ -9,6 +9,7 @@ import cors from 'cors';
 import config from '@common/config';
 import logger from '@common/logging';
 import BaseRouter from '@api/routes/router';
+import { logErrors } from './middleware/error-handler';
 
 const DEFAULT_MONGOOSE_CONNECTION_PARAMS = {
   keepAlive: true,
@@ -36,6 +37,7 @@ export default class APIServer {
     this.app.use(express.urlencoded({ extended: false }));
     this.app.use('/static', express.static(config.app.static.rootDir));
     this.app.use(cors());
+    this.app.use(logErrors);
   }
 
   private mongo(): void {
