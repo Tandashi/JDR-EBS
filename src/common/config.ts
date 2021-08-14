@@ -1,23 +1,25 @@
 import logger from '@common/logging';
 
 //#region Interface definitions
-interface StaticConfig {
+interface IStaticConfig {
   rootDir: string;
+  imageDir: string;
+  videoDir: string;
 }
 
-interface AppConfig {
+interface IAppConfig {
   protocol: string;
   hostname: string;
   port: number;
 
-  static: StaticConfig;
+  static: IStaticConfig;
 }
 
-interface MongoDBConfig {
+interface IMongoDBConfig {
   uri: string;
 }
 
-interface TwitchConfig {
+interface ITwitchConfig {
   api: {
     clientId: string;
     clientSecret: string;
@@ -31,10 +33,10 @@ interface TwitchConfig {
   };
 }
 
-interface Config {
-  app: AppConfig;
-  mongodb: MongoDBConfig;
-  twitch: TwitchConfig;
+export interface IConfig {
+  app: IAppConfig;
+  mongodb: IMongoDBConfig;
+  twitch: ITwitchConfig;
 }
 //#endregion
 
@@ -46,6 +48,8 @@ const APP_HOSTNAME = process.env['APP_HOSTNAME'] || 'localhost';
 const APP_PORT = parseInt(process.env['APP_PORT'] || '3000');
 
 const STATIC_ROOT_DIR = process.env['STATIC_ROOT_DIR'] || 'static';
+const STATIC_IMAGE_DIR = process.env['STATIC_IMAGE_DIR'] || 'images';
+const STATIC_VIDEO_DIR = process.env['STATIC_VIDEO_DIR'] || 'videos';
 //#endregion
 
 //#region Twitch
@@ -90,13 +94,15 @@ if (!MONGODB_URI) {
 
 //#endregion
 
-const config: Config = {
+const config: IConfig = {
   app: {
     protocol: APP_PROTOCOL,
     hostname: APP_HOSTNAME,
     port: APP_PORT,
     static: {
       rootDir: STATIC_ROOT_DIR,
+      imageDir: STATIC_IMAGE_DIR,
+      videoDir: STATIC_VIDEO_DIR,
     },
   },
   mongodb: {

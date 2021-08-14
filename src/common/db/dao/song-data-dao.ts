@@ -3,7 +3,7 @@ import { FilterQuery, ObjectId } from 'mongoose';
 import logger from '@common/logging';
 import { Result, Success, Failure } from '@common/result';
 
-import SongData, { ISongData, SongDataDoc } from '@db/schema/song-data';
+import SongData, { GameVersion, ISongData, SongDataDoc } from '@db/schema/song-data';
 
 export type GetErrors = 'no-such-entity';
 
@@ -40,19 +40,19 @@ export default class SongDataDao {
 
   public static async getAllFiltered(
     ids: ObjectId[],
-    game: string,
+    game: GameVersion,
     unlimited: boolean
   ): Promise<Result<SongDataDoc[]>> {
     if (unlimited) {
-      return await this.getSongs({ _id: { $nin: ids }, $or: [{ source: game }, { unlimited: unlimited }] });
+      return await this.getSongs({ _id: { $nin: ids }, $or: [{ game: game }, { game: 'Just Dance Unlimited' }] });
     } else {
-      return await this.getSongs({ _id: { $nin: ids }, source: game });
+      return await this.getSongs({ _id: { $nin: ids }, game: game });
     }
   }
 
   public static async getAllGames(): Promise<Result<string[]>> {
     try {
-      const games = await SongData.distinct('source');
+      const games = await SongData.distinct('game');
 
       return Success(games);
     } catch (e) {

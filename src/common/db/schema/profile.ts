@@ -1,9 +1,9 @@
 import { Document, Schema, Model, model } from 'mongoose';
 
-import { SongDataDoc } from '@db/schema/song-data';
+import { GameVersion, SongDataDoc } from '@db/schema/song-data';
 
 interface SongConfiguration {
-  game: string;
+  game: GameVersion;
   unlimited: boolean;
 }
 

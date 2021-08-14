@@ -17,7 +17,7 @@ export default class ProfileDao {
         banlist: [],
         configuration: {
           song: {
-            game: '',
+            game: 'Just Dance 2021',
             unlimited: false,
           },
         },

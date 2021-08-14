@@ -1,34 +1,38 @@
+import URLService from '@services/url-service';
+
 import Dto from '@db/dto/dto';
-import { SongDataDoc } from '@db/schema/song-data';
+import { GameVersion, SongDataDoc } from '@db/schema/song-data';
 
 export interface SongDataJSONStructure {
   id: string;
+  code_name: string;
+  jdn_code_name: string;
   title: string;
   artist: string;
-  original_source?: string;
-  source: string;
-  img_url: string;
-  preview_video_url?: string;
+  game: GameVersion;
   difficulty: number;
-  unlimited: boolean;
   coaches: number;
   effort: number | null;
+  image_url: string;
+  wiki_url: string;
+  preview_url: string | null;
 }
 
 const SongDataDto: Dto<SongDataDoc, SongDataJSONStructure> = {
   getJSON: (data: SongDataDoc) => {
     return {
       id: data._id,
+      code_name: data.code_name,
+      jdn_code_name: data.jdn_code_name,
       title: data.title,
       artist: data.artist,
-      original_source: data.original_source,
-      source: data.source,
-      img_url: data.img_url,
-      preview_video_url: data.preview_video_url,
+      game: data.game,
       difficulty: data.difficulty,
-      unlimited: data.unlimited,
       coaches: data.coaches,
       effort: data.effort,
+      image_url: URLService.getImageUrl(data.image_url),
+      wiki_url: data.wiki_url,
+      preview_url: URLService.getVideoUrl(data.preview_url),
     };
   },
 };

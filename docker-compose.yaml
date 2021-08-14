@@ -10,6 +10,8 @@ services:
       - APP_HOSTNAME=0.0.0.0
       - APP_PORT=3000
       - STATIC_ROOT_DIR=/data/static
+      # - STATIC_IMAGE_DIR=images    # Relative to the Root dir
+      # - STATIC_VIDEO_DIR=videos    # Relative to the Root dir
       # - API_CLIENT_ID=
       # - API_CLIENT_SECRET=
       # - BOT_USERNAME=
