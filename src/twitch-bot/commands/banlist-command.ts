@@ -19,7 +19,10 @@ export default class BanlistCommand {
       return bot.sendMessage(channel, message, userstate);
     }
 
-    const bannedSongs = profileResult.data.banlist.map((v) => `${v.title} - ${v.artist}`).join(', ') || '-';
+    const bannedSongs =
+      profileResult.data.banlist
+        .map((v) => `${v.title.replace(/(?<=\w)\.(?=\w)/g, ' ')} - ${v.artist.replace(/(?<=\w)\.(?=\w)/g, ' ')}`)
+        .join(', ') || '-';
     return bot.sendMessage(channel, `The following songs are banned: ${bannedSongs}`, userstate);
   }
 }
