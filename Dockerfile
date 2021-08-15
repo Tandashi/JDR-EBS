@@ -10,6 +10,6 @@ COPY tslint.json tslint.json
 COPY definitions definitions
 RUN yarn -v && yarn && yarn build
 
-ENTRYPOINT node -r dotenv/config dist/server.js
+ENTRYPOINT node -r dotenv/config dist/ebs.js
 
 EXPOSE 3000
