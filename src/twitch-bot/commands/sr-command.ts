@@ -10,8 +10,7 @@ export default class SRCommand {
     message: string,
     bot: TwitchBot
   ): Promise<void> {
-    const songTitle = message.split(' ')[1];
-
+    const songTitle = message.split('!sr ')[1];
     if (!songTitle) {
       return bot.sendMessage(channel, 'No song title provided.');
     }
