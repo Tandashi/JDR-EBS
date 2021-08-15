@@ -7,6 +7,7 @@ COPY src src
 COPY package.json package.json
 COPY tsconfig.json tsconfig.json
 COPY tslint.json tslint.json
+COPY definitions definitions
 RUN yarn -v && yarn && yarn build
 
 ENTRYPOINT node -r dotenv/config dist/server.js

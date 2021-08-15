@@ -3,7 +3,7 @@ import { FilterQuery, ObjectId } from 'mongoose';
 import logger from '@common/logging';
 import { Result, Success, Failure } from '@common/result';
 
-import SongData, { GameVersion, ISongData, SongDataDoc } from '@db/schema/song-data';
+import SongData, { GameVersion, SongDataDoc } from '@db/schema/song-data';
 
 export type GetErrors = 'no-such-entity';
 
@@ -23,7 +23,7 @@ export default class SongDataDao {
     }
   }
 
-  private static async getSongs(query: FilterQuery<ISongData> = {}): Promise<Result<SongDataDoc[]>> {
+  private static async getSongs(query: FilterQuery<SongDataDoc> = {}): Promise<Result<SongDataDoc[]>> {
     try {
       const songData = await SongData.find(query);
       return Success(songData);
