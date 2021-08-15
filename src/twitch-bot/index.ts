@@ -10,6 +10,7 @@ import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
 
 import SRCommand from '@twitch-bot/commands/sr-command';
 import BanlistCommand from '@twitch-bot/commands/banlist-command';
+import AnnounceService from '@common/services/announce-service';
 
 export default class TwitchBot {
   private static instance: TwitchBot;
@@ -100,9 +101,9 @@ export default class TwitchBot {
 
   public sendMessage(channelName: string, message: string, replyTo?: tmi.Userstate): void {
     if (!replyTo) {
-      this.client.say(channelName, message);
+      this.client.say(channelName, AnnounceService.getChatFiendlyString(message));
     } else {
-      this.client.say(channelName, `[@${replyTo['display-name']}] ${message}`);
+      this.client.say(channelName, AnnounceService.getChatFiendlyString(`[@${replyTo['display-name']}] ${message}`));
     }
   }
 

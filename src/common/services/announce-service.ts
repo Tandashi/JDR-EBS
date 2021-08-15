@@ -25,4 +25,8 @@ export default class AnnounceService {
       TwitchBot.getInstance().sendMessage(configuration.chatIntegration.channelName, message);
     }
   }
+
+  public static getChatFiendlyString(str: string): string {
+    return str.replace(/(?<=\w)\.(?=\w)/g, ' ');
+  }
 }
