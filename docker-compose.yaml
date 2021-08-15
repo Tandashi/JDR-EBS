@@ -1,6 +1,7 @@
 version: '3'
 services:
   backend:
+    container_name: 'JDR-EBS'
     image: 'twitch-jd-ebs:latest'
     build: .
     ports:
@@ -25,6 +26,7 @@ services:
       - ~/JDR-EBS/song-data:/data/songs
 
   mongodb:
+    container_name: 'JDR-MongoDB'
     image: 'mongo:latest'
     volumes:
       - ~/JDR-EBS/db-data:/data/db
