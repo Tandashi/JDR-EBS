@@ -12,6 +12,8 @@ interface IAppConfig {
   hostname: string;
   port: number;
 
+  publicAddress: string;
+
   static: IStaticConfig;
 }
 
@@ -46,6 +48,12 @@ export interface IConfig {
 const APP_PROTOCOL = process.env['APP_PROTOCOL'] || 'http';
 const APP_HOSTNAME = process.env['APP_HOSTNAME'] || 'localhost';
 const APP_PORT = parseInt(process.env['APP_PORT'] || '3000');
+
+const APP_PUBLIC_ADDRESS = process.env['APP_PUBLIC_ADDRESS'];
+if (!APP_PUBLIC_ADDRESS) {
+  logger.error('No public address provided. Set APP_PUBLIC_ADDRESS environment variable.');
+  process.exit(1);
+}
 
 const STATIC_ROOT_DIR = process.env['STATIC_ROOT_DIR'] || 'static';
 const STATIC_IMAGE_DIR = process.env['STATIC_IMAGE_DIR'] || 'images';
@@ -99,6 +107,9 @@ const config: IConfig = {
     protocol: APP_PROTOCOL,
     hostname: APP_HOSTNAME,
     port: APP_PORT,
+
+    publicAddress: APP_PUBLIC_ADDRESS,
+
     static: {
       rootDir: STATIC_ROOT_DIR,
       imageDir: STATIC_IMAGE_DIR,

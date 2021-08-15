@@ -10,6 +10,7 @@ services:
       - APP_PROTOCOL=http
       - APP_HOSTNAME=0.0.0.0
       - APP_PORT=3000
+      - APP_PUBLIC_ADDRESS=http://localhost:3000
       - STATIC_ROOT_DIR=/data/static
       # - STATIC_IMAGE_DIR=images    # Relative to the Root dir
       # - STATIC_VIDEO_DIR=videos    # Relative to the Root dir
@@ -24,6 +25,7 @@ services:
     volumes:
       - ~/JDR-EBS/static-data:/data/static
       - ~/JDR-EBS/song-data:/data/songs
+      - ~/JDR-EBS/log-data:/home/application/log
 
   mongodb:
     container_name: 'JDR-MongoDB'
