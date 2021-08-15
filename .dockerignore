@@ -1,0 +1,6 @@
+log/
+static/
+node_modules/
+static-data/
+song-data/
+db-data/
