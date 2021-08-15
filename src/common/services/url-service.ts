@@ -8,10 +8,14 @@ export default class URLService {
   }
 
   public static getImageUrl(imageName: string): string {
+    if (!imageName) return undefined;
+
     return `${this.getBaseUrl()}/static/${config.app.static.imageDir}/${imageName}`;
   }
 
   public static getVideoUrl(videoName: string): string {
+    if (!videoName) return undefined;
+
     return `${this.getBaseUrl()}/static/${config.app.static.videoDir}/${videoName}`;
   }
 }
