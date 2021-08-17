@@ -3,9 +3,11 @@
   "description": "",
   "version": "1.0.0",
   "author": {
-    "name": ""
+    "name": "Tandashi"
   },
-  "repository": {},
+  "repository": {
+    "url": "https://github.com/Tandashi/JDR-EBS"
+  },
   "license": "MIT",
   "scripts": {
     "start": "yarn build && node -r dotenv/config dist/ebs.js",
