@@ -20,17 +20,29 @@ export interface IProfile {
 export type ProfileDoc = IProfile & Document;
 
 const profileSchema: Schema = new Schema({
-  name: String,
-  banlist: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'SongData',
-    },
-  ],
+  name: {
+    type: String,
+    required: true,
+  },
+  banlist: {
+    default: [],
+    type: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'SongData',
+      },
+    ],
+  },
   configuration: {
     song: {
-      game: String,
-      unlimited: Boolean,
+      game: {
+        type: String,
+        required: true,
+      },
+      unlimited: {
+        type: Boolean,
+        required: true,
+      },
     },
   },
 });

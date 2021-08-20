@@ -16,18 +16,22 @@ const streamerDataSchema: Schema = new Schema({
   channelId: {
     type: String,
     unique: true,
+    required: true
   },
   secret: {
     type: String,
     unique: true,
+    required: true
   },
   configuration: {
     type: Schema.Types.ObjectId,
     ref: 'StreamerConfiguration',
+    required: true
   },
   queue: {
     type: Schema.Types.ObjectId,
     ref: 'Queue',
+    required: true
   },
 });
 

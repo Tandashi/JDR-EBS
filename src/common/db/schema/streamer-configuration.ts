@@ -30,26 +30,54 @@ const streamerConfigurationSchema: Schema = new Schema({
   version: {
     type: String,
     enum: ['v1.0'],
+    required: true
   },
   chatIntegration: {
-    enabled: Boolean,
-    channelName: String,
+    enabled: {
+      type: Boolean,
+      required: true,
+    },
+    channelName: {
+      type: String,
+      required: [
+        function(): boolean {
+          return this.chatIntegration.enabled;
+        },
+        'chatIntegration.channelName is required if chatIntegration.enabled is true.'
+      ],
+    },
   },
   requests: {
-    perUser: Number,
-    duplicates: Boolean,
+    perUser: {
+      type: Number,
+      required: true,
+    },
+    duplicates: {
+      type: Boolean,
+      required: true,
+    },
   },
   profile: {
     active: {
       type: Schema.Types.ObjectId,
       ref: 'Profile',
+      required: true
     },
-    profiles: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Profile',
-      },
-    ],
+    profiles: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Profile',
+        },
+      ],
+      required: [
+        function(): boolean {
+          // Ensure that there is minimum one profile
+          return this.profile.profiles.length > 0;
+        },
+        'At least on profile has to exist.'
+      ]
+    },
   },
 });
 

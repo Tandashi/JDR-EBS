@@ -11,12 +11,12 @@ export type GameVersion =
 
 export interface ISongData {
   code_name: string;
-  jdn_code_name: string;
+  jdn_code_name: string | null;
   title: string;
   artist: string;
   game: GameVersion;
-  difficulty: number;
-  coaches: number;
+  difficulty: number | null;
+  coaches: number | null;
   effort: number | null;
   image_url: string;
   wiki_url: string;
@@ -26,10 +26,23 @@ export interface ISongData {
 export type SongDataDoc = ISongData & Document;
 
 const songDataSchema: Schema = new Schema({
-  code_name: String,
-  jdn_code_name: String,
-  title: String,
-  artist: String,
+  code_name: {
+    type: String,
+    required: true,
+  },
+  jdn_code_name: {
+    type: String,
+    // Sometimes doen't exist if the song is not from Just Dance Now
+    required: false,
+  },
+  title: {
+    type: String,
+    required: true,
+  },
+  artist: {
+    type: String,
+    required: true,
+  },
   game: {
     type: String,
     enum: [
@@ -41,13 +54,36 @@ const songDataSchema: Schema = new Schema({
       'Just Dance 2021',
       'Just Dance Unlimited',
     ],
+    required: true
   },
-  difficulty: Number,
-  coaches: Number,
-  effort: Number,
-  image_url: String,
-  wiki_url: String,
-  preview_url: String,
+  difficulty: {
+    type: Number,
+    // Sometimes it doesnt exist
+    required: false,
+  },
+  coaches: {
+    type: Number,
+    // Sometimes it doesnt exist
+    required: false,
+  },
+  effort: {
+    type: Number,
+    // Sometimes it doesnt exist
+    required: false,
+  },
+  image_url: {
+    type: String,
+    required: true,
+  },
+  wiki_url: {
+    type: String,
+    required: true,
+  },
+  preview_url: {
+    type: String,
+    // Sometimes there is no preview available
+    required: false,
+  },
 });
 
 const SongData: Model<SongDataDoc> = model<SongDataDoc>('SongData', songDataSchema);

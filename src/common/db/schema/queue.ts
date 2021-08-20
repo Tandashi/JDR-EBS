@@ -41,18 +41,47 @@ export interface IQueue {
 export type QueueDoc = IQueue & Document;
 
 const queueSchema: Schema = new Schema({
-  enabled: Boolean,
-  entries: [
-    {
-      userId: String,
-      username: String,
-      fromChat: Boolean,
-      song: {
-        id: String,
-        title: String,
+  enabled: {
+    type: Boolean,
+    required: true,
+  },
+  entries: {
+    default: [],
+    type: [
+      {
+        userId: {
+          type: String,
+          required: true,
+        },
+        username: {
+          type: String,
+          required: true,
+        },
+        fromChat: {
+          type: Boolean,
+          required: true,
+        },
+        song: {
+          id: {
+            type: String,
+            required: [
+              function(): boolean {
+                // Only required if it is not from chat.
+                return (this as IQueue).entries.every(
+                  v => (v.fromChat && v.song.id !== undefined) || (!v.fromChat)
+                );
+              },
+              'song.id is required if the entry is not from chat.'
+            ],
+          },
+          title: {
+            type: String,
+            required: true,
+          },
+        },
       },
-    },
-  ],
+    ]
+  },
 });
 
 const Queue: Model<QueueDoc> = model<QueueDoc>('Queue', queueSchema);
