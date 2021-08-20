@@ -107,7 +107,7 @@ export const AuthJWT = (req: express.Request, res: express.Response, next: expre
 
     // Check if the userId we need was linked
     if (!req.user.user_id) {
-      return ResponseService.sendUnauthorized(res, 'Unauthorized');
+      return ResponseService.sendUnauthorized(res, 'Unauthorized', ErrorResponseCode.COULD_NOT_AUTH_NO_USERID);
     }
 
     next();

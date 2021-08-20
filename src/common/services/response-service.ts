@@ -7,6 +7,7 @@ export enum ErrorResponseCode {
   INTERNAL_ERROR = 'E1003',
 
   COULD_NOT_AUTH_WITH_SECRET = 'E2000',
+  COULD_NOT_AUTH_NO_USERID = 'E2001',
 
   COULD_NOT_RETRIVE_SONGDATA = 'E3000',
   COULD_NOT_RETRIVE_STREAMER_CONFIGURATION = 'E3001',
@@ -83,8 +84,8 @@ export default class ResponseService {
     this.send(res, HTTPCode.OK, data);
   }
 
-  public static sendUnauthorized(res: express.Response, message: string): void {
-    this.sendError(res, HTTPCode.UNAUTHORIZED, ErrorResponseCode.UNAUTHORIZED_REQUEST, message);
+  public static sendUnauthorized(res: express.Response, message: string, errorCode?: ErrorResponseCode): void {
+    this.sendError(res, HTTPCode.UNAUTHORIZED, errorCode ?? ErrorResponseCode.UNAUTHORIZED_REQUEST, message);
   }
 
   public static sendBadRequest(res: express.Response, message: string): void {
