@@ -10,7 +10,7 @@ const QueueEntryDto: Dto<IQueueEntry, QueueEntryJSONStructure> = {
   getJSON: (data: IQueueEntry) => {
     return {
       title: data.song.title,
-      fromChat: data.song.fromChat,
+      fromChat: data.fromChat,
     };
   },
 };

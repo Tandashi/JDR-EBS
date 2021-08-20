@@ -5,21 +5,33 @@ interface IQueueEntrySongDataBase {
 }
 
 interface IQueueEntrySongDataFromExtension extends IQueueEntrySongDataBase {
-  fromChat: false;
   id: string;
 }
 
 interface IQueueEntrySongDataFromChat extends IQueueEntrySongDataBase {
-  fromChat: true;
   id?: string;
 }
 
 export type IQueueEntrySongData = IQueueEntrySongDataFromExtension | IQueueEntrySongDataFromChat;
 
-export interface IQueueEntry {
+export interface IQueueEntryBase {
   userId: string;
+  username: string;
+  fromChat: boolean;
   song: IQueueEntrySongData;
 }
+
+export interface IQueueEntryFromChat extends IQueueEntryBase {
+  fromChat: true;
+  song: IQueueEntrySongDataFromChat;
+}
+
+export interface IQueueEntryFromExtension extends IQueueEntryBase {
+  fromChat: false;
+  song: IQueueEntrySongDataFromExtension;
+}
+
+export type IQueueEntry = IQueueEntryFromChat | IQueueEntryFromExtension;
 
 export interface IQueue {
   enabled: boolean;
@@ -33,9 +45,10 @@ const queueSchema: Schema = new Schema({
   entries: [
     {
       userId: String,
+      username: String,
+      fromChat: Boolean,
       song: {
         id: String,
-        fromChat: Boolean,
         title: String,
       },
     },

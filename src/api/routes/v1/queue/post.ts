@@ -7,7 +7,8 @@ import AnnounceService from '@services/announce-service';
 
 import QueueDto from '@db/dto/v1/queue-dto';
 import SongDataDao from '@db/dao/song-data-dao';
-import { IQueueEntrySongData } from '@db/schema/queue';
+import { IQueueEntryFromExtension, IQueueEntrySongData } from '@db/schema/queue';
+import TwitchAPIService from '@common/services/twitch-api-service';
 
 export const addRequestValidationSchema: Schema = {
   id: {
@@ -83,11 +84,20 @@ export default class QueuePostEndpoint {
       }
     }
 
+    const channelInfoResult = await TwitchAPIService.getInstance().getChannelInfo(req.user.user_id);
+    if (channelInfoResult.type === 'error') {
+      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RESOLVE_USERNAME_FOR_QUEUE);
+    }
+
     const songdata = getSongResult.data;
-    const queueSongData: IQueueEntrySongData = {
-      id: songdata.id,
-      title: `${songdata.title} - ${songdata.artist}`,
+    const queueSongData: IQueueEntryFromExtension = {
+      userId: req.user.user_id,
+      username: channelInfoResult.data.displayName,
       fromChat: false,
+      song: {
+        id: songdata.id,
+        title: `${songdata.title} - ${songdata.artist}`,
+      }
     };
 
     const addResult = await QueueService.addToQueue(req.user.channel_id, queueSongData, req.user.user_id);

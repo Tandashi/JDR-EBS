@@ -18,8 +18,12 @@ export default class SRCommand {
     const queueAddResult = await QueueService.addToQueue(
       userstate['room-id'],
       {
+        userId: userstate['user-id'],
+        username: userstate['display-name'],
         fromChat: true,
-        title: songTitle,
+        song: {
+          title: songTitle,
+        }
       },
       userstate['user-id']
     );

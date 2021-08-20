@@ -1,6 +1,6 @@
 import { Result, Success, Failure } from '@common/result';
 
-import { QueueDoc, IQueueEntrySongData } from '@db/schema/queue';
+import { QueueDoc, IQueueEntrySongData, IQueueEntry } from '@db/schema/queue';
 import StreamerDataDao from '@db/dao/streamer-data-dao';
 import QueueDao from '@db/dao/queue-dao';
 import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
@@ -71,7 +71,7 @@ export default class QueueService {
 
   public static async addToQueue(
     channelId: string,
-    songdata: IQueueEntrySongData,
+    entry: IQueueEntry,
     userId: string
   ): Promise<Result<QueueDoc, AddToQueueErrors>> {
     const queueResult = await this.getQueue(channelId);
@@ -96,25 +96,22 @@ export default class QueueService {
     }
 
     if (
-      queue.entries.some((v) => v.song.id === songdata.id) &&
+      queue.entries.some((v) => v.song.id === entry.song.id) &&
       !configuration.requests.duplicates &&
-      songdata.fromChat !== true
+      entry.fromChat !== true
     ) {
       return Failure<AddToQueueErrors>('song-already-queued', 'Song already in queue');
     }
 
     const profile = configuration.profile.active;
-    const banned = profile.banlist.some((e) => e._id.toString() === songdata.id);
+    const banned = profile.banlist.some((e) => e._id.toString() === entry.song.id);
 
     if (banned) {
       return Failure<AddToQueueErrors>('song-is-banned', 'Song is banned. Not allowed to queue it.');
     }
 
     const entries = queue.entries;
-    entries.push({
-      userId: userId,
-      song: songdata,
-    });
+    entries.push(entry);
 
     const queueSetResult = await QueueDao.setQueue(queue, queue.enabled, entries);
     if (queueSetResult.type === 'error') {
