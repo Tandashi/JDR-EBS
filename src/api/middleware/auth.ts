@@ -104,6 +104,12 @@ export const AuthJWT = (req: express.Request, res: express.Response, next: expre
 
     // Set the User on the request
     req.user = jwt as TwitchUser;
+
+    // Check if the userId we need was linked
+    if (!req.user.user_id) {
+      return ResponseService.sendUnauthorized(res, 'Unauthorized');
+    }
+
     next();
   } catch (e) {
     logger.error((e as Error).message);
