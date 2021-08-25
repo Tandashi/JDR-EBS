@@ -14,7 +14,8 @@
       "@api/*": ["src/api/*"],
       "@common/*": ["src/common/*"],
       "@db/*": ["src/common/db/*"],
-      "@services/*": ["src/common/services/*"]
+      "@services/*": ["src/common/services/*"],
+      "@migrations/*": ["src/migrations/*"]
     }
   },
   "include": ["src/**/*", "definitions/**/*"]

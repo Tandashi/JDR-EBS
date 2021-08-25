@@ -9,7 +9,7 @@ import cors from 'cors';
 import config from '@common/config';
 import logger from '@common/logging';
 import BaseRouter from '@api/routes/router';
-import { logErrors } from './middleware/error-handler';
+import { logErrors } from '@api/middleware/error-handler';
 
 const DEFAULT_MONGOOSE_CONNECTION_PARAMS = {
   keepAlive: true,
@@ -73,7 +73,10 @@ export default class APIServer {
     });
 
     const run = async () => {
-      await mongoose.connect(config.mongodb.uri, DEFAULT_MONGOOSE_CONNECTION_PARAMS);
+      await mongoose.connect(
+        config.mongodb.uri,
+        DEFAULT_MONGOOSE_CONNECTION_PARAMS
+      );
     };
 
     run().catch((e) => logger.error((e as Error).message));
@@ -81,7 +84,9 @@ export default class APIServer {
 
   public start(): void {
     this.app.listen(config.app.port, config.app.hostname, () => {
-      logger.info(`API is running at ${config.app.protocol}://${config.app.hostname}:${config.app.port}`);
+      logger.info(
+        `API is running at ${config.app.protocol}://${config.app.hostname}:${config.app.port}`
+      );
     });
   }
 }

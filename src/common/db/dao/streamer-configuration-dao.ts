@@ -12,10 +12,11 @@ import ProfileDao from '@db/dao/profile-dao';
 
 export default class StreamerConfigurationDao {
   private static DEFAULT_CONFIGURATION: IStreamerConfiguration = {
-    version: 'v1.0',
+    version: 'v1.1',
     chatIntegration: {
       enabled: false,
       channelName: '',
+      banlistFormat: '{TITLE} - {ARTIST}'
     },
     requests: {
       perUser: 1,

@@ -1,4 +1,5 @@
 import logger from '@common/logging';
+import { Mongoose } from 'mongoose';
 
 //#region Interface definitions
 interface IStaticConfig {

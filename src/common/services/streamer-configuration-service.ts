@@ -49,6 +49,8 @@ export default class StreamerConfigurationService {
       chatIntegration: {
         enabled: chatIntegarationEnabled,
         channelName: oldConfiguration.chatIntegration.channelName,
+        // TODO: Allow to update
+        banlistFormat: oldConfiguration.chatIntegration.banlistFormat,
       },
       requests: {
         perUser: requestsPerUser,

@@ -10,11 +10,12 @@
   },
   "license": "MIT",
   "scripts": {
-    "start": "yarn build && node -r dotenv/config dist/ebs.js",
+    "start": "yarn build && yarn migrate:up && node -r dotenv/config dist/ebs.js",
     "start-importer": "yarn build && node -r dotenv/config dist/importer.js",
     "build": "yarn build-ts && yarn tslint",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
+    "migrate:up": "node -r dotenv/config dist/migrations/cli.js up",
     "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
   "_moduleAliases": {
@@ -22,7 +23,8 @@
     "@api": "dist/api",
     "@common": "dist/common",
     "@db": "dist/common/db",
-    "@services": "dist/common/services"
+    "@services": "dist/common/services",
+    "@migrations": "dist/migrations"
   },
   "dependencies": {
     "@types/tmi.js": "^1.7.2",
@@ -35,6 +37,7 @@
     "express-validator": "^6.12.1",
     "jsonwebtoken": "^8.5.1",
     "module-alias": "^2.2.2",
+    "mongo-migrate-ts": "^1.0.13",
     "mongoose": "^5.13.3",
     "tmi.js": "^1.8.3",
     "ts-node": "^10.1.0",

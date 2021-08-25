@@ -5,6 +5,7 @@ import { ProfileDoc } from '@db/schema/profile';
 interface ChatIntegrationConfiguration {
   enabled: boolean;
   channelName: string;
+  banlistFormat: string;
 }
 
 interface RequestConfiguration {
@@ -29,8 +30,8 @@ export type StreamerConfigurationDoc = IStreamerConfiguration & Document;
 const streamerConfigurationSchema: Schema = new Schema({
   version: {
     type: String,
-    enum: ['v1.0'],
-    required: true
+    enum: ['v1.1'],
+    required: true,
   },
   chatIntegration: {
     enabled: {
@@ -40,11 +41,15 @@ const streamerConfigurationSchema: Schema = new Schema({
     channelName: {
       type: String,
       required: [
-        function(): boolean {
+        function (): boolean {
           return this.chatIntegration.enabled;
         },
-        'chatIntegration.channelName is required if chatIntegration.enabled is true.'
+        'chatIntegration.channelName is required if chatIntegration.enabled is true.',
       ],
+    },
+    banlistFormat: {
+      type: String,
+      required: true,
     },
   },
   requests: {
@@ -61,7 +66,7 @@ const streamerConfigurationSchema: Schema = new Schema({
     active: {
       type: Schema.Types.ObjectId,
       ref: 'Profile',
-      required: true
+      required: true,
     },
     profiles: {
       type: [
@@ -71,18 +76,19 @@ const streamerConfigurationSchema: Schema = new Schema({
         },
       ],
       required: [
-        function(): boolean {
+        function (): boolean {
           // Ensure that there is minimum one profile
           return this.profile.profiles.length > 0;
         },
-        'At least on profile has to exist.'
-      ]
+        'At least on profile has to exist.',
+      ],
     },
   },
 });
 
-const StreamerConfiguration: Model<StreamerConfigurationDoc> = model<StreamerConfigurationDoc>(
-  'StreamerConfiguration',
-  streamerConfigurationSchema
-);
+const StreamerConfiguration: Model<StreamerConfigurationDoc> =
+  model<StreamerConfigurationDoc>(
+    'StreamerConfiguration',
+    streamerConfigurationSchema
+  );
 export default StreamerConfiguration;
