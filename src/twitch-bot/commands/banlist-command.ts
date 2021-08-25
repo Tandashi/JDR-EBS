@@ -1,16 +1,16 @@
 import tmi from 'tmi.js';
 
 import TwitchBot from '@twitch-bot/index';
-import ProfileService from '@services/profile-service';
-import AnnounceService from '@common/services/announce-service';
+import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
+import FormatService from '@common/services/format-service';
 
 export default class BanlistCommand {
   public static async process(channel: string, userstate: tmi.Userstate, bot: TwitchBot): Promise<void> {
-    const profileResult = await ProfileService.getActive(userstate['room-id']);
+    const configurationResult = await StreamerConfigurationDao.get(userstate['room-id']);
 
-    if (profileResult.type === 'error') {
+    if (configurationResult.type === 'error') {
       let message;
-      switch (profileResult.error) {
+      switch (configurationResult.error) {
         case 'internal':
         default:
           message = 'There was an error retriving the banlist. I am sorry :(.';
@@ -20,7 +20,12 @@ export default class BanlistCommand {
       return bot.sendMessage(channel, message, userstate);
     }
 
-    const bannedSongs = profileResult.data.banlist.map((v) => `${v.title} - ${v.artist}`).join(', ') || '-';
+    const configuration = configurationResult.data;
+    const profile = configuration.profile.active;
+    const format = configuration.chatIntegration.banlistFormat;
+    const bannedSongs = profile.banlist.map((v) => FormatService.getInBanlistFormat(format, v)).join(', ') || '-';
+    // No need for the Announcement Service since we already have the channel name
+    // And the command can only be executed when chatIntegration is on
     return bot.sendMessage(channel, `The following songs are banned: ${bannedSongs}`, userstate);
   }
 }

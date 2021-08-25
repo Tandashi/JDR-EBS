@@ -41,6 +41,8 @@ export default class StreamerConfigurationService {
     req: express.Request
   ): Promise<Result<StreamerConfigurationDoc>> {
     const chatIntegarationEnabled = req.body.chatIntegration?.enabled ?? oldConfiguration.chatIntegration.enabled;
+    const chatIntegrationBanlistFormat =
+      req.body.chatIntegration?.banlistFormat ?? oldConfiguration.chatIntegration.banlistFormat;
     const requestsPerUser = req.body.requests?.perUser ?? oldConfiguration.requests.perUser;
     const requestsDuplicates = req.body.requests?.duplicates ?? oldConfiguration.requests.duplicates;
 
@@ -49,8 +51,7 @@ export default class StreamerConfigurationService {
       chatIntegration: {
         enabled: chatIntegarationEnabled,
         channelName: oldConfiguration.chatIntegration.channelName,
-        // TODO: Allow to update
-        banlistFormat: oldConfiguration.chatIntegration.banlistFormat,
+        banlistFormat: chatIntegrationBanlistFormat,
       },
       requests: {
         perUser: requestsPerUser,

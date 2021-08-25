@@ -31,6 +31,17 @@ export const updateRequestValidationSchema: Schema = {
     },
     toBoolean: true,
   },
+  'chatIntegration.banlistFormat': {
+    in: 'body',
+    exists: {
+      errorMessage: 'Field `chatIntegration.banlistFormat` can not be empty',
+      bail: true,
+    },
+    isString: {
+      errorMessage: 'Field `chatIntegration.banlistFormat` must be a string',
+      bail: true,
+    },
+  },
   requests: {
     in: 'body',
     exists: {
