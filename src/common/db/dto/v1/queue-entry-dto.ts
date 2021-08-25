@@ -4,6 +4,7 @@ import { IQueueEntry } from '@db/schema/queue';
 export interface QueueEntryJSONStructure {
   title: string;
   fromChat: boolean;
+  username: string;
 }
 
 const QueueEntryDto: Dto<IQueueEntry, QueueEntryJSONStructure> = {
@@ -11,6 +12,7 @@ const QueueEntryDto: Dto<IQueueEntry, QueueEntryJSONStructure> = {
     return {
       title: data.song.title,
       fromChat: data.fromChat,
+      username: data.username
     };
   },
 };
