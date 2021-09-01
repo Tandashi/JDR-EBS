@@ -1,7 +1,13 @@
 import tmi from 'tmi.js';
 
-import TwitchBot from '@twitch-bot/index';
+import getLogger from '@common/logging';
+
 import QueueService from '@services/queue-service';
+
+import TwitchBot from '@twitch-bot/index';
+import Messages from '@twitch-bot/messages';
+
+const logger = getLogger('SongRequest Command');
 
 export default class SRCommand {
   public static async process(
@@ -12,7 +18,12 @@ export default class SRCommand {
   ): Promise<void> {
     const songTitle = message.split('!sr ')[1];
     if (!songTitle) {
-      return bot.sendMessage(channel, 'No song title provided.');
+      return bot.sendMessage(channel, Messages.NO_SONG_TITLE_PROVIDED, userstate);
+    }
+
+    if (!userstate['room-id'] || !userstate['user-id'] || !userstate['display-name']) {
+      logger.error(`Userstate was malformed: ${userstate}`);
+      return bot.sendMessage(channel, Messages.INTERNAL_ERROR, userstate);
     }
 
     const queueAddResult = await QueueService.addToQueue(
@@ -23,7 +34,7 @@ export default class SRCommand {
         fromChat: true,
         song: {
           title: songTitle,
-        }
+        },
       },
       userstate['user-id']
     );
@@ -32,20 +43,20 @@ export default class SRCommand {
       let message;
       switch (queueAddResult.error) {
         case 'maximum-requests-exceeded':
-          message = "You can't request any more songs right now. Wait till one of your songs has been played.";
+          message = Messages.MAXIMUM_REQUESTS_EXCEEDED;
           break;
 
         case 'song-already-queued':
-          message = 'This song is already in the queue.';
+          message = Messages.SONG_ALREADY_IN_QUEUE;
           break;
 
         case 'queue-is-closed':
-          message = 'The queue is currently closed';
+          message = Messages.QUEUE_CLOSED;
           break;
 
         case 'internal':
         default:
-          message = 'There was an error adding your song to the queue. I am sorry :(.';
+          message = Messages.INTERNAL_ERROR;
           break;
       }
 

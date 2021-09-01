@@ -1,4 +1,5 @@
-import logger from '@common/logging';
+import getLogger from '@common/logging';
+const logger = getLogger('Result');
 
 export interface SuccessResult<T> {
   type: 'success';

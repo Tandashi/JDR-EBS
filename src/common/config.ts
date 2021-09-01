@@ -1,5 +1,5 @@
-import logger from '@common/logging';
-import { Mongoose } from 'mongoose';
+import getLogger from '@common/logging';
+const logger = getLogger('Configuration');
 
 //#region Interface definitions
 interface IStaticConfig {
@@ -105,8 +105,7 @@ if (!EXTENSION_VERSION) {
 }
 
 const EXTENSION_FILE_HASH = process.env['EXTENSION_FILE_HASH'];
-// Only needed when Extension Version is a release one
-if (!EXTENSION_FILE_HASH && EXTENSION_VERSION !== 'dev') {
+if (!EXTENSION_FILE_HASH) {
   logger.error('No extension file hash provided. Set EXTENSION_FILE_HASH environment variable.');
   process.exit(1);
 }

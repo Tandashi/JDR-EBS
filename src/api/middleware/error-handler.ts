@@ -1,7 +1,9 @@
 import express from 'express';
 
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
-import logger from '@common/logging';
+import getLogger from '@common/logging';
+
+const logger = getLogger('Error Handler');
 
 export const logErrors = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {

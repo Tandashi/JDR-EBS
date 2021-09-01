@@ -1,7 +1,7 @@
 import { MigrationInterface } from 'mongo-migrate-ts';
 import { Db } from 'mongodb';
 
-export class Migration implements MigrationInterface {
+export class BanlistMigration implements MigrationInterface {
   async up(db: Db): Promise<void> {
     await db.collection('streamerconfigurations').updateMany(
       { version: 'v1.0' },

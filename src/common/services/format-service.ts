@@ -1,6 +1,3 @@
-import tmi from 'tmi.js';
-
-import logger from '@common/logging';
 import { SongDataDoc } from '@common/db/schema/song-data';
 
 export default class FormatService {

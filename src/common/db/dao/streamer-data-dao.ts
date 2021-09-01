@@ -1,6 +1,6 @@
 import { PopulateOptions } from 'mongoose';
 
-import logger from '@common/logging';
+import getLogger from '@common/logging';
 import { Result, Success, Failure } from '@common/result';
 
 import SecretService from '@services/secret-service';
@@ -40,6 +40,8 @@ type PopulationParams = QueuePopulateOption | ConfigurationPopulateOption;
 
 type GetBySecretErrors = 'no-such-entity';
 
+const logger = getLogger('Streamer Data Dao');
+
 export default class StreamerDataDao {
   public static async getBySecret(secret: string): Promise<Result<StreamerDataDoc, GetBySecretErrors>> {
     try {
@@ -64,6 +66,10 @@ export default class StreamerDataDao {
         { $set: { secret: newSecret } },
         { new: true }
       );
+
+      if (!streamerData) {
+        throw new Error('Could not update StreamerData secret. findOneAndUpdate returned null.');
+      }
 
       return Success(streamerData);
     } catch (e) {
@@ -118,7 +124,7 @@ export default class StreamerDataDao {
 
       const streamerData = await new StreamerData(streamerDataData).save();
 
-      const populatedData = await streamerData.populate(populate).execPopulate();
+      const populatedData = await streamerData.populate(populate ?? []).execPopulate();
 
       return Success(populatedData);
     } catch (e) {

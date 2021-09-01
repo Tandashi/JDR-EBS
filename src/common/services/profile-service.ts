@@ -2,7 +2,7 @@ import express from 'express';
 
 import { Failure, FailureResult, Result, Success } from '@common/result';
 
-import { ProfileDoc } from '@db/schema/profile';
+import { IProfile, ProfileDoc } from '@db/schema/profile';
 import { SongDataDoc } from '@db/schema/song-data';
 import ProfileDao from '@db/dao/profile-dao';
 import SongDataDao, { GetErrors as SongDataGetErrors } from '@db/dao/song-data-dao';

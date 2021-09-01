@@ -31,14 +31,69 @@ export const updateRequestValidationSchema: Schema = {
     },
     toBoolean: true,
   },
-  'chatIntegration.banlistFormat': {
+  'chatIntegration.commands': {
     in: 'body',
     exists: {
-      errorMessage: 'Field `chatIntegration.banlistFormat` can not be empty',
+      errorMessage: 'Field `chatIntegration.commands` can not be empty',
+      bail: true,
+    },
+    isObject: {
+      errorMessage: 'Field `chatIntegration.commands` must be an object',
+      bail: true,
+    },
+  },
+  'chatIntegration.commands.songRequest': {
+    in: 'body',
+    exists: {
+      errorMessage: 'Field `chatIntegration.commands.songRequest` can not be empty',
+      bail: true,
+    },
+    isObject: {
+      errorMessage: 'Field `chatIntegration.commands.songRequest` must be an object',
+      bail: true,
+    },
+  },
+  'chatIntegration.commands.songRequest.enabled': {
+    in: 'body',
+    exists: {
+      errorMessage: 'Field `chatIntegration.commands.songRequest.enabled` can not be empty',
+      bail: true,
+    },
+    isBoolean: {
+      errorMessage: 'Field `chatIntegration.commands.songRequest.enabled` must be a boolean',
+      bail: true,
+    },
+  },
+  'chatIntegration.commands.banlist': {
+    in: 'body',
+    exists: {
+      errorMessage: 'Field `chatIntegration.commands.banlist` can not be empty',
+      bail: true,
+    },
+    isObject: {
+      errorMessage: 'Field `chatIntegration.commands.banlist` must be an object',
+      bail: true,
+    },
+  },
+  'chatIntegration.commands.banlist.enabled': {
+    in: 'body',
+    exists: {
+      errorMessage: 'Field `chatIntegration.commands.banlist.enabled` can not be empty',
+      bail: true,
+    },
+    isBoolean: {
+      errorMessage: 'Field `chatIntegration.commands.banlist.enabled` must be a boolean',
+      bail: true,
+    },
+  },
+  'chatIntegration.commands.banlist.format': {
+    in: 'body',
+    exists: {
+      errorMessage: 'Field `chatIntegration.commands.banlist.format` can not be empty',
       bail: true,
     },
     isString: {
-      errorMessage: 'Field `chatIntegration.banlistFormat` must be a string',
+      errorMessage: 'Field `chatIntegration.commands.banlist.format` must be a string',
       bail: true,
     },
   },

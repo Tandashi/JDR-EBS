@@ -7,10 +7,12 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 
 import config from '@common/config';
-import logger from '@common/logging';
+import getLogger from '@common/logging';
 import BaseRouter from '@api/routes/router';
 import StreamlabsRouter from '@api/routes/streamlabs/router';
 import { logErrors } from '@api/middleware/error-handler';
+
+const logger = getLogger('API');
 
 const DEFAULT_MONGOOSE_CONNECTION_PARAMS = {
   keepAlive: true,

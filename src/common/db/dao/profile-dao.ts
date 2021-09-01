@@ -1,6 +1,6 @@
 import { PopulateOptions, UpdateQuery } from 'mongoose';
 
-import logger from '@common/logging';
+import getLogger from '@common/logging';
 import { Result, Success, Failure } from '@common/result';
 
 import Profile, { ProfileDoc, IProfile } from '@db/schema/profile';
@@ -8,6 +8,8 @@ import Profile, { ProfileDoc, IProfile } from '@db/schema/profile';
 type ProfilePopulateOptions = {
   path: 'banlist';
 } & PopulateOptions;
+
+const logger = getLogger('Profile Dao');
 
 export default class ProfileDao {
   public static async createProfile(name: string): Promise<Result<ProfileDoc>> {
@@ -39,6 +41,11 @@ export default class ProfileDao {
   ): Promise<Result<ProfileDoc>> {
     try {
       const profile = await Profile.findOneAndUpdate({ _id: id }, updateQuery, { new: true });
+
+      if (!profile) {
+        throw new Error('Could not update Profile. findOneAndUpdate returned null.');
+      }
+
       const populatedProfile = await profile.populate(populate).execPopulate();
       return Success(populatedProfile);
     } catch (e) {

@@ -1,11 +1,13 @@
 import { FilterQuery, ObjectId } from 'mongoose';
 
-import logger from '@common/logging';
+import getLogger from '@common/logging';
 import { Result, Success, Failure } from '@common/result';
 
 import SongData, { GameVersion, SongDataDoc } from '@db/schema/song-data';
 
 export type GetErrors = 'no-such-entity';
+
+const logger = getLogger('SongData Dao');
 
 export default class SongDataDao {
   public static async getSong(songId: string): Promise<Result<SongDataDoc, GetErrors>> {

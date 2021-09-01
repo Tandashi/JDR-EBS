@@ -7,6 +7,6 @@ interface TwitchUser {
 
 declare namespace Express {
   export interface Request {
-    user?: TwitchUser;
+    user: TwitchUser;
   }
 }

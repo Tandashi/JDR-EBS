@@ -7,7 +7,15 @@ import { Result, Success } from '@common/result';
 import TwitchAPIService from '@services/twitch-api-service';
 
 import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
-import { StreamerConfigurationDoc, IStreamerConfiguration } from '@db/schema/streamer-configuration';
+import {
+  StreamerConfigurationDoc,
+  IStreamerConfiguration,
+  IChatIntegrationConfiguration,
+  IChatIntegrationCommandConfiguration,
+  ISongRequestCommandConfiguration,
+  IBanlistCommandConfiguration,
+  IRequestConfiguration,
+} from '@db/schema/streamer-configuration';
 
 export default class StreamerConfigurationService {
   public static async updateChannelName(
@@ -40,18 +48,42 @@ export default class StreamerConfigurationService {
     oldConfiguration: StreamerConfigurationDoc,
     req: express.Request
   ): Promise<Result<StreamerConfigurationDoc>> {
-    const chatIntegarationEnabled = req.body.chatIntegration?.enabled ?? oldConfiguration.chatIntegration.enabled;
-    const chatIntegrationBanlistFormat =
-      req.body.chatIntegration?.banlistFormat ?? oldConfiguration.chatIntegration.banlistFormat;
-    const requestsPerUser = req.body.requests?.perUser ?? oldConfiguration.requests.perUser;
-    const requestsDuplicates = req.body.requests?.duplicates ?? oldConfiguration.requests.duplicates;
+    const configuration: Partial<IStreamerConfiguration> = req.body;
+
+    const chatIntegration: Partial<IChatIntegrationConfiguration> | undefined = configuration?.chatIntegration;
+    const chatIntegrationEnabled = chatIntegration?.enabled ?? oldConfiguration.chatIntegration.enabled;
+
+    const chatIntegrationCommands: Partial<IChatIntegrationCommandConfiguration> | undefined =
+      chatIntegration?.commands;
+    const chatIntegrationCommandsSongRequest: Partial<ISongRequestCommandConfiguration> | undefined =
+      chatIntegrationCommands?.songRequest;
+    const chatIntegrationCommandsSongRequestEnabled =
+      chatIntegrationCommandsSongRequest?.enabled ?? oldConfiguration.chatIntegration.commands.songRequest.enabled;
+    const chatIntegrationCommandsBanlist: Partial<IBanlistCommandConfiguration> | undefined =
+      chatIntegrationCommands?.banlist;
+    const chatIntegrationCommandsBanlistEnabled =
+      chatIntegrationCommandsBanlist?.enabled ?? oldConfiguration.chatIntegration.commands.banlist.enabled;
+    const chatIntegrationCommandsBanlistFormat =
+      chatIntegrationCommandsBanlist?.format ?? oldConfiguration.chatIntegration.commands.banlist.format;
+
+    const requests: Partial<IRequestConfiguration> | undefined = configuration?.requests;
+    const requestsPerUser = requests?.perUser ?? oldConfiguration.requests.perUser;
+    const requestsDuplicates = requests?.duplicates ?? oldConfiguration.requests.duplicates;
 
     const updatedConfiguration: IStreamerConfiguration = {
       version: oldConfiguration.version,
       chatIntegration: {
-        enabled: chatIntegarationEnabled,
+        enabled: chatIntegrationEnabled,
         channelName: oldConfiguration.chatIntegration.channelName,
-        banlistFormat: chatIntegrationBanlistFormat,
+        commands: {
+          songRequest: {
+            enabled: chatIntegrationCommandsSongRequestEnabled,
+          },
+          banlist: {
+            enabled: chatIntegrationCommandsBanlistEnabled,
+            format: chatIntegrationCommandsBanlistFormat,
+          },
+        },
       },
       requests: {
         perUser: requestsPerUser,
@@ -74,12 +106,12 @@ export default class StreamerConfigurationService {
     }
 
     // If we enabled chat integration through the update
-    if (!oldConfiguration.chatIntegration.enabled && chatIntegarationEnabled) {
+    if (!oldConfiguration.chatIntegration.enabled && chatIntegrationEnabled) {
       TwitchBot.getInstance().join(oldConfiguration.chatIntegration.channelName);
     }
 
     // If we disabled chat integration through the update
-    if (oldConfiguration.chatIntegration.enabled && !chatIntegarationEnabled) {
+    if (oldConfiguration.chatIntegration.enabled && !chatIntegrationEnabled) {
       TwitchBot.getInstance().part(oldConfiguration.chatIntegration.channelName);
     }
 

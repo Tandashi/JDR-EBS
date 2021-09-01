@@ -6,16 +6,16 @@ import { GameVersion, SongDataDoc } from '@db/schema/song-data';
 export interface SongDataJSONStructure {
   id: string;
   code_name: string;
-  jdn_code_name: string;
+  jdn_code_name: string | null;
   title: string;
   artist: string;
   game: GameVersion;
-  difficulty: number;
-  coaches: number;
+  difficulty: number | null;
+  coaches: number | null;
   effort: number | null;
   image_url: string;
   wiki_url: string;
-  preview_url: string | null;
+  preview_url: string | undefined;
 }
 
 const SongDataDto: Dto<SongDataDoc, SongDataJSONStructure> = {
@@ -32,7 +32,7 @@ const SongDataDto: Dto<SongDataDoc, SongDataJSONStructure> = {
       effort: data.effort,
       image_url: URLService.getImageUrl(data.image_url),
       wiki_url: data.wiki_url,
-      preview_url: URLService.getVideoUrl(data.preview_url),
+      preview_url: data.preview_url !== null ? URLService.getVideoUrl(data.preview_url) : undefined,
     };
   },
 };

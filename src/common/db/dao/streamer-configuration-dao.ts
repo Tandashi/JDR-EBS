@@ -1,6 +1,6 @@
 import { UpdateQuery } from 'mongoose';
 
-import logger from '@common/logging';
+import getLogger from '@common/logging';
 import { Result, Success, Failure } from '@common/result';
 
 import StreamerConfiguration, {
@@ -9,22 +9,29 @@ import StreamerConfiguration, {
 } from '@db/schema/streamer-configuration';
 import StreamerDataDao, { ConfigurationProfilePopulateOptions } from '@db/dao/streamer-data-dao';
 import ProfileDao from '@db/dao/profile-dao';
+import { ProfileDoc } from '@db/schema/profile';
+
+const logger = getLogger('Streamer Configuration Dao');
 
 export default class StreamerConfigurationDao {
-  private static DEFAULT_CONFIGURATION: IStreamerConfiguration = {
-    version: 'v1.1',
+  private static DEFAULT_CONFIGURATION: Omit<IStreamerConfiguration, 'profile'> = {
+    version: 'v1.2',
     chatIntegration: {
       enabled: false,
       channelName: '',
-      banlistFormat: '{TITLE} - {ARTIST}'
+      commands: {
+        songRequest: {
+          enabled: true,
+        },
+        banlist: {
+          enabled: true,
+          format: '{TITLE} - {ARTIST}',
+        },
+      },
     },
     requests: {
       perUser: 1,
       duplicates: false,
-    },
-    profile: {
-      active: undefined,
-      profiles: [],
     },
   };
 
@@ -84,6 +91,10 @@ export default class StreamerConfigurationDao {
   ): Promise<Result<StreamerConfigurationDoc>> {
     try {
       const configuration = await StreamerConfiguration.findByIdAndUpdate(id, updateQuery, { new: true });
+
+      if (!configuration) {
+        throw new Error('Could not update StreamerConfiguration. findOneAndUpdate returned null.');
+      }
 
       const populatedConfiguration = await configuration.populate(populate).execPopulate();
       return Success(populatedConfiguration);

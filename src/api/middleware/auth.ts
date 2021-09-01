@@ -1,12 +1,13 @@
 import express from 'express';
 import jsonwebtoken from 'jsonwebtoken';
 
-import logger from '@common/logging';
+import getLogger from '@common/logging';
 import config from '@common/config';
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
 import StreamerDataDao from '@db/dao/streamer-data-dao';
 
 const BearerPrefix = 'Bearer ';
+const logger = getLogger('Auth Middleware');
 
 export const AuthJWTOrSecret = async (
   req: express.Request,

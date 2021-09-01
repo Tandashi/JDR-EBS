@@ -11,14 +11,10 @@ export default class URLService {
   }
 
   public static getImageUrl(imageName: string): string {
-    if (!imageName) return undefined;
-
     return `${config.esb.publicAddress}/static/${config.esb.static.imageDir}/${imageName}`;
   }
 
   public static getVideoUrl(videoName: string): string {
-    if (!videoName) return undefined;
-
     return `${config.esb.publicAddress}/static/${config.esb.static.videoDir}/${videoName}`;
   }
 }

@@ -2,8 +2,10 @@ import { ApiClient, HelixChannel } from 'twitch';
 import { ClientCredentialsAuthProvider } from 'twitch-auth';
 
 import config from '@common/config';
-import logger from '@common/logging';
+import getLogger from '@common/logging';
 import { Result, Success, Failure } from '@common/result';
+
+const logger = getLogger('Twitch API Service');
 
 export default class TwitchAPIService {
   private static instance: TwitchAPIService;
@@ -27,6 +29,11 @@ export default class TwitchAPIService {
   public async getChannelInfo(channelId: string): Promise<Result<HelixChannel>> {
     try {
       const channelInfo = await this.apiClient.helix.channels.getChannelInfo(channelId);
+
+      if (!channelInfo) {
+        throw new Error('Channel Information returned from Twitch API was null');
+      }
+
       return Success(channelInfo);
     } catch (e) {
       logger.error((e as Error).message);

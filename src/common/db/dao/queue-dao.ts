@@ -1,7 +1,9 @@
-import logger from '@common/logging';
+import getLogger from '@common/logging';
 import { Result, Success, Failure } from '@common/result';
 
 import Queue, { QueueDoc, IQueueEntry, IQueue } from '@db/schema/queue';
+
+const logger = getLogger('Queue Dao');
 
 export default class QueueDao {
   public static async createQueue(): Promise<Result<QueueDoc>> {
@@ -26,6 +28,11 @@ export default class QueueDao {
         { $set: { enabled: enabled, entries: entries } },
         { new: true }
       );
+
+      if (!newQueue) {
+        throw new Error('Could not setQueue. findOneAndUpdate returned null.');
+      }
+
       return Success(newQueue);
     } catch (e) {
       logger.error((e as Error).message);

@@ -1,9 +1,9 @@
-import winston from 'winston';
+import winston, { Logger } from 'winston';
 
 const { combine, timestamp, printf } = winston.format;
 
-const customFormat = printf(({ level, message, timestamp }) => {
-  return `${timestamp} - ${level}: ${message}`;
+const customFormat = printf(({ level, message, timestamp, moduleName }) => {
+  return `[${moduleName}] ${timestamp} - ${level}: ${message}`;
 });
 
 const logger = winston.createLogger({
@@ -14,7 +14,11 @@ const logger = winston.createLogger({
     // - Write all logs with level `error` and below to `error.log`
     // - Write all logs with level `info` and below to `combined.log`
     //
-    new winston.transports.File({ filename: 'log/error.log', level: 'error' }),
+    new winston.transports.File({
+      filename: 'log/error.log',
+      level: 'error',
+      handleExceptions: true,
+    }),
     new winston.transports.File({ filename: 'log/combined.log' }),
   ],
 });
@@ -31,4 +35,6 @@ if (process.env.NODE_ENV !== 'production') {
   );
 }
 
-export default logger;
+export default function (name: string): Logger {
+  return logger.child({ moduleName: name });
+}

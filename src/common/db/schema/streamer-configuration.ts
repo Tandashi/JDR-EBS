@@ -1,28 +1,43 @@
 import { Document, Schema, Model, model } from 'mongoose';
 
-import { ProfileDoc } from '@db/schema/profile';
+import { IProfile, ProfileDoc } from '@db/schema/profile';
 
-interface ChatIntegrationConfiguration {
+interface IToggleableCommandConfiguration {
   enabled: boolean;
-  channelName: string;
-  banlistFormat: string;
 }
 
-interface RequestConfiguration {
+export interface ISongRequestCommandConfiguration extends IToggleableCommandConfiguration {}
+
+export interface IBanlistCommandConfiguration extends IToggleableCommandConfiguration {
+  format: string;
+}
+
+export interface IChatIntegrationCommandConfiguration {
+  songRequest: ISongRequestCommandConfiguration;
+  banlist: IBanlistCommandConfiguration;
+}
+
+export interface IChatIntegrationConfiguration {
+  enabled: boolean;
+  channelName: string;
+  commands: IChatIntegrationCommandConfiguration;
+}
+
+export interface IRequestConfiguration {
   perUser: number;
   duplicates: boolean;
 }
 
-interface ProfileConfiguration {
+export interface IProfileConfiguration {
   active: ProfileDoc;
   profiles: ProfileDoc[];
 }
 
 export interface IStreamerConfiguration {
-  version: string;
-  chatIntegration: ChatIntegrationConfiguration;
-  requests: RequestConfiguration;
-  profile: ProfileConfiguration;
+  version: 'v1.2';
+  chatIntegration: IChatIntegrationConfiguration;
+  requests: IRequestConfiguration;
+  profile: IProfileConfiguration;
 }
 
 export type StreamerConfigurationDoc = IStreamerConfiguration & Document;
@@ -30,7 +45,7 @@ export type StreamerConfigurationDoc = IStreamerConfiguration & Document;
 const streamerConfigurationSchema: Schema = new Schema({
   version: {
     type: String,
-    enum: ['v1.1'],
+    enum: ['v1.2'],
     required: true,
   },
   chatIntegration: {
@@ -47,9 +62,23 @@ const streamerConfigurationSchema: Schema = new Schema({
         'chatIntegration.channelName is required if chatIntegration.enabled is true.',
       ],
     },
-    banlistFormat: {
-      type: String,
-      required: true,
+    commands: {
+      songRequest: {
+        enabled: {
+          type: Boolean,
+          required: true,
+        },
+      },
+      banlist: {
+        enabled: {
+          type: Boolean,
+          required: true,
+        },
+        format: {
+          type: String,
+          required: true,
+        },
+      },
     },
   },
   requests: {
@@ -86,9 +115,8 @@ const streamerConfigurationSchema: Schema = new Schema({
   },
 });
 
-const StreamerConfiguration: Model<StreamerConfigurationDoc> =
-  model<StreamerConfigurationDoc>(
-    'StreamerConfiguration',
-    streamerConfigurationSchema
-  );
+const StreamerConfiguration: Model<StreamerConfigurationDoc> = model<StreamerConfigurationDoc>(
+  'StreamerConfiguration',
+  streamerConfigurationSchema
+);
 export default StreamerConfiguration;

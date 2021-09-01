@@ -3,7 +3,8 @@
 import 'module-alias/register';
 import tmi from 'tmi.js';
 
-import logger from '@common/logging';
+import getLogger from '@common/logging';
+
 import config from '@common/config';
 
 import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
@@ -11,6 +12,8 @@ import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
 import SRCommand from '@twitch-bot/commands/sr-command';
 import BanlistCommand from '@twitch-bot/commands/banlist-command';
 import AnnounceService from '@common/services/announce-service';
+
+const logger = getLogger('Twitch Bot');
 
 export default class TwitchBot {
   private static instance: TwitchBot;
