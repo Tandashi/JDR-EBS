@@ -9,6 +9,7 @@ import cors from 'cors';
 import config from '@common/config';
 import logger from '@common/logging';
 import BaseRouter from '@api/routes/router';
+import StreamlabsRouter from '@api/routes/streamlabs/router';
 import { logErrors } from '@api/middleware/error-handler';
 
 const DEFAULT_MONGOOSE_CONNECTION_PARAMS = {
@@ -30,12 +31,13 @@ export default class APIServer {
 
   public routes(): void {
     this.app.use('/api', BaseRouter);
+    this.app.use('/streamlabs', StreamlabsRouter);
   }
 
   public config(): void {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
-    this.app.use('/static', express.static(config.app.static.rootDir));
+    this.app.use('/static', express.static(config.esb.static.rootDir));
     this.app.use(cors());
     this.app.use(logErrors);
   }
@@ -73,20 +75,15 @@ export default class APIServer {
     });
 
     const run = async () => {
-      await mongoose.connect(
-        config.mongodb.uri,
-        DEFAULT_MONGOOSE_CONNECTION_PARAMS
-      );
+      await mongoose.connect(config.mongodb.uri, DEFAULT_MONGOOSE_CONNECTION_PARAMS);
     };
 
     run().catch((e) => logger.error((e as Error).message));
   }
 
   public start(): void {
-    this.app.listen(config.app.port, config.app.hostname, () => {
-      logger.info(
-        `API is running at ${config.app.protocol}://${config.app.hostname}:${config.app.port}`
-      );
+    this.app.listen(config.esb.port, config.esb.hostname, () => {
+      logger.info(`API is running at ${config.esb.protocol}://${config.esb.hostname}:${config.esb.port}`);
     });
   }
 }

@@ -8,7 +8,7 @@ interface IStaticConfig {
   videoDir: string;
 }
 
-interface IAppConfig {
+interface IESBConfig {
   protocol: string;
   hostname: string;
   port: number;
@@ -22,12 +22,24 @@ interface IMongoDBConfig {
   uri: string;
 }
 
+interface TwitchReleaseVersion {
+  isDev: false;
+  versionNumber: string;
+  fileHash: string;
+}
+
+interface TwitchDevelopVersion {
+  isDev: true;
+}
+
 interface ITwitchConfig {
   api: {
     clientId: string;
     clientSecret: string;
   };
   extension: {
+    version: TwitchDevelopVersion | TwitchReleaseVersion;
+    clientId: string;
     jwtSecret: string;
   };
   bot: {
@@ -37,7 +49,7 @@ interface ITwitchConfig {
 }
 
 export interface IConfig {
-  app: IAppConfig;
+  esb: IESBConfig;
   mongodb: IMongoDBConfig;
   twitch: ITwitchConfig;
 }
@@ -86,6 +98,25 @@ if (!API_CLIENT_SECRET) {
   process.exit(1);
 }
 
+const EXTENSION_VERSION = process.env['EXTENSION_VERSION'];
+if (!EXTENSION_VERSION) {
+  logger.error('No extension version provided. Set EXTENSION_VERSION environment variable.');
+  process.exit(1);
+}
+
+const EXTENSION_FILE_HASH = process.env['EXTENSION_FILE_HASH'];
+// Only needed when Extension Version is a release one
+if (!EXTENSION_FILE_HASH && EXTENSION_VERSION !== 'dev') {
+  logger.error('No extension file hash provided. Set EXTENSION_FILE_HASH environment variable.');
+  process.exit(1);
+}
+
+const EXTENSION_CLIENT_ID = process.env['EXTENSION_CLIENT_ID'];
+if (!EXTENSION_CLIENT_ID) {
+  logger.error('No extension client id provided. Set EXTENSION_CLIENT_ID environment variable.');
+  process.exit(1);
+}
+
 const JWT_SECRET = process.env['JWT_SECRET'];
 if (!JWT_SECRET) {
   logger.error('No jsonwebtoken secret provided. Set JWT_SECRET environment variable.');
@@ -104,7 +135,7 @@ if (!MONGODB_URI) {
 //#endregion
 
 const config: IConfig = {
-  app: {
+  esb: {
     protocol: APP_PROTOCOL,
     hostname: APP_HOSTNAME,
     port: APP_PORT,
@@ -126,6 +157,11 @@ const config: IConfig = {
       clientSecret: API_CLIENT_SECRET,
     },
     extension: {
+      version:
+        EXTENSION_VERSION === 'dev'
+          ? { isDev: true }
+          : { isDev: false, versionNumber: EXTENSION_VERSION, fileHash: EXTENSION_FILE_HASH },
+      clientId: EXTENSION_CLIENT_ID,
       jwtSecret: JWT_SECRET,
     },
     bot: {

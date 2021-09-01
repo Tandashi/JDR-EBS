@@ -18,6 +18,9 @@ services:
       # - API_CLIENT_SECRET=
       # - BOT_USERNAME=
       # - BOT_OAUTH_TOKEN=
+      # - EXTENSION_VERSION=         # The latest Extension verson number
+      # - EXTENSION_FILE_HASH=       # The latest Extension file hash
+      - EXTENSION_CLIENT_ID=nv9ue0u2753fk3n1n9ghrvd28e3r9v
       # - JWT_SECRET=
       - MONGODB_URI=mongodb://mongodb/jd
     depends_on:
