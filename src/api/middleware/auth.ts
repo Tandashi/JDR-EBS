@@ -113,7 +113,7 @@ export const AuthJWT = (req: express.Request, res: express.Response, next: expre
 
     next();
   } catch (e) {
-    logger.error((e as Error).message);
+    logger.error(e);
     return ResponseService.sendUnauthorized(res, 'Unauthorized');
   }
 };

@@ -53,7 +53,7 @@ export default class StreamerDataDao {
 
       return Success(streamerData);
     } catch (e) {
-      logger.error((e as Error).message);
+      logger.error(e);
 
       return Failure('internal', 'Could not get Streamer Data with secret');
     }
@@ -73,7 +73,7 @@ export default class StreamerDataDao {
 
       return Success(streamerData);
     } catch (e) {
-      logger.error((e as Error).message);
+      logger.error(e);
 
       return Failure('internal', 'Could not update StreamerData secret');
     }
@@ -94,7 +94,7 @@ export default class StreamerDataDao {
 
       return Success(streamerData);
     } catch (e) {
-      logger.error((e as Error).message);
+      logger.error(e);
 
       return Failure('internal', 'Could not retrive StreamerData');
     }
@@ -128,7 +128,7 @@ export default class StreamerDataDao {
 
       return Success(populatedData);
     } catch (e) {
-      logger.error((e as Error).message);
+      logger.error(e);
 
       return Failure('internal', 'Could not create Streamer Data');
     }

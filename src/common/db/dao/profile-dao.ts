@@ -29,7 +29,7 @@ export default class ProfileDao {
 
       return Success(profile);
     } catch (e) {
-      logger.error((e as Error).message);
+      logger.error(e);
       return Failure('internal', 'Could not create Profile');
     }
   }

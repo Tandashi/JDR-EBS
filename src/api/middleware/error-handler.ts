@@ -9,7 +9,7 @@ export const logErrors = (req: express.Request, res: express.Response, next: exp
   try {
     next();
   } catch (e) {
-    logger.error((e as Error).message);
+    logger.error(e);
     ResponseService.sendInternalError(res, ErrorResponseCode.INTERNAL_ERROR);
   }
 };

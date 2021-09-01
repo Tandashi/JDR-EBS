@@ -80,7 +80,7 @@ export default class APIServer {
       await mongoose.connect(config.mongodb.uri, DEFAULT_MONGOOSE_CONNECTION_PARAMS);
     };
 
-    run().catch((e) => logger.error((e as Error).message));
+    run().catch((e) => logger.error(e));
   }
 
   public start(): void {

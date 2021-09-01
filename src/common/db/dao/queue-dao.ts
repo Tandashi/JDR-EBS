@@ -16,7 +16,7 @@ export default class QueueDao {
 
       return Success(queue);
     } catch (e) {
-      logger.error((e as Error).message);
+      logger.error(e);
       return Failure('internal', 'Could not create Queue');
     }
   }
@@ -35,7 +35,7 @@ export default class QueueDao {
 
       return Success(newQueue);
     } catch (e) {
-      logger.error((e as Error).message);
+      logger.error(e);
       return Failure('internal', 'Could not set queue entries');
     }
   }

@@ -8,6 +8,15 @@ export interface StreamerConfigurationJSONStructure {
   chatIntegration: {
     enabled: boolean;
     channelName: string;
+    commands: {
+      songRequest: {
+        enabled: boolean;
+      };
+      banlist: {
+        enabled: boolean;
+        format: string;
+      };
+    };
   };
 
   requests: {
@@ -25,8 +34,23 @@ const StreamerConfigurationDto: Dto<IStreamerConfiguration, StreamerConfiguratio
   getJSON: (data: IStreamerConfiguration) => {
     return {
       version: data.version,
-      chatIntegration: data.chatIntegration,
-      requests: data.requests,
+      chatIntegration: {
+        enabled: data.chatIntegration.enabled,
+        channelName: data.chatIntegration.channelName,
+        commands: {
+          songRequest: {
+            enabled: data.chatIntegration.commands.songRequest.enabled,
+          },
+          banlist: {
+            enabled: data.chatIntegration.commands.banlist.enabled,
+            format: data.chatIntegration.commands.banlist.format,
+          },
+        },
+      },
+      requests: {
+        perUser: data.requests.perUser,
+        duplicates: data.requests.duplicates,
+      },
       profile: {
         active: ProfileDto.getJSON(data.profile.active),
         profiles: data.profile.profiles.map(ProfileDto.getJSON),

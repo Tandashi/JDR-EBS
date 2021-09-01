@@ -9,7 +9,6 @@ import StreamerConfiguration, {
 } from '@db/schema/streamer-configuration';
 import StreamerDataDao, { ConfigurationProfilePopulateOptions } from '@db/dao/streamer-data-dao';
 import ProfileDao from '@db/dao/profile-dao';
-import { ProfileDoc } from '@db/schema/profile';
 
 const logger = getLogger('Streamer Configuration Dao');
 
@@ -43,7 +42,7 @@ export default class StreamerConfigurationDao {
 
       return Success(streamerConfigurations);
     } catch (e) {
-      logger.error((e as Error).message);
+      logger.error(e);
       return Failure('internal', 'Could not retrive StreamerData');
     }
   }
@@ -121,7 +120,7 @@ export default class StreamerConfigurationDao {
       const configuration = await new StreamerConfiguration(configurationData).save();
       return Success(configuration);
     } catch (e) {
-      logger.error((e as Error).message);
+      logger.error(e);
       return Failure('internal', 'Could not create Streamer Configuration');
     }
   }

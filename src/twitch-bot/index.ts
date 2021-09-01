@@ -4,14 +4,15 @@ import 'module-alias/register';
 import tmi from 'tmi.js';
 
 import getLogger from '@common/logging';
-
 import config from '@common/config';
 
+import AnnounceService from '@services/announce-service';
+
 import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
+import { IStreamerConfiguration } from '@db/schema/streamer-configuration';
 
 import SRCommand from '@twitch-bot/commands/sr-command';
 import BanlistCommand from '@twitch-bot/commands/banlist-command';
-import AnnounceService from '@common/services/announce-service';
 
 const logger = getLogger('Twitch Bot');
 
@@ -19,6 +20,9 @@ export default class TwitchBot {
   private static instance: TwitchBot;
 
   private client: tmi.Client;
+  private configurations: {
+    [k: string]: IStreamerConfiguration;
+  } = {};
 
   private constructor() {
     this.client = new tmi.Client({
@@ -69,7 +73,7 @@ export default class TwitchBot {
           );
         }
 
-        this.client.join(channelName);
+        this.join(channelName, c);
       });
     }
 
@@ -80,26 +84,48 @@ export default class TwitchBot {
     }
   }
 
-  private handleOnMessage(channel: string, userstate: tmi.Userstate, message: string, self: boolean): void {
+  private async handleOnMessage(
+    channelName: string,
+    userstate: tmi.Userstate,
+    message: string,
+    self: boolean
+  ): Promise<void> {
     if (self) {
       return;
     }
 
-    if (message.toLowerCase().startsWith('!sr ')) {
-      SRCommand.process(channel, userstate, message, this);
+    const configuration = this.getConfiguration(channelName);
+    const commandsConfiguration = configuration.chatIntegration.commands;
+
+    if (message.toLowerCase().startsWith('!sr ') && commandsConfiguration.songRequest.enabled) {
+      SRCommand.process(channelName, userstate, message, this);
     }
 
-    if (message.toLocaleLowerCase().startsWith('!banlist')) {
-      BanlistCommand.process(channel, userstate, this);
+    if (message.toLocaleLowerCase().startsWith('!banlist') && commandsConfiguration.banlist.enabled) {
+      BanlistCommand.process(channelName, userstate, this);
     }
   }
 
-  public join(channelName: string): void {
+  public join(channelName: string, configuration: IStreamerConfiguration): void {
+    this.updateConfiguration(channelName, configuration);
     this.client.join(channelName);
   }
 
   public part(channelName: string): void {
+    delete this.configurations[this.getUpdatedChannelName(channelName)];
     this.client.part(channelName);
+  }
+
+  public updateConfiguration(channelName: string, configuration: IStreamerConfiguration): void {
+    this.configurations[this.getUpdatedChannelName(channelName)] = configuration;
+  }
+
+  private getUpdatedChannelName(channelName: string): string {
+    return channelName.toLowerCase().replace('#', '');
+  }
+
+  public getConfiguration(channelName: string): IStreamerConfiguration {
+    return this.configurations[this.getUpdatedChannelName(channelName)];
   }
 
   public sendMessage(channelName: string, message: string, replyTo?: tmi.Userstate): void {

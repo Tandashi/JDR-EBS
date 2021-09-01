@@ -36,7 +36,7 @@ export default class TwitchAPIService {
 
       return Success(channelInfo);
     } catch (e) {
-      logger.error((e as Error).message);
+      logger.error(e);
       return Failure('internal', 'Could not get channel information from Twitch API');
     }
   }

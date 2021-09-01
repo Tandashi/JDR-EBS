@@ -105,16 +105,23 @@ export default class StreamerConfigurationService {
       return updateResult;
     }
 
+    const twitchBot = TwitchBot.getInstance();
+    const updateResultData = updateResult.data;
+
     // If we enabled chat integration through the update
     if (!oldConfiguration.chatIntegration.enabled && chatIntegrationEnabled) {
-      TwitchBot.getInstance().join(oldConfiguration.chatIntegration.channelName);
+      twitchBot.join(oldConfiguration.chatIntegration.channelName, updateResultData);
     }
-
     // If we disabled chat integration through the update
-    if (oldConfiguration.chatIntegration.enabled && !chatIntegrationEnabled) {
-      TwitchBot.getInstance().part(oldConfiguration.chatIntegration.channelName);
+    else if (oldConfiguration.chatIntegration.enabled && !chatIntegrationEnabled) {
+      twitchBot.part(oldConfiguration.chatIntegration.channelName);
+    }
+    // If we didnt change the status but we might have changed something else about the configuration
+    // we need to update it for the bot as well so it doesnt use outdated data
+    else if (chatIntegrationEnabled) {
+      twitchBot.updateConfiguration(oldConfiguration.chatIntegration.channelName, updateResultData);
     }
 
-    return Success(updateResult.data);
+    return Success(updateResultData);
   }
 }

@@ -19,7 +19,7 @@ export default class SongDataDao {
       }
       return Success(songdata);
     } catch (e) {
-      logger.error((e as Error).message);
+      logger.error(e);
 
       return Failure('internal', 'Could not retrive SongData');
     }
@@ -30,7 +30,7 @@ export default class SongDataDao {
       const songData = await SongData.find(query);
       return Success(songData);
     } catch (e) {
-      logger.error((e as Error).message);
+      logger.error(e);
 
       return Failure('internal', 'Could not retrive SongDatas');
     }
@@ -58,7 +58,7 @@ export default class SongDataDao {
 
       return Success(games);
     } catch (e) {
-      logger.error((e as Error).message);
+      logger.error(e);
 
       return Failure('internal', 'Could not retrive Games');
     }
