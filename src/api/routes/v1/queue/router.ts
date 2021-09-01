@@ -28,7 +28,7 @@ router.patch(
   AuthJWTOrSecret,
   checkSchema(patchRequestValidationSchema),
   checkValidation,
-  QueuePatchEndpoint.patch
+  QueuePatchEndpoint.setStatus
 );
 
 router.delete(

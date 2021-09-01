@@ -22,7 +22,7 @@ export const patchRequestValidationSchema: Schema = {
 };
 
 export default class QueuePatchEndpoint {
-  public static async patch(req: express.Request, res: express.Response): Promise<void> {
+  public static async setStatus(req: express.Request, res: express.Response): Promise<void> {
     const enabled = req.body.enabled;
 
     const queueResult = await QueueService.setQueueStatus(req.user.channel_id, enabled);
