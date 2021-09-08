@@ -16,6 +16,7 @@ import {
   IBanlistCommandConfiguration,
   IRequestConfiguration,
 } from '@db/schema/streamer-configuration';
+import { ConsoleTransportOptions } from 'winston/lib/winston/transports';
 
 export default class StreamerConfigurationService {
   public static async updateChannelName(
@@ -64,7 +65,10 @@ export default class StreamerConfigurationService {
     const chatIntegrationCommandsBanlistEnabled =
       chatIntegrationCommandsBanlist?.enabled ?? oldConfiguration.chatIntegration.commands.banlist.enabled;
     const chatIntegrationCommandsBanlistFormat =
-      chatIntegrationCommandsBanlist?.format ?? oldConfiguration.chatIntegration.commands.banlist.format;
+      // TODO: Remove when 1.1.1 is rolled out
+      req.body?.chatIntegration?.banlistFormat ??
+      chatIntegrationCommandsBanlist?.format ??
+      oldConfiguration.chatIntegration.commands.banlist.format;
 
     const requests: Partial<IRequestConfiguration> | undefined = configuration?.requests;
     const requestsPerUser = requests?.perUser ?? oldConfiguration.requests.perUser;

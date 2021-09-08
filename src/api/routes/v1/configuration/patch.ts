@@ -10,10 +10,6 @@ import StreamerConfigurationDto from '@db/dto/v1/streamer-configuration-dto';
 export const updateRequestValidationSchema: Schema = {
   chatIntegration: {
     in: 'body',
-    exists: {
-      errorMessage: 'Field `chatIntegration` can not be empty',
-      bail: true,
-    },
     isObject: {
       errorMessage: 'Field `chatIntegration` must be an object',
       bail: true,
@@ -21,10 +17,6 @@ export const updateRequestValidationSchema: Schema = {
   },
   'chatIntegration.enabled': {
     in: 'body',
-    exists: {
-      errorMessage: 'Field `chatIntegration.enabled` can not be empty',
-      bail: true,
-    },
     isBoolean: {
       errorMessage: 'Field `chatIntegration.enabled` must be a boolean',
       bail: true,
@@ -33,10 +25,6 @@ export const updateRequestValidationSchema: Schema = {
   },
   'chatIntegration.commands': {
     in: 'body',
-    exists: {
-      errorMessage: 'Field `chatIntegration.commands` can not be empty',
-      bail: true,
-    },
     isObject: {
       errorMessage: 'Field `chatIntegration.commands` must be an object',
       bail: true,
@@ -44,10 +32,6 @@ export const updateRequestValidationSchema: Schema = {
   },
   'chatIntegration.commands.songRequest': {
     in: 'body',
-    exists: {
-      errorMessage: 'Field `chatIntegration.commands.songRequest` can not be empty',
-      bail: true,
-    },
     isObject: {
       errorMessage: 'Field `chatIntegration.commands.songRequest` must be an object',
       bail: true,
@@ -55,10 +39,6 @@ export const updateRequestValidationSchema: Schema = {
   },
   'chatIntegration.commands.songRequest.enabled': {
     in: 'body',
-    exists: {
-      errorMessage: 'Field `chatIntegration.commands.songRequest.enabled` can not be empty',
-      bail: true,
-    },
     isBoolean: {
       errorMessage: 'Field `chatIntegration.commands.songRequest.enabled` must be a boolean',
       bail: true,
@@ -66,10 +46,6 @@ export const updateRequestValidationSchema: Schema = {
   },
   'chatIntegration.commands.banlist': {
     in: 'body',
-    exists: {
-      errorMessage: 'Field `chatIntegration.commands.banlist` can not be empty',
-      bail: true,
-    },
     isObject: {
       errorMessage: 'Field `chatIntegration.commands.banlist` must be an object',
       bail: true,
@@ -77,10 +53,6 @@ export const updateRequestValidationSchema: Schema = {
   },
   'chatIntegration.commands.banlist.enabled': {
     in: 'body',
-    exists: {
-      errorMessage: 'Field `chatIntegration.commands.banlist.enabled` can not be empty',
-      bail: true,
-    },
     isBoolean: {
       errorMessage: 'Field `chatIntegration.commands.banlist.enabled` must be a boolean',
       bail: true,
@@ -88,21 +60,21 @@ export const updateRequestValidationSchema: Schema = {
   },
   'chatIntegration.commands.banlist.format': {
     in: 'body',
-    exists: {
-      errorMessage: 'Field `chatIntegration.commands.banlist.format` can not be empty',
-      bail: true,
-    },
     isString: {
       errorMessage: 'Field `chatIntegration.commands.banlist.format` must be a string',
       bail: true,
     },
   },
-  requests: {
+  // TODO: Remove when 1.1.1 is rolled out
+  'chatIntegration.banlistFormat': {
     in: 'body',
-    exists: {
-      errorMessage: 'Field `requests` can not be empty',
+    isString: {
+      errorMessage: 'Field `chatIntegration.banlistFormat` must be a string',
       bail: true,
     },
+  },
+  requests: {
+    in: 'body',
     isObject: {
       errorMessage: 'Field `requests` must be an object',
       bail: true,
@@ -110,10 +82,6 @@ export const updateRequestValidationSchema: Schema = {
   },
   'requests.perUser': {
     in: 'body',
-    exists: {
-      errorMessage: 'Field `requests.perUser` can not be empty',
-      bail: true,
-    },
     isInt: {
       errorMessage: 'Field `requests.perUser` must be a number',
       bail: true,
@@ -122,10 +90,6 @@ export const updateRequestValidationSchema: Schema = {
   },
   'requests.duplicates': {
     in: 'body',
-    exists: {
-      errorMessage: 'Field `requests.duplicates` can not be empty',
-      bail: true,
-    },
     isBoolean: {
       errorMessage: 'Field `requests.duplicates` must be a boolean',
       bail: true,
