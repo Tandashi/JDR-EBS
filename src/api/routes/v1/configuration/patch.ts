@@ -58,6 +58,20 @@ export const updateRequestValidationSchema: Schema = {
       bail: true,
     },
   },
+  'chatIntegration.commands.queuePosition': {
+    in: 'body',
+    isObject: {
+      errorMessage: 'Field `chatIntegration.commands.queuePosition` must be an object',
+      bail: true,
+    },
+  },
+  'chatIntegration.commands.queuePosition.enabled': {
+    in: 'body',
+    isBoolean: {
+      errorMessage: 'Field `chatIntegration.commands.queuePosition.enabled` must be a boolean',
+      bail: true,
+    },
+  },
   'chatIntegration.commands.banlist': {
     in: 'body',
     isObject: {

@@ -14,6 +14,7 @@ import { IStreamerConfiguration } from '@db/schema/streamer-configuration';
 import ICommand, { ICommandParameters } from '@twitch-bot/command';
 import SRCommand from '@twitch-bot/commands/sr-command';
 import QueueCommand from '@twitch-bot/commands/queue-command';
+import QueuePositionCommand from './commands/queue-position-command';
 import BanlistCommand from '@twitch-bot/commands/banlist-command';
 
 const logger = getLogger('Twitch Bot');
@@ -28,7 +29,15 @@ export default class TwitchBot {
 
   private commands: { [k: string]: ICommand } = {
     '!sr': new SRCommand(),
+    '!songrequest': new SRCommand(),
+
+    '!q': new QueueCommand(),
     '!queue': new QueueCommand(),
+
+    '!qp': new QueuePositionCommand(),
+    '!queuePosition': new QueuePositionCommand(),
+
+    '!bl': new BanlistCommand(),
     '!banlist': new BanlistCommand(),
   };
 

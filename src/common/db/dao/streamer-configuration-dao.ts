@@ -25,6 +25,9 @@ export default class StreamerConfigurationDao {
         queue: {
           enabled: false,
         },
+        queuePosition: {
+          enabled: false,
+        },
         banlist: {
           enabled: true,
           format: '{TITLE} - {ARTIST}',

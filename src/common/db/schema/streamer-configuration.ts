@@ -8,6 +8,7 @@ interface IToggleableCommandConfiguration {
 
 export interface ISongRequestCommandConfiguration extends IToggleableCommandConfiguration {}
 export interface IQueueCommandConfiguration extends IToggleableCommandConfiguration {}
+export interface IQueuePositionCommandConfiguration extends IToggleableCommandConfiguration {}
 
 export interface IBanlistCommandConfiguration extends IToggleableCommandConfiguration {
   format: string;
@@ -16,6 +17,7 @@ export interface IBanlistCommandConfiguration extends IToggleableCommandConfigur
 export interface IChatIntegrationCommandConfiguration {
   songRequest: ISongRequestCommandConfiguration;
   queue: IQueueCommandConfiguration;
+  queuePosition: IQueuePositionCommandConfiguration;
   banlist: IBanlistCommandConfiguration;
 }
 
@@ -72,6 +74,12 @@ const streamerConfigurationSchema: Schema = new Schema({
         },
       },
       queue: {
+        enabled: {
+          type: Boolean,
+          required: true,
+        },
+      },
+      queuePosition: {
         enabled: {
           type: Boolean,
           required: true,

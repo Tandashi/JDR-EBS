@@ -12,6 +12,12 @@ export interface StreamerConfigurationJSONStructure {
       songRequest: {
         enabled: boolean;
       };
+      queue: {
+        enabled: boolean;
+      };
+      queuePosition: {
+        enabled: boolean;
+      };
       banlist: {
         enabled: boolean;
         format: string;
@@ -40,6 +46,12 @@ const StreamerConfigurationDto: Dto<IStreamerConfiguration, StreamerConfiguratio
         commands: {
           songRequest: {
             enabled: data.chatIntegration.commands.songRequest.enabled,
+          },
+          queue: {
+            enabled: data.chatIntegration.commands.queue.enabled,
+          },
+          queuePosition: {
+            enabled: data.chatIntegration.commands.queuePosition.enabled,
           },
           banlist: {
             enabled: data.chatIntegration.commands.banlist.enabled,

@@ -64,6 +64,10 @@ export default class StreamerConfigurationService {
       chatIntegrationCommands?.queue;
     const chatIntegrationCommandsQueueEnabled =
       chatIntegrationCommandsQueue?.enabled ?? oldConfiguration.chatIntegration.commands.queue.enabled;
+    const chatIntegrationCommandsQueuePosition: Partial<IQueueCommandConfiguration> | undefined =
+      chatIntegrationCommands?.queuePosition;
+    const chatIntegrationCommandsQueuePositionEnabled =
+      chatIntegrationCommandsQueuePosition?.enabled ?? oldConfiguration.chatIntegration.commands.queuePosition.enabled;
     const chatIntegrationCommandsBanlist: Partial<IBanlistCommandConfiguration> | undefined =
       chatIntegrationCommands?.banlist;
     const chatIntegrationCommandsBanlistEnabled =
@@ -86,6 +90,9 @@ export default class StreamerConfigurationService {
           },
           queue: {
             enabled: chatIntegrationCommandsQueueEnabled,
+          },
+          queuePosition: {
+            enabled: chatIntegrationCommandsQueuePositionEnabled,
           },
           banlist: {
             enabled: chatIntegrationCommandsBanlistEnabled,

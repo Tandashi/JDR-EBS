@@ -21,7 +21,10 @@ export class CommandMigration implements MigrationInterface {
               enabled: true,
             },
             queue: {
-              enabled: false
+              enabled: false,
+            },
+            queuePosition: {
+              enabled: false,
             },
             banlist: {
               enabled: true,

@@ -1,17 +1,18 @@
 import getLogger from '@common/logging';
 
 import { IChatIntegrationCommandConfiguration } from '@db/schema/streamer-configuration';
+import queue, { IQueueEntry } from '@db/schema/queue';
 
 import QueueService from '@services/queue-service';
 
 import ICommand, { ICommandParameters } from '@twitch-bot/command';
 import Messages from '@twitch-bot/messages';
 
-const logger = getLogger('Queue Command');
+const logger = getLogger('Queue Position Command');
 
-export default class QueueCommand implements ICommand {
+export default class QueuePositionCommand implements ICommand {
   enabled(configuration: IChatIntegrationCommandConfiguration): boolean {
-    return configuration.queue.enabled;
+    return configuration.queuePosition.enabled;
   }
 
   async process({ channel, userstate, bot }: ICommandParameters): Promise<void> {
@@ -34,7 +35,14 @@ export default class QueueCommand implements ICommand {
       return bot.sendMessage(channel, message, userstate);
     }
 
-    const queue = queueResult.data.entries.map((e) => e.song.title);
-    return bot.sendMessage(channel, `Queue: ${queue.join(', ')}`, userstate);
+    const queueEntries = queueResult.data.entries
+      .filter((e) => e.userId === userstate['user-id'])
+      .map((e, i) => `${i + 1}.: ${e.song.title}`);
+
+    if (queueEntries.length === 0) {
+      return bot.sendMessage(channel, "You haven't requested any songs yet.", userstate);
+    }
+
+    return bot.sendMessage(channel, queueEntries.join(', '), userstate);
   }
 }
