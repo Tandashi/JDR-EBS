@@ -24,14 +24,6 @@ export const addRequestValidationSchema: Schema = {
   },
   username: {
     in: 'body',
-    exists: {
-      errorMessage: 'Field `username` can not be empty',
-      bail: true,
-    },
-    isString: {
-      errorMessage: 'Field `username` must be a string',
-      bail: true,
-    },
   },
 };
 
@@ -95,10 +87,21 @@ export default class QueuePostEndpoint {
       }
     }
 
+    let username = req.body.username;
+
+    if (!username) {
+      const channelInfoResult = await TwitchAPIService.getInstance().getChannelInfo(req.user.user_id);
+      if (channelInfoResult.type === 'error') {
+        return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RESOLVE_USERNAME_FOR_QUEUE);
+      }
+
+      username = channelInfoResult.data.displayName;
+    }
+
     const songdata = getSongResult.data;
     const queueSongData: IQueueEntryFromExtension = {
       userId: req.user.user_id,
-      username: req.body.username,
+      username: username,
       fromChat: false,
       song: {
         id: songdata.id,
