@@ -1,12 +1,13 @@
 import { Document, Schema, Model, model } from 'mongoose';
 
-import { IProfile, ProfileDoc } from '@db/schema/profile';
+import { ProfileDoc } from '@db/schema/profile';
 
 interface IToggleableCommandConfiguration {
   enabled: boolean;
 }
 
 export interface ISongRequestCommandConfiguration extends IToggleableCommandConfiguration {}
+export interface IQueueCommandConfiguration extends IToggleableCommandConfiguration {}
 
 export interface IBanlistCommandConfiguration extends IToggleableCommandConfiguration {
   format: string;
@@ -14,6 +15,7 @@ export interface IBanlistCommandConfiguration extends IToggleableCommandConfigur
 
 export interface IChatIntegrationCommandConfiguration {
   songRequest: ISongRequestCommandConfiguration;
+  queue: IQueueCommandConfiguration;
   banlist: IBanlistCommandConfiguration;
 }
 
@@ -64,6 +66,12 @@ const streamerConfigurationSchema: Schema = new Schema({
     },
     commands: {
       songRequest: {
+        enabled: {
+          type: Boolean,
+          required: true,
+        },
+      },
+      queue: {
         enabled: {
           type: Boolean,
           required: true,

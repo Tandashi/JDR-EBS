@@ -20,6 +20,9 @@ export class CommandMigration implements MigrationInterface {
             songRequest: {
               enabled: true,
             },
+            queue: {
+              enabled: false
+            },
             banlist: {
               enabled: true,
               format: document.chatIntegration.banlistFormat,

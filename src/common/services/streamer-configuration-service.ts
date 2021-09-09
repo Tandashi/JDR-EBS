@@ -13,6 +13,7 @@ import {
   IChatIntegrationConfiguration,
   IChatIntegrationCommandConfiguration,
   ISongRequestCommandConfiguration,
+  IQueueCommandConfiguration,
   IBanlistCommandConfiguration,
   IRequestConfiguration,
 } from '@db/schema/streamer-configuration';
@@ -59,6 +60,10 @@ export default class StreamerConfigurationService {
       chatIntegrationCommands?.songRequest;
     const chatIntegrationCommandsSongRequestEnabled =
       chatIntegrationCommandsSongRequest?.enabled ?? oldConfiguration.chatIntegration.commands.songRequest.enabled;
+    const chatIntegrationCommandsQueue: Partial<IQueueCommandConfiguration> | undefined =
+      chatIntegrationCommands?.queue;
+    const chatIntegrationCommandsQueueEnabled =
+      chatIntegrationCommandsQueue?.enabled ?? oldConfiguration.chatIntegration.commands.queue.enabled;
     const chatIntegrationCommandsBanlist: Partial<IBanlistCommandConfiguration> | undefined =
       chatIntegrationCommands?.banlist;
     const chatIntegrationCommandsBanlistEnabled =
@@ -78,6 +83,9 @@ export default class StreamerConfigurationService {
         commands: {
           songRequest: {
             enabled: chatIntegrationCommandsSongRequestEnabled,
+          },
+          queue: {
+            enabled: chatIntegrationCommandsQueueEnabled,
           },
           banlist: {
             enabled: chatIntegrationCommandsBanlistEnabled,

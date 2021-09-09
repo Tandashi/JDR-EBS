@@ -22,6 +22,9 @@ export default class StreamerConfigurationDao {
         songRequest: {
           enabled: true,
         },
+        queue: {
+          enabled: false,
+        },
         banlist: {
           enabled: true,
           format: '{TITLE} - {ARTIST}',

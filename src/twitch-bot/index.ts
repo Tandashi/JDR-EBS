@@ -12,6 +12,7 @@ import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
 import { IStreamerConfiguration } from '@db/schema/streamer-configuration';
 
 import SRCommand from '@twitch-bot/commands/sr-command';
+import QueueCommand from './commands/queue-command';
 import BanlistCommand from '@twitch-bot/commands/banlist-command';
 
 const logger = getLogger('Twitch Bot');
@@ -99,6 +100,10 @@ export default class TwitchBot {
 
     if (message.toLowerCase().startsWith('!sr ') && commandsConfiguration.songRequest.enabled) {
       SRCommand.process(channelName, userstate, message, this);
+    }
+
+    if (message.toLocaleLowerCase().startsWith('!queue') && commandsConfiguration.queue.enabled) {
+      QueueCommand.process(channelName, userstate, this);
     }
 
     if (message.toLocaleLowerCase().startsWith('!banlist') && commandsConfiguration.banlist.enabled) {
