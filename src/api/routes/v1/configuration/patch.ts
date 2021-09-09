@@ -65,14 +65,6 @@ export const updateRequestValidationSchema: Schema = {
       bail: true,
     },
   },
-  // TODO: Remove when 1.1.1 is rolled out
-  'chatIntegration.banlistFormat': {
-    in: 'body',
-    isString: {
-      errorMessage: 'Field `chatIntegration.banlistFormat` must be a string',
-      bail: true,
-    },
-  },
   requests: {
     in: 'body',
     isObject: {

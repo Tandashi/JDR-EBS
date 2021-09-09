@@ -17,8 +17,6 @@ export interface StreamerConfigurationJSONStructure {
         format: string;
       };
     };
-    // TODO: Remove when 1.1.1 is rolled out
-    banlistFormat: string;
   };
 
   requests: {
@@ -48,7 +46,6 @@ const StreamerConfigurationDto: Dto<IStreamerConfiguration, StreamerConfiguratio
             format: data.chatIntegration.commands.banlist.format,
           },
         },
-        banlistFormat: data.chatIntegration.commands.banlist.format,
       },
       requests: {
         perUser: data.requests.perUser,
