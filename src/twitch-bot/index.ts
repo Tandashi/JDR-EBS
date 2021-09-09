@@ -11,8 +11,9 @@ import AnnounceService from '@services/announce-service';
 import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
 import { IStreamerConfiguration } from '@db/schema/streamer-configuration';
 
+import ICommand, { ICommandParameters } from '@twitch-bot/command';
 import SRCommand from '@twitch-bot/commands/sr-command';
-import QueueCommand from './commands/queue-command';
+import QueueCommand from '@twitch-bot/commands/queue-command';
 import BanlistCommand from '@twitch-bot/commands/banlist-command';
 
 const logger = getLogger('Twitch Bot');
@@ -24,6 +25,12 @@ export default class TwitchBot {
   private configurations: {
     [k: string]: IStreamerConfiguration;
   } = {};
+
+  private commands: { [k: string]: ICommand } = {
+    '!sr': new SRCommand(),
+    '!queue': new QueueCommand(),
+    '!banlist': new BanlistCommand(),
+  };
 
   private constructor() {
     this.client = new tmi.Client({
@@ -95,20 +102,28 @@ export default class TwitchBot {
       return;
     }
 
+    const commandIdentifier = message.split(' ')[0].toLowerCase();
+    const command = this.commands[commandIdentifier];
+
+    if (!command) {
+      return;
+    }
+
     const configuration = this.getConfiguration(channelName);
     const commandsConfiguration = configuration.chatIntegration.commands;
 
-    if (message.toLowerCase().startsWith('!sr ') && commandsConfiguration.songRequest.enabled) {
-      SRCommand.process(channelName, userstate, message, this);
+    if (!command.enabled(commandsConfiguration)) {
+      return;
     }
 
-    if (message.toLocaleLowerCase().startsWith('!queue') && commandsConfiguration.queue.enabled) {
-      QueueCommand.process(channelName, userstate, this);
-    }
+    const params: ICommandParameters = {
+      channel: channelName,
+      userstate: userstate,
+      message: message,
+      bot: this,
+    };
 
-    if (message.toLocaleLowerCase().startsWith('!banlist') && commandsConfiguration.banlist.enabled) {
-      BanlistCommand.process(channelName, userstate, this);
-    }
+    command.process(params);
   }
 
   public join(channelName: string, configuration: IStreamerConfiguration): void {

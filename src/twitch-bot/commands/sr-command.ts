@@ -1,21 +1,19 @@
-import tmi from 'tmi.js';
-
+import { IChatIntegrationCommandConfiguration } from '@common/db/schema/streamer-configuration';
 import getLogger from '@common/logging';
 
 import QueueService from '@services/queue-service';
 
-import TwitchBot from '@twitch-bot/index';
+import ICommand, { ICommandParameters } from '@twitch-bot/command';
 import Messages from '@twitch-bot/messages';
 
 const logger = getLogger('SongRequest Command');
 
-export default class SRCommand {
-  public static async process(
-    channel: string,
-    userstate: tmi.Userstate,
-    message: string,
-    bot: TwitchBot
-  ): Promise<void> {
+export default class SRCommand implements ICommand {
+  enabled(configuration: IChatIntegrationCommandConfiguration): boolean {
+    return configuration.songRequest.enabled;
+  }
+
+  async process({ channel, userstate, message, bot }: ICommandParameters): Promise<void> {
     const songTitle = message.split('!sr ')[1];
     if (!songTitle) {
       return bot.sendMessage(channel, Messages.NO_SONG_TITLE_PROVIDED, userstate);

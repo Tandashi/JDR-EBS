@@ -1,16 +1,21 @@
-import tmi from 'tmi.js';
-
 import getLogger from '@common/logging';
 
-import TwitchBot from '@twitch-bot/index';
 import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
-import FormatService from '@common/services/format-service';
+import { IChatIntegrationCommandConfiguration } from '@db/schema/streamer-configuration';
+
+import FormatService from '@services/format-service';
+
+import ICommand, { ICommandParameters } from '@twitch-bot/command';
 import Messages from '@twitch-bot/messages';
 
 const logger = getLogger('Banlist Command');
 
-export default class BanlistCommand {
-  public static async process(channel: string, userstate: tmi.Userstate, bot: TwitchBot): Promise<void> {
+export default class BanlistCommand implements ICommand {
+  enabled(configuration: IChatIntegrationCommandConfiguration): boolean {
+    return configuration.banlist.enabled;
+  }
+
+  async process({ channel, userstate, bot }: ICommandParameters): Promise<void> {
     if (!userstate['room-id']) {
       logger.error(`Userstate was malformed: ${userstate}`);
       return bot.sendMessage(channel, Messages.INTERNAL_ERROR, userstate);

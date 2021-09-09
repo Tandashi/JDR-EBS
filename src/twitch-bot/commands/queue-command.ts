@@ -1,16 +1,20 @@
-import tmi from 'tmi.js';
-
 import getLogger from '@common/logging';
+
+import { IChatIntegrationCommandConfiguration } from '@db/schema/streamer-configuration';
 
 import QueueService from '@services/queue-service';
 
-import TwitchBot from '@twitch-bot/index';
+import ICommand, { ICommandParameters } from '@twitch-bot/command';
 import Messages from '@twitch-bot/messages';
 
 const logger = getLogger('SongRequest Command');
 
-export default class QueueCommand {
-  public static async process(channel: string, userstate: tmi.Userstate, bot: TwitchBot): Promise<void> {
+export default class QueueCommand implements ICommand {
+  enabled(configuration: IChatIntegrationCommandConfiguration): boolean {
+    return configuration.queue.enabled;
+  }
+
+  async process({ channel, userstate, bot }: ICommandParameters): Promise<void> {
     if (!userstate['room-id'] || !userstate['user-id'] || !userstate['display-name']) {
       logger.error(`Userstate was malformed: ${userstate}`);
       return bot.sendMessage(channel, Messages.INTERNAL_ERROR, userstate);
