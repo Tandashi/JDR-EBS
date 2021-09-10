@@ -35,6 +35,6 @@ export default class QueueCommand implements ICommand {
     }
 
     const queue = queueResult.data.entries.map((e) => e.song.title);
-    return bot.sendMessage(channel, `Queue: ${queue.join(', ')}`, userstate);
+    return bot.sendMessage(channel, `Queue: ${queue.length > 0 ? queue.join(', ') : '-'}`, userstate);
   }
 }
