@@ -7,8 +7,7 @@ import AnnounceService from '@services/announce-service';
 
 import QueueDto from '@db/dto/v1/queue-dto';
 import SongDataDao from '@db/dao/song-data-dao';
-import { IQueueEntryFromExtension, IQueueEntrySongData } from '@db/schema/queue';
-import TwitchAPIService from '@common/services/twitch-api-service';
+import { IQueueEntryFromExtension } from '@db/schema/queue';
 
 export const addRequestValidationSchema: Schema = {
   id: {
@@ -24,6 +23,14 @@ export const addRequestValidationSchema: Schema = {
   },
   username: {
     in: 'body',
+    exists: {
+      errorMessage: 'Field `username` can not be empty',
+      bail: true,
+    },
+    isString: {
+      errorMessage: 'Field `username` must be a string',
+      bail: true,
+    },
   },
 };
 
@@ -87,21 +94,10 @@ export default class QueuePostEndpoint {
       }
     }
 
-    let username = req.body.username;
-
-    if (!username) {
-      const channelInfoResult = await TwitchAPIService.getInstance().getChannelInfo(req.user.user_id);
-      if (channelInfoResult.type === 'error') {
-        return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RESOLVE_USERNAME_FOR_QUEUE);
-      }
-
-      username = channelInfoResult.data.displayName;
-    }
-
     const songdata = getSongResult.data;
     const queueSongData: IQueueEntryFromExtension = {
       userId: req.user.user_id,
-      username: username,
+      username: req.body.username,
       fromChat: false,
       song: {
         id: songdata.id,
