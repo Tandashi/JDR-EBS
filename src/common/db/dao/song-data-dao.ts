@@ -28,7 +28,18 @@ export default class SongDataDao {
   private static async getSongs(query: FilterQuery<SongDataDoc> = {}): Promise<Result<SongDataDoc[]>> {
     try {
       const songData = await SongData.find(query);
-      return Success(songData);
+
+      // Filter out duplicate songs
+      const filteredSongData: SongDataDoc[] = songData.reduce<SongDataDoc[]>((acc, current) => {
+        const x = acc.find((item) => item.code_name === current.code_name);
+        if (!x) {
+          return acc.concat([current]);
+        }
+
+        return acc;
+      }, []);
+
+      return Success(filteredSongData);
     } catch (e) {
       logger.error(e);
 
