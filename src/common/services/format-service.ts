@@ -1,4 +1,4 @@
-import { SongDataDoc } from '@common/db/schema/song-data';
+import { SongDataDoc } from '@mongo/schema/song-data';
 
 export default class FormatService {
   public static getInBanlistFormat(template: string, songData: SongDataDoc): string {

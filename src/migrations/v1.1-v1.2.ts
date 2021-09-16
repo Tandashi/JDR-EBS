@@ -1,7 +1,7 @@
 import { Db } from 'mongodb';
 import { MigrationInterface } from 'mongo-migrate-ts';
 
-import { IStreamerConfiguration } from '@common/db/schema/streamer-configuration';
+import { IStreamerConfiguration } from '@mongo/schema/streamer-configuration';
 
 export class CommandMigration implements MigrationInterface {
   async up(db: Db): Promise<void> {

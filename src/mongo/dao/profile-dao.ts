@@ -3,7 +3,7 @@ import { PopulateOptions, UpdateQuery } from 'mongoose';
 import getLogger from '@common/logging';
 import { Result, Success, Failure } from '@common/result';
 
-import Profile, { ProfileDoc, IProfile } from '@db/schema/profile';
+import Profile, { ProfileDoc, IProfile } from '@mongo/schema/profile';
 
 type ProfilePopulateOptions = {
   path: 'banlist';

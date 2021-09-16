@@ -6,9 +6,9 @@ import { Result, Success, Failure } from '@common/result';
 import StreamerConfiguration, {
   StreamerConfigurationDoc,
   IStreamerConfiguration,
-} from '@db/schema/streamer-configuration';
-import StreamerDataDao, { ConfigurationProfilePopulateOptions } from '@db/dao/streamer-data-dao';
-import ProfileDao from '@db/dao/profile-dao';
+} from '@mongo/schema/streamer-configuration';
+import StreamerDataDao, { ConfigurationProfilePopulateOptions } from '@mongo/dao/streamer-data-dao';
+import ProfileDao from '@mongo/dao/profile-dao';
 
 const logger = getLogger('Streamer Configuration Dao');
 

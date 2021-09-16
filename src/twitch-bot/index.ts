@@ -8,8 +8,8 @@ import config from '@common/config';
 
 import AnnounceService from '@services/announce-service';
 
-import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
-import { IStreamerConfiguration } from '@db/schema/streamer-configuration';
+import StreamerConfigurationDao from '@mongo/dao/streamer-configuration-dao';
+import { IStreamerConfiguration } from '@mongo/schema/streamer-configuration';
 
 import ICommand, { ICommandParameters } from '@twitch-bot/command';
 import SRCommand from '@twitch-bot/commands/sr-command';

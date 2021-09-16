@@ -2,11 +2,11 @@ import express from 'express';
 
 import { Failure, FailureResult, Result, Success } from '@common/result';
 
-import { IProfile, ProfileDoc } from '@db/schema/profile';
-import { SongDataDoc } from '@db/schema/song-data';
-import ProfileDao from '@db/dao/profile-dao';
-import SongDataDao, { GetErrors as SongDataGetErrors } from '@db/dao/song-data-dao';
-import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
+import { IProfile, ProfileDoc } from '@mongo/schema/profile';
+import { SongDataDoc } from '@mongo/schema/song-data';
+import ProfileDao from '@mongo/dao/profile-dao';
+import SongDataDao, { GetErrors as SongDataGetErrors } from '@mongo/dao/song-data-dao';
+import StreamerConfigurationDao from '@mongo/dao/streamer-configuration-dao';
 
 type UpdateErrors = 'invalid-song-id';
 type GetErrors = 'no-such-name';

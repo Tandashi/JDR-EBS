@@ -1,6 +1,6 @@
-import Dto from '@db/dto/dto';
-import { QueueDoc } from '@db/schema/queue';
-import QueueEntryDto, { QueueEntryJSONStructure } from '@db/dto/v1/queue-entry-dto';
+import Dto from '@mongo/dto/dto';
+import { QueueDoc } from '@mongo/schema/queue';
+import QueueEntryDto, { QueueEntryJSONStructure } from '@mongo/dto/v1/queue-entry-dto';
 
 export interface QueueJSONStructure {
   enabled: boolean;

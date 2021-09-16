@@ -4,8 +4,8 @@ import { Schema } from 'express-validator';
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
 import ProfileService from '@services/profile-service';
 
-import SongDataDto from '@db/dto/v1/song-data-dto';
-import SongDataDao from '@db/dao/song-data-dao';
+import SongDataDto from '@mongo/dto/v1/song-data-dto';
+import SongDataDao from '@mongo/dao/song-data-dao';
 
 export const getRequestValidationSchema: Schema = {
   excludeBanlist: {

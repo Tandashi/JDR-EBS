@@ -19,10 +19,11 @@
     "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
   "_moduleAliases": {
+    "@socket-io": "dist/socket-io",
     "@twitch-bot": "dist/twitch-bot",
     "@api": "dist/api",
     "@common": "dist/common",
-    "@db": "dist/common/db",
+    "@mongo": "dist/mongo",
     "@services": "dist/common/services",
     "@migrations": "dist/migrations"
   },
@@ -39,6 +40,7 @@
     "module-alias": "^2.2.2",
     "mongo-migrate-ts": "^1.0.13",
     "mongoose": "^5.13.3",
+    "socket.io": "^4.2.0",
     "tmi.js": "^1.8.3",
     "ts-node": "^10.1.0",
     "twitch": "^4.6.5",

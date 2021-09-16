@@ -5,9 +5,9 @@ import ResponseService, { ErrorResponseCode } from '@services/response-service';
 import QueueService from '@services/queue-service';
 import AnnounceService from '@services/announce-service';
 
-import QueueDto from '@db/dto/v1/queue-dto';
-import SongDataDao from '@db/dao/song-data-dao';
-import { IQueueEntryFromExtension } from '@db/schema/queue';
+import QueueDto from '@mongo/dto/v1/queue-dto';
+import SongDataDao from '@mongo/dao/song-data-dao';
+import { IQueueEntryFromExtension } from '@mongo/schema/queue';
 
 export const addRequestValidationSchema: Schema = {
   id: {

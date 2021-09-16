@@ -1,6 +1,6 @@
 import getLogger from '@common/logging';
 
-import { IChatIntegrationCommandConfiguration } from '@db/schema/streamer-configuration';
+import { IChatIntegrationCommandConfiguration } from '@mongo/schema/streamer-configuration';
 
 import QueueService from '@services/queue-service';
 

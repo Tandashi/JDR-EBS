@@ -3,7 +3,7 @@ import express from 'express';
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
 import QueueService from '@services/queue-service';
 
-import QueueDto from '@db/dto/v1/queue-dto';
+import QueueDto from '@mongo/dto/v1/queue-dto';
 
 export default class QueueGetEndpoint {
   public static async get(req: express.Request, res: express.Response): Promise<void> {

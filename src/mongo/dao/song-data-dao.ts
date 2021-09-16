@@ -3,7 +3,7 @@ import { FilterQuery, ObjectId } from 'mongoose';
 import getLogger from '@common/logging';
 import { Result, Success, Failure } from '@common/result';
 
-import SongData, { GameVersion, SongDataDoc } from '@db/schema/song-data';
+import SongData, { GameVersion, SongDataDoc } from '@mongo/schema/song-data';
 
 export type GetErrors = 'no-such-entity';
 

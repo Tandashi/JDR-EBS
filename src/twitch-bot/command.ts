@@ -2,7 +2,7 @@ import tmi from 'tmi.js';
 
 import TwitchBot from './index';
 
-import { IChatIntegrationCommandConfiguration } from '@db/schema/streamer-configuration';
+import { IChatIntegrationCommandConfiguration } from '@mongo/schema/streamer-configuration';
 
 export interface ICommandParameters {
   channel: string;

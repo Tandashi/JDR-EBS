@@ -5,9 +5,9 @@ import { Result, Success, Failure } from '@common/result';
 
 import SecretService from '@services/secret-service';
 
-import StreamerData, { StreamerDataDoc, IStreamerData } from '@db/schema/streamer-data';
-import QueueDao from '@db/dao/queue-dao';
-import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
+import StreamerData, { StreamerDataDoc, IStreamerData } from '@mongo/schema/streamer-data';
+import QueueDao from '@mongo/dao/queue-dao';
+import StreamerConfigurationDao from '@mongo/dao/streamer-configuration-dao';
 
 type QueuePopulateOption = {
   path: 'queue';

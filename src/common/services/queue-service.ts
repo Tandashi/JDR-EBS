@@ -1,10 +1,10 @@
 import { Result, Success, Failure } from '@common/result';
 
-import { QueueDoc, IQueueEntrySongData, IQueueEntry } from '@db/schema/queue';
-import StreamerDataDao from '@db/dao/streamer-data-dao';
-import QueueDao from '@db/dao/queue-dao';
-import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
-import AnnounceService from './announce-service';
+import { QueueDoc, IQueueEntrySongData, IQueueEntry } from '@mongo/schema/queue';
+import StreamerDataDao from '@mongo/dao/streamer-data-dao';
+import QueueDao from '@mongo/dao/queue-dao';
+import StreamerConfigurationDao from '@mongo/dao/streamer-configuration-dao';
+import AnnounceService from '@services/announce-service';
 
 type AddToQueueErrors = 'maximum-requests-exceeded' | 'song-already-queued' | 'song-is-banned' | 'queue-is-closed';
 

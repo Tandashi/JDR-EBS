@@ -1,6 +1,6 @@
 import getLogger from '@common/logging';
 
-import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
+import StreamerConfigurationDao from '@mongo/dao/streamer-configuration-dao';
 import TwitchBot from '@twitch-bot/index';
 
 const logger = getLogger('Announce Service');

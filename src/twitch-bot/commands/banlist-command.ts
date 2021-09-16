@@ -1,7 +1,7 @@
 import getLogger from '@common/logging';
 
-import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
-import { IChatIntegrationCommandConfiguration } from '@db/schema/streamer-configuration';
+import StreamerConfigurationDao from '@mongo/dao/streamer-configuration-dao';
+import { IChatIntegrationCommandConfiguration } from '@mongo/schema/streamer-configuration';
 
 import FormatService from '@services/format-service';
 

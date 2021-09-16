@@ -1,6 +1,6 @@
-import Dto from '@db/dto/dto';
-import { IProfile } from '@db/schema/profile';
-import SongDataDto, { SongDataJSONStructure } from '@db/dto/v1/song-data-dto';
+import Dto from '@mongo/dto/dto';
+import { IProfile } from '@mongo/schema/profile';
+import SongDataDto, { SongDataJSONStructure } from '@mongo/dto/v1/song-data-dto';
 
 export interface ProfileJSONStructure {
   name: string;

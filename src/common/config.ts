@@ -8,12 +8,23 @@ interface IStaticConfig {
   videoDir: string;
 }
 
+interface ISocketIOConfig {
+  cors: {
+    origin: string | boolean;
+    allowedHeaders: string;
+    methods: string;
+    credentials: boolean;
+  };
+}
+
 interface IESBConfig {
   protocol: string;
   hostname: string;
   port: number;
 
   publicAddress: string;
+
+  socketIO: ISocketIOConfig;
 
   static: IStaticConfig;
 }
@@ -55,6 +66,22 @@ export interface IConfig {
 }
 //#endregion
 
+/**
+ * Parses the origin from the configuration file
+ *
+ * @param origin The origin to parse
+ *
+ * @returns The correct value type
+ */
+function parseOrigin(origin: string | undefined): string | boolean {
+  if (origin === 'true') return true;
+
+  if (origin !== undefined) return origin;
+
+  // Disable CORS
+  return false;
+}
+
 //#region Environment Variables processing and validation
 
 //#region App
@@ -71,6 +98,11 @@ if (!APP_PUBLIC_ADDRESS) {
 const STATIC_ROOT_DIR = process.env['STATIC_ROOT_DIR'] || 'static';
 const STATIC_IMAGE_DIR = process.env['STATIC_IMAGE_DIR'] || 'images';
 const STATIC_VIDEO_DIR = process.env['STATIC_VIDEO_DIR'] || 'videos';
+
+const SOCKETIO_CORS_ORIGIN = parseOrigin(process.env.SOCKETIO_CORS_ORIGINS);
+const SOCKETIO_CORS_ALLOWED_HEADERS = process.env.SOCKETIO_CORS_ALLOWED_HEADERS || '';
+const SOCKETIO_CORS_ALLOWED_METHODS = process.env.SOCKETIO_CORS_METHODS || 'GET,HEAD,PUT,PATCH,POST,DELETE';
+const SOCKETIO_CORS_CREDENTIALS = process.env.SOCKETIO_CORS_CREDENTIALS === 'true' || true;
 //#endregion
 
 //#region Twitch
@@ -140,6 +172,15 @@ const config: IConfig = {
     port: APP_PORT,
 
     publicAddress: APP_PUBLIC_ADDRESS,
+
+    socketIO: {
+      cors: {
+        origin: SOCKETIO_CORS_ORIGIN,
+        methods: SOCKETIO_CORS_ALLOWED_METHODS,
+        allowedHeaders: SOCKETIO_CORS_ALLOWED_HEADERS,
+        credentials: SOCKETIO_CORS_CREDENTIALS,
+      },
+    },
 
     static: {
       rootDir: STATIC_ROOT_DIR,

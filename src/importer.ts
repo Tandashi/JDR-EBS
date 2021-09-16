@@ -11,7 +11,7 @@ import chalk from 'chalk';
 import config from '@common/config';
 import getLogger from '@common/logging';
 
-import SongData from '@db/schema/song-data';
+import SongData from '@mongo/schema/song-data';
 
 const logger = getLogger('Importer');
 

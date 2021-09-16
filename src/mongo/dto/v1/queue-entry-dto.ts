@@ -1,5 +1,5 @@
-import Dto from '@db/dto/dto';
-import { IQueueEntry } from '@db/schema/queue';
+import Dto from '@mongo/dto/dto';
+import { IQueueEntry } from '@mongo/schema/queue';
 
 export interface QueueEntryJSONStructure {
   title: string;

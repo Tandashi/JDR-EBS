@@ -1,4 +1,4 @@
-import Dto from '@db/dto/dto';
+import Dto from '@mongo/dto/dto';
 
 export type GamesJSONStructure = string[];
 

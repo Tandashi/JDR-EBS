@@ -1,7 +1,7 @@
 import { Document, Schema, Model, model } from 'mongoose';
 
-import { QueueDoc } from '@db/schema/queue';
-import { StreamerConfigurationDoc } from '@db/schema/streamer-configuration';
+import { QueueDoc } from '@mongo/schema/queue';
+import { StreamerConfigurationDoc } from '@mongo/schema/streamer-configuration';
 
 export interface IStreamerData {
   channelId: string;

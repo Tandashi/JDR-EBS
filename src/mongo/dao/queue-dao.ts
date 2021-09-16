@@ -1,7 +1,7 @@
 import getLogger from '@common/logging';
 import { Result, Success, Failure } from '@common/result';
 
-import Queue, { QueueDoc, IQueueEntry, IQueue } from '@db/schema/queue';
+import Queue, { QueueDoc, IQueueEntry, IQueue } from '@mongo/schema/queue';
 
 const logger = getLogger('Queue Dao');
 

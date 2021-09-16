@@ -1,13 +1,11 @@
 import express from 'express';
-import jsonwebtoken from 'jsonwebtoken';
 
 import getLogger from '@common/logging';
-import config from '@common/config';
+import * as Auth from '@common/auth';
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
-import StreamerDataDao from '@db/dao/streamer-data-dao';
 
 const BearerPrefix = 'Bearer ';
-const logger = getLogger('Auth Middleware');
+const logger = getLogger('Authentication API Middleware');
 
 export const AuthJWTOrSecret = async (
   req: express.Request,
@@ -46,9 +44,9 @@ export const AuthSecret = async (
     return ResponseService.sendUnauthorized(res, 'Unauthorized');
   }
 
-  const streamerDataResult = await StreamerDataDao.getBySecret(apiKey as string);
-  if (streamerDataResult.type === 'error') {
-    switch (streamerDataResult.error) {
+  const twitchUserResult = await Auth.AuthSecret(apiKey as string);
+  if (twitchUserResult.type === 'error') {
+    switch (twitchUserResult.error) {
       case 'no-such-entity':
         return ResponseService.sendUnauthorized(res, 'Unauthorized');
       case 'internal':
@@ -57,12 +55,39 @@ export const AuthSecret = async (
     }
   }
 
-  req.user = {
-    channel_id: streamerDataResult.data.channelId,
-    role: 'broadcaster',
-    user_id: '-1',
-    opaque_user_id: '-1',
-  };
+  req.user = twitchUserResult.data;
+  next();
+};
+
+export const AuthJWT = (req: express.Request, res: express.Response, next: express.NextFunction): void => {
+  // Get the authorization header from the request
+  const authHeader = req.headers.authorization;
+
+  // If no header is specified they are not authorized
+  if (!authHeader) {
+    return ResponseService.sendUnauthorized(res, 'Unauthorized');
+  }
+
+  // If no bearer token was provided the wrong format was provided
+  if (!authHeader.startsWith(BearerPrefix)) {
+    return ResponseService.sendUnauthorized(res, 'Wrong token format!');
+  }
+
+  // Get the token without the Bearer Prefix
+  const token = authHeader.substring(BearerPrefix.length);
+
+  const authResult = Auth.AuthJWT(token);
+  if (authResult.type === 'error') {
+    return ResponseService.sendUnauthorized(res, 'Unauthorized');
+  }
+
+  // Set the User on the request
+  req.user = authResult.data;
+
+  // Check if the userId we need was linked
+  if (!req.user.user_id) {
+    return ResponseService.sendUnauthorized(res, 'Unauthorized', ErrorResponseCode.COULD_NOT_AUTH_NO_USERID);
+  }
 
   next();
 };
@@ -78,42 +103,4 @@ export const BroadcasterOnly = (req: express.Request, res: express.Response, nex
   }
 
   next();
-};
-
-export const AuthJWT = (req: express.Request, res: express.Response, next: express.NextFunction): void => {
-  try {
-    // Get the authorization header from the request
-    const authHeader = req.headers.authorization;
-
-    // If no header is specified they are not authorized
-    if (!authHeader) {
-      return ResponseService.sendUnauthorized(res, 'Unauthorized');
-    }
-
-    // If no bearer token was provided the wrong format was provided
-    if (!authHeader.startsWith(BearerPrefix)) {
-      return ResponseService.sendUnauthorized(res, 'Wrong token format!');
-    }
-
-    // Get the token without the Bearer Prefix
-    const token = authHeader.substring(BearerPrefix.length);
-    // Verify if the token is correct
-    // Decode the secret since Twitch provides it as a base64 string
-    const jwt = jsonwebtoken.verify(token, Buffer.from(config.twitch.extension.jwtSecret, 'base64'), {
-      algorithms: ['HS256'],
-    });
-
-    // Set the User on the request
-    req.user = jwt as TwitchUser;
-
-    // Check if the userId we need was linked
-    if (!req.user.user_id) {
-      return ResponseService.sendUnauthorized(res, 'Unauthorized', ErrorResponseCode.COULD_NOT_AUTH_NO_USERID);
-    }
-
-    next();
-  } catch (e) {
-    logger.error(e);
-    return ResponseService.sendUnauthorized(res, 'Unauthorized');
-  }
 };

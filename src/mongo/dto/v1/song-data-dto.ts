@@ -1,7 +1,7 @@
 import URLService from '@services/url-service';
 
-import Dto from '@db/dto/dto';
-import { GameVersion, SongDataDoc } from '@db/schema/song-data';
+import Dto from '@mongo/dto/dto';
+import { GameVersion, SongDataDoc } from '@mongo/schema/song-data';
 
 export interface SongDataJSONStructure {
   id: string;

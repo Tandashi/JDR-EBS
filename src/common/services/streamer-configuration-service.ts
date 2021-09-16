@@ -6,7 +6,7 @@ import { Result, Success } from '@common/result';
 
 import TwitchAPIService from '@services/twitch-api-service';
 
-import StreamerConfigurationDao from '@db/dao/streamer-configuration-dao';
+import StreamerConfigurationDao from '@mongo/dao/streamer-configuration-dao';
 import {
   StreamerConfigurationDoc,
   IStreamerConfiguration,
@@ -16,7 +16,7 @@ import {
   IQueueCommandConfiguration,
   IBanlistCommandConfiguration,
   IRequestConfiguration,
-} from '@db/schema/streamer-configuration';
+} from '@mongo/schema/streamer-configuration';
 
 export default class StreamerConfigurationService {
   public static async updateChannelName(

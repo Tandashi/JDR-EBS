@@ -4,7 +4,7 @@ import { Schema } from 'express-validator';
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
 import ProfileService from '@services/profile-service';
 
-import ProfileDto from '@db/dto/v1/profile-dto';
+import ProfileDto from '@mongo/dto/v1/profile-dto';
 
 export const updateRequestValidationSchema: Schema = {
   name: {

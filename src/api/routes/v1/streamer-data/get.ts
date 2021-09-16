@@ -3,8 +3,8 @@ import { Schema } from 'express-validator';
 
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
 
-import StreamerDataDao from '@db/dao/streamer-data-dao';
-import StreamerDataDto from '@db/dto/v1/streamer-data-dto';
+import StreamerDataDao from '@mongo/dao/streamer-data-dao';
+import StreamerDataDto from '@mongo/dto/v1/streamer-data-dto';
 
 export const getRequestValidationSchema: Schema = {
   channelId: {

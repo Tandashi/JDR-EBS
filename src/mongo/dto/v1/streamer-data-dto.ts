@@ -1,7 +1,7 @@
-import Dto from '@db/dto/dto';
-import { IStreamerData } from '@db/schema/streamer-data';
-import StreamerConfigurationDto, { StreamerConfigurationJSONStructure } from '@db/dto/v1/streamer-configuration-dto';
-import QueueDto, { QueueJSONStructure } from '@db/dto/v1/queue-dto';
+import Dto from '@mongo/dto/dto';
+import { IStreamerData } from '@mongo/schema/streamer-data';
+import StreamerConfigurationDto, { StreamerConfigurationJSONStructure } from '@mongo/dto/v1/streamer-configuration-dto';
+import QueueDto, { QueueJSONStructure } from '@mongo/dto/v1/queue-dto';
 
 export interface StreamerDataJSONStructure {
   channelId: string;

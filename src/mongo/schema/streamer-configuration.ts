@@ -1,6 +1,6 @@
 import { Document, Schema, Model, model } from 'mongoose';
 
-import { ProfileDoc } from '@db/schema/profile';
+import { ProfileDoc } from '@mongo/schema/profile';
 
 interface IToggleableCommandConfiguration {
   enabled: boolean;
