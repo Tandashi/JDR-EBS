@@ -6,6 +6,8 @@ import QueueService from '@services/queue-service';
 
 import QueueDto from '@mongo/dto/v1/queue-dto';
 
+const APIResponseService = ResponseService.getAPIInstance();
+
 export const patchRequestValidationSchema: Schema = {
   enabled: {
     in: ['body'],
@@ -27,10 +29,10 @@ export default class QueuePatchEndpoint {
 
     const queueResult = await QueueService.setQueueStatus(req.user.channel_id, enabled);
     if (queueResult.type === 'error') {
-      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_UPDATE_ENABLED_QUEUE);
+      return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_UPDATE_ENABLED_QUEUE);
     }
 
-    ResponseService.sendOk(res, {
+    APIResponseService.sendOk(res, {
       data: QueueDto.getJSON(queueResult.data),
     });
   }

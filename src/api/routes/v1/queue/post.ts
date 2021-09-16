@@ -9,6 +9,8 @@ import QueueDto from '@mongo/dto/v1/queue-dto';
 import SongDataDao from '@mongo/dao/song-data-dao';
 import { IQueueEntryFromExtension } from '@mongo/schema/queue';
 
+const APIResponseService = ResponseService.getAPIInstance();
+
 export const addRequestValidationSchema: Schema = {
   id: {
     in: 'body',
@@ -54,7 +56,7 @@ export default class QueuePostEndpoint {
     const queueResult = await QueueService.getQueue(req.user.channel_id);
 
     if (queueResult.type === 'error') {
-      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RETRIVE_QUEUE);
+      return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RETRIVE_QUEUE);
     }
 
     const entry = queueResult.data.entries[index];
@@ -62,7 +64,7 @@ export default class QueuePostEndpoint {
       AnnounceService.announce(req.user.channel_id, `Next up: ${entry.song.title}`);
     }
 
-    return ResponseService.sendOk(res, {
+    return APIResponseService.sendOk(res, {
       data: QueueDto.getJSON(queueResult.data),
     });
   }
@@ -71,10 +73,10 @@ export default class QueuePostEndpoint {
     const clearResult = await QueueService.clearQueue(req.user.channel_id);
 
     if (clearResult.type === 'error') {
-      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_CLEAR_QUEUE);
+      return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_CLEAR_QUEUE);
     }
 
-    return ResponseService.sendOk(res, {
+    return APIResponseService.sendOk(res, {
       data: QueueDto.getJSON(clearResult.data),
     });
   }
@@ -86,11 +88,11 @@ export default class QueuePostEndpoint {
     if (getSongResult.type === 'error') {
       switch (getSongResult.error) {
         case 'no-such-entity':
-          return ResponseService.sendBadRequest(res, 'Invalid songId provided');
+          return APIResponseService.sendBadRequest(res, 'Invalid songId provided');
 
         case 'internal':
         default:
-          return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_ADD_TO_QUEUE);
+          return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_ADD_TO_QUEUE);
       }
     }
 
@@ -109,24 +111,24 @@ export default class QueuePostEndpoint {
     if (addResult.type === 'error') {
       switch (addResult.error) {
         case 'maximum-requests-exceeded':
-          return ResponseService.sendBadRequest(res, 'Maximum number of songs to request exceeded.');
+          return APIResponseService.sendBadRequest(res, 'Maximum number of songs to request exceeded.');
 
         case 'song-already-queued':
-          return ResponseService.sendBadRequest(res, 'Song is already in Queue.');
+          return APIResponseService.sendBadRequest(res, 'Song is already in Queue.');
 
         case 'song-is-banned':
-          return ResponseService.sendBadRequest(res, 'Song is banned.');
+          return APIResponseService.sendBadRequest(res, 'Song is banned.');
 
         case 'queue-is-closed':
-          return ResponseService.sendConflictRequest(res, 'Queue is currently closed.');
+          return APIResponseService.sendConflictRequest(res, 'Queue is currently closed.');
 
         case 'internal':
         default:
-          return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_ADD_TO_QUEUE);
+          return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_ADD_TO_QUEUE);
       }
     }
 
-    return ResponseService.sendOk(res, {
+    return APIResponseService.sendOk(res, {
       data: QueueDto.getJSON(addResult.data),
     });
   }

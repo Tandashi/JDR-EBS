@@ -6,6 +6,8 @@ import QueueService from '@services/queue-service';
 
 import QueueDto from '@mongo/dto/v1/queue-dto';
 
+const APIResponseService = ResponseService.getAPIInstance();
+
 export const deleteRequestValidationSchema: Schema = {
   index: {
     in: ['body'],
@@ -26,10 +28,10 @@ export default class QueueDeleteEndpoint {
 
     const queueResult = await QueueService.removeFromQueue(req.user.channel_id, index);
     if (queueResult.type === 'error') {
-      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_REMOVE_FROM_QUEUE);
+      return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_REMOVE_FROM_QUEUE);
     }
 
-    ResponseService.sendOk(res, {
+    APIResponseService.sendOk(res, {
       data: QueueDto.getJSON(queueResult.data),
     });
   }

@@ -7,6 +7,8 @@ import ResponseService, { ErrorResponseCode } from '@services/response-service';
 const BearerPrefix = 'Bearer ';
 const logger = getLogger('Authentication API Middleware');
 
+const APIResponseService = ResponseService.getAPIInstance();
+
 export const AuthJWTOrSecret = async (
   req: express.Request,
   res: express.Response,
@@ -28,7 +30,7 @@ export const AuthJWTOrSecret = async (
     return AuthJWT(req, res, next);
   }
 
-  return ResponseService.sendUnauthorized(res, 'Unauthorized');
+  return APIResponseService.sendUnauthorized(res, 'Unauthorized');
 };
 
 export const AuthSecret = async (
@@ -41,17 +43,17 @@ export const AuthSecret = async (
 
   // If no header is specified they are not authorized
   if (!apiKey) {
-    return ResponseService.sendUnauthorized(res, 'Unauthorized');
+    return APIResponseService.sendUnauthorized(res, 'Unauthorized');
   }
 
   const twitchUserResult = await Auth.AuthSecret(apiKey as string);
   if (twitchUserResult.type === 'error') {
     switch (twitchUserResult.error) {
       case 'no-such-entity':
-        return ResponseService.sendUnauthorized(res, 'Unauthorized');
+        return APIResponseService.sendUnauthorized(res, 'Unauthorized');
       case 'internal':
       default:
-        return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_AUTH_WITH_SECRET);
+        return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_AUTH_WITH_SECRET);
     }
   }
 
@@ -65,12 +67,12 @@ export const AuthJWT = (req: express.Request, res: express.Response, next: expre
 
   // If no header is specified they are not authorized
   if (!authHeader) {
-    return ResponseService.sendUnauthorized(res, 'Unauthorized');
+    return APIResponseService.sendUnauthorized(res, 'Unauthorized');
   }
 
   // If no bearer token was provided the wrong format was provided
   if (!authHeader.startsWith(BearerPrefix)) {
-    return ResponseService.sendUnauthorized(res, 'Wrong token format!');
+    return APIResponseService.sendUnauthorized(res, 'Wrong token format!');
   }
 
   // Get the token without the Bearer Prefix
@@ -78,7 +80,7 @@ export const AuthJWT = (req: express.Request, res: express.Response, next: expre
 
   const authResult = Auth.AuthJWT(token);
   if (authResult.type === 'error') {
-    return ResponseService.sendUnauthorized(res, 'Unauthorized');
+    return APIResponseService.sendUnauthorized(res, 'Unauthorized');
   }
 
   // Set the User on the request
@@ -86,7 +88,7 @@ export const AuthJWT = (req: express.Request, res: express.Response, next: expre
 
   // Check if the userId we need was linked
   if (!req.user.user_id) {
-    return ResponseService.sendUnauthorized(res, 'Unauthorized', ErrorResponseCode.COULD_NOT_AUTH_NO_USERID);
+    return APIResponseService.sendUnauthorized(res, 'Unauthorized', ErrorResponseCode.COULD_NOT_AUTH_NO_USERID);
   }
 
   next();
@@ -95,11 +97,14 @@ export const AuthJWT = (req: express.Request, res: express.Response, next: expre
 export const BroadcasterOnly = (req: express.Request, res: express.Response, next: express.NextFunction): void => {
   if (!req.user) {
     logger.error('No user present in broadcaster only middleware. Did you forget to authenticate jwt before?');
-    return ResponseService.sendUnauthorized(res, 'Unauthorized');
+    return APIResponseService.sendUnauthorized(res, 'Unauthorized');
   }
 
   if (req.user.role !== 'broadcaster') {
-    return ResponseService.sendUnauthorized(res, 'Unauthorized. Only Broadcasters are allowed to use this endpoint.');
+    return APIResponseService.sendUnauthorized(
+      res,
+      'Unauthorized. Only Broadcasters are allowed to use this endpoint.'
+    );
   }
 
   next();

@@ -7,6 +7,8 @@ import ProfileService from '@services/profile-service';
 import SongDataDto from '@mongo/dto/v1/song-data-dto';
 import SongDataDao from '@mongo/dao/song-data-dao';
 
+const APIResponseService = ResponseService.getAPIInstance();
+
 export const getRequestValidationSchema: Schema = {
   excludeBanlist: {
     in: 'query',
@@ -24,14 +26,14 @@ export default class SongDataGetEndpoint {
     const getAllResult = await SongDataDao.getAllSongs();
 
     if (getAllResult.type === 'error') {
-      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RETRIVE_SONGDATA);
+      return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RETRIVE_SONGDATA);
     }
 
     const dtos = getAllResult.data
       .map((songdata) => SongDataDto.getJSON(songdata))
       .sort((a, b) => (a.title > b.title ? 1 : -1));
 
-    ResponseService.sendOk(res, {
+    APIResponseService.sendOk(res, {
       data: dtos,
     });
   }
@@ -45,14 +47,14 @@ export default class SongDataGetEndpoint {
     );
 
     if (filteredResult.type === 'error') {
-      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_FILTER_SONGS);
+      return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_FILTER_SONGS);
     }
 
     const dtos = filteredResult.data
       .map((songdata) => SongDataDto.getJSON(songdata))
       .sort((a, b) => (a.title > b.title ? 1 : -1));
 
-    ResponseService.sendOk(res, {
+    APIResponseService.sendOk(res, {
       data: dtos,
     });
   }

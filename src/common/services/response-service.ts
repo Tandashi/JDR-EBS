@@ -1,4 +1,5 @@
 import express from 'express';
+import { Socket } from 'socket.io';
 
 export enum ErrorResponseCode {
   UNAUTHORIZED_REQUEST = 'E1000',
@@ -30,7 +31,7 @@ export enum ErrorResponseCode {
   COULD_NOT_FILTER_SONGS = 'E6000',
 }
 
-enum HTTPCode {
+enum StatusCode {
   OK = 200,
   BAD_REQUEST = 400,
   UNAUTHORIZED = 401,
@@ -49,50 +50,79 @@ interface ResponseError {
   };
 }
 
+type Response = { code: StatusCode } & (ResponseData | ResponseError);
+
 export default class ResponseService {
-  private static send(res: express.Response, http_code: HTTPCode, data: ResponseData | ResponseError): void {
-    res.status(http_code).json({
-      code: http_code,
-      ...data,
-    });
+  private static apiInstance: APIResponseService;
+  private static socketInstance: SocketIOResponseService;
+
+  public static getAPIInstance(): APIResponseService {
+    if (!this.apiInstance) {
+      this.apiInstance = new APIResponseService();
+    }
+    return this.apiInstance;
   }
 
-  private static sendError(
-    res: express.Response,
-    http_code: HTTPCode,
-    error_response_code: ErrorResponseCode,
-    message: string
-  ): void {
-    this.send(res, http_code, {
+  public static getSocketInstance(): SocketIOResponseService {
+    if (!this.socketInstance) {
+      this.socketInstance = new SocketIOResponseService();
+    }
+    return this.socketInstance;
+  }
+}
+
+abstract class AbstractResponseService<T> {
+  protected abstract send(res: T, statusCode: StatusCode, data: ResponseData | ResponseError): void;
+
+  public sendError(res: T, statusCode: StatusCode, errorResponseCode: ErrorResponseCode, message: string): void {
+    this.send(res, statusCode, {
       error: {
-        code: error_response_code,
+        code: errorResponseCode,
         message: message,
       },
     });
   }
 
-  public static sendInternalError(res: express.Response, error_response_code: ErrorResponseCode): void {
+  sendInternalError(res: T, errorResponseCode: ErrorResponseCode): void {
     this.sendError(
       res,
-      HTTPCode.INTERNAL_SERVER_ERROR,
-      error_response_code,
+      StatusCode.INTERNAL_SERVER_ERROR,
+      errorResponseCode,
       'An internal error has occured. We are sorry :('
     );
   }
 
-  public static sendOk(res: express.Response, data: ResponseData): void {
-    this.send(res, HTTPCode.OK, data);
+  sendOk(res: T, data: ResponseData): void {
+    this.send(res, StatusCode.OK, data);
   }
 
-  public static sendUnauthorized(res: express.Response, message: string, errorCode?: ErrorResponseCode): void {
-    this.sendError(res, HTTPCode.UNAUTHORIZED, errorCode ?? ErrorResponseCode.UNAUTHORIZED_REQUEST, message);
+  sendUnauthorized(res: T, message: string, errorResponseCode?: ErrorResponseCode): void {
+    this.sendError(res, StatusCode.UNAUTHORIZED, errorResponseCode ?? ErrorResponseCode.UNAUTHORIZED_REQUEST, message);
   }
 
-  public static sendBadRequest(res: express.Response, message: string): void {
-    this.sendError(res, HTTPCode.BAD_REQUEST, ErrorResponseCode.BAD_REQUEST, message);
+  sendBadRequest(res: T, message: string): void {
+    this.sendError(res, StatusCode.BAD_REQUEST, ErrorResponseCode.BAD_REQUEST, message);
   }
 
-  public static sendConflictRequest(res: express.Response, message: string): void {
-    this.sendError(res, HTTPCode.CONFLICT, ErrorResponseCode.CONFLICT, message);
+  sendConflictRequest(res: T, message: string): void {
+    this.sendError(res, StatusCode.CONFLICT, ErrorResponseCode.CONFLICT, message);
+  }
+}
+
+class APIResponseService extends AbstractResponseService<express.Response> {
+  protected send(res: express.Response, statusCode: StatusCode, data: ResponseData | ResponseError): void {
+    res.status(statusCode).json(<Response>{
+      code: statusCode,
+      ...data,
+    });
+  }
+}
+
+class SocketIOResponseService extends AbstractResponseService<(response: Response) => void> {
+  protected send(res: (response: Response) => void, statusCode: StatusCode, data: ResponseData | ResponseError): void {
+    res(<Response>{
+      code: statusCode,
+      ...data,
+    });
   }
 }

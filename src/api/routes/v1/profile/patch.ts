@@ -6,6 +6,8 @@ import ProfileService from '@services/profile-service';
 
 import ProfileDto from '@mongo/dto/v1/profile-dto';
 
+const APIResponseService = ResponseService.getAPIInstance();
+
 export const updateRequestValidationSchema: Schema = {
   name: {
     in: 'body',
@@ -89,10 +91,10 @@ export default class ProfilePatchEndpoint {
     if (profileResult.type === 'error') {
       switch (profileResult.error) {
         case 'no-such-name':
-          return ResponseService.sendBadRequest(res, `There is no profile with the name: ${req.body.name}`);
+          return APIResponseService.sendBadRequest(res, `There is no profile with the name: ${req.body.name}`);
         case 'internal':
         default:
-          return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RETRIVE_PROFILE);
+          return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RETRIVE_PROFILE);
       }
     }
 
@@ -101,14 +103,14 @@ export default class ProfilePatchEndpoint {
     if (updateResult.type === 'error') {
       switch (updateResult.error) {
         case 'invalid-song-id':
-          return ResponseService.sendBadRequest(res, "Some song ids don't exists.");
+          return APIResponseService.sendBadRequest(res, "Some song ids don't exists.");
         case 'internal':
         default:
-          return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_UPDATE_PROFILE);
+          return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_UPDATE_PROFILE);
       }
     }
 
-    ResponseService.sendOk(res, {
+    APIResponseService.sendOk(res, {
       data: ProfileDto.getJSON(updateResult.data),
     });
   }

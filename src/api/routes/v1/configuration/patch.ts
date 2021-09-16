@@ -7,6 +7,8 @@ import StreamerConfigurationService from '@services/streamer-configuration-servi
 import StreamerConfigurationDao from '@mongo/dao/streamer-configuration-dao';
 import StreamerConfigurationDto from '@mongo/dto/v1/streamer-configuration-dto';
 
+const APIResponseService = ResponseService.getAPIInstance();
+
 export const updateRequestValidationSchema: Schema = {
   chatIntegration: {
     in: 'body',
@@ -122,7 +124,7 @@ export default class StreamerConfigurationPatchEndpoint {
   public static async update(req: express.Request, res: express.Response): Promise<void> {
     const configurationResult = await StreamerConfigurationDao.get(req.user.channel_id);
     if (configurationResult.type === 'error') {
-      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RETRIVE_STREAMER_CONFIGURATION);
+      return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RETRIVE_STREAMER_CONFIGURATION);
     }
 
     let configuration = configurationResult.data;
@@ -133,7 +135,7 @@ export default class StreamerConfigurationPatchEndpoint {
       );
 
       if (configurationResult.type === 'error') {
-        return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_UPDATE_CHANNEL_NAME);
+        return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_UPDATE_CHANNEL_NAME);
       }
 
       configuration = configurationResult.data;
@@ -141,10 +143,10 @@ export default class StreamerConfigurationPatchEndpoint {
 
     const updateResult = await StreamerConfigurationService.update(configuration, req);
     if (updateResult.type === 'error') {
-      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_UPDATE_CHANNEL_NAME);
+      return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_UPDATE_CHANNEL_NAME);
     }
 
     configuration = updateResult.data;
-    ResponseService.sendOk(res, { data: StreamerConfigurationDto.getJSON(configuration) });
+    APIResponseService.sendOk(res, { data: StreamerConfigurationDto.getJSON(configuration) });
   }
 }

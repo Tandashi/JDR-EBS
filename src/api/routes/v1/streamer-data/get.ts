@@ -6,6 +6,8 @@ import ResponseService, { ErrorResponseCode } from '@services/response-service';
 import StreamerDataDao from '@mongo/dao/streamer-data-dao';
 import StreamerDataDto from '@mongo/dto/v1/streamer-data-dto';
 
+const APIResponseService = ResponseService.getAPIInstance();
+
 export const getRequestValidationSchema: Schema = {
   channelId: {
     in: ['params'],
@@ -41,10 +43,10 @@ export default class StreamerDataGetEndpoint {
     ]);
 
     if (streamerDataResult.type === 'error') {
-      return ResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RETRIVE_QUEUE);
+      return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RETRIVE_QUEUE);
     }
 
-    ResponseService.sendOk(res, {
+    APIResponseService.sendOk(res, {
       data: StreamerDataDto.getJSON(streamerDataResult.data),
     });
   }
