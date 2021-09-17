@@ -24,6 +24,7 @@ export default class AnnounceService {
         return;
       }
 
+      logger.debug(`Announcing in channel (${configuration.chatIntegration.channelName}): ${message}`);
       TwitchBot.getInstance().sendMessage(configuration.chatIntegration.channelName, message);
     }
   }

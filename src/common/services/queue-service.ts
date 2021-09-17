@@ -1,10 +1,12 @@
 import { Result, Success, Failure } from '@common/result';
 
-import { QueueDoc, IQueueEntrySongData, IQueueEntry } from '@mongo/schema/queue';
+import { QueueDoc, IQueueEntry } from '@mongo/schema/queue';
 import StreamerDataDao from '@mongo/dao/streamer-data-dao';
 import QueueDao from '@mongo/dao/queue-dao';
 import StreamerConfigurationDao from '@mongo/dao/streamer-configuration-dao';
 import AnnounceService from '@services/announce-service';
+import QueueUpdatedEmitEvent from '@socket-io/events/v1/emit/queue/updated';
+import SocketIOServer from '@socket-io/index';
 
 type AddToQueueErrors = 'maximum-requests-exceeded' | 'song-already-queued' | 'song-is-banned' | 'queue-is-closed';
 
@@ -31,8 +33,11 @@ export default class QueueService {
       return queueSetResult;
     }
 
+    const newQueue = queueSetResult.data;
+    SocketIOServer.getInstance().emit(channelId, new QueueUpdatedEmitEvent(newQueue));
+
     AnnounceService.announce(channelId, 'Queue is now ' + (enabled ? 'open' : 'closed'));
-    return Success(queueSetResult.data);
+    return Success(newQueue);
   }
 
   public static async clearQueue(channelId: string): Promise<Result<QueueDoc>> {
@@ -47,8 +52,11 @@ export default class QueueService {
       return queueSetResult;
     }
 
+    const newQueue = queueSetResult.data;
+    SocketIOServer.getInstance().emit(channelId, new QueueUpdatedEmitEvent(newQueue));
+
     AnnounceService.announce(channelId, 'Queue has been cleared');
-    return Success(queueSetResult.data);
+    return Success(newQueue);
   }
 
   public static async removeFromQueue(channelId: string, index: number): Promise<Result<QueueDoc>> {
@@ -66,7 +74,10 @@ export default class QueueService {
       return queueSetResult;
     }
 
-    return Success(queueSetResult.data);
+    const newQueue = queueSetResult.data;
+    SocketIOServer.getInstance().emit(channelId, new QueueUpdatedEmitEvent(newQueue));
+
+    return Success(newQueue);
   }
 
   public static async addToQueue(
@@ -118,6 +129,9 @@ export default class QueueService {
       return queueSetResult;
     }
 
-    return Success(queueSetResult.data);
+    const newQueue = queueSetResult.data;
+    SocketIOServer.getInstance().emit(channelId, new QueueUpdatedEmitEvent(newQueue));
+
+    return Success(newQueue);
   }
 }

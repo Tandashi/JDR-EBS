@@ -30,12 +30,15 @@ const logger = winston.createLogger({
 if (process.env.NODE_ENV !== 'production') {
   logger.add(
     new winston.transports.Console({
+      level: 'debug',
       format: combine(timestamp(), customFormat),
       handleExceptions: true,
     })
   );
 }
 
-export default function (name: string): Logger {
+const getLogger = function (name: string): Logger {
   return logger.child({ moduleName: name });
-}
+};
+
+export default getLogger;

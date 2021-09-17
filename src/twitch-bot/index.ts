@@ -137,7 +137,7 @@ export default class TwitchBot {
 
   public join(channelName: string, configuration: IStreamerConfiguration): void {
     this.updateConfiguration(channelName, configuration);
-    this.client.join(channelName);
+    this.client.join(channelName).catch(logger.error);
   }
 
   public part(channelName: string): void {
@@ -173,7 +173,7 @@ export default class TwitchBot {
         logger.info('Twitch Bot started successfully');
       })
       .catch((err: Error) => {
-        logger.error(err.message);
+        logger.error(err);
       });
   }
 }

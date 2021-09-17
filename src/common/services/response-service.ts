@@ -1,5 +1,4 @@
 import express from 'express';
-import { Socket } from 'socket.io';
 
 export enum ErrorResponseCode {
   UNAUTHORIZED_REQUEST = 'E1000',
@@ -51,6 +50,8 @@ interface ResponseError {
 }
 
 type Response = { code: StatusCode } & (ResponseData | ResponseError);
+
+export type SocketIOResponseCallback = (response: Response) => void;
 
 export default class ResponseService {
   private static apiInstance: APIResponseService;
@@ -118,8 +119,8 @@ class APIResponseService extends AbstractResponseService<express.Response> {
   }
 }
 
-class SocketIOResponseService extends AbstractResponseService<(response: Response) => void> {
-  protected send(res: (response: Response) => void, statusCode: StatusCode, data: ResponseData | ResponseError): void {
+class SocketIOResponseService extends AbstractResponseService<SocketIOResponseCallback> {
+  protected send(res: SocketIOResponseCallback, statusCode: StatusCode, data: ResponseData | ResponseError): void {
     res(<Response>{
       code: statusCode,
       ...data,

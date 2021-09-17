@@ -6,7 +6,10 @@ import socketIO from 'socket.io';
 
 import getLogger from '@common/logging';
 import config from '@common/config';
-import { AuthJWTOrSecret } from './middleware/auth';
+
+import { AuthJWTOrSecret } from '@socket-io/middleware/auth';
+import QueueGetReceiveEvent from '@socket-io/events/v1/receive/queue/get';
+import { EmitSocketIOEvent, ReceiveSocketIOEvent } from './event';
 
 const logger = getLogger('Socket.IO');
 
@@ -26,6 +29,8 @@ export default class SocketIOServer {
       cors: config.esb.socketIO.cors,
     });
 
+    this.onConnection = this.onConnection.bind(this);
+
     this.registerHandlers();
     this.registerMiddleware();
   }
@@ -38,12 +43,27 @@ export default class SocketIOServer {
     this.io.on('connection', this.onConnection);
   }
 
-  private onConnection(socket: socketIO.Socket): void {
-    socket.on('hello', () => {
-      socket.emit('world');
-    });
+  private registerEvent(socket: socketIO.Socket, event: ReceiveSocketIOEvent): void {
+    socket.on(event.name, event.listener(socket));
+  }
 
-    socket.on('disconnect', () => {});
+  private onConnection(socket: socketIO.Socket): void {
+    const user: TwitchUser = socket.handshake.auth.user;
+    logger.debug(`Connection from user (${socket.id}). Joining room '${user.channel_id}'`);
+    // Let socket join channel room
+    socket.join(user.channel_id);
+
+    this.registerEvent(socket, new QueueGetReceiveEvent());
+
+    socket.on('disconnect', () => {
+      logger.debug(`Connection closed user (${socket.id})`);
+    });
+  }
+
+  public emit(channelId: string, event: EmitSocketIOEvent<any>): void {
+    logger.debug(`Emitting Event (${event.name}) to channel '${channelId}' with data ${JSON.stringify(event.data())}`);
+
+    this.io.to(channelId).emit(event.name, event.data());
   }
 
   public start(app: Express.Application): void {

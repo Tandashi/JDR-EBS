@@ -1,5 +1,5 @@
 import Dto from '@mongo/dto/dto';
-import { QueueDoc } from '@mongo/schema/queue';
+import { IQueue } from '@mongo/schema/queue';
 import QueueEntryDto, { QueueEntryJSONStructure } from '@mongo/dto/v1/queue-entry-dto';
 
 export interface QueueJSONStructure {
@@ -7,8 +7,8 @@ export interface QueueJSONStructure {
   entries: QueueEntryJSONStructure[];
 }
 
-const QueueDto: Dto<QueueDoc, QueueJSONStructure> = {
-  getJSON: (data: QueueDoc) => {
+const QueueDto: Dto<IQueue, QueueJSONStructure> = {
+  getJSON: (data: IQueue) => {
     return {
       enabled: data.enabled,
       entries: data.entries.map(QueueEntryDto.getJSON),
