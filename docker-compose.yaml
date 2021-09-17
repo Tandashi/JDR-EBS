@@ -20,32 +20,36 @@ services:
       #  Static Config  #
       ###################
       - STATIC_ROOT_DIR=/data/static
-      # - STATIC_IMAGE_DIR=images    # Relative to the Root dir
-      # - STATIC_VIDEO_DIR=videos    # Relative to the Root dir
+      # The image path relative to the root dir
+      - STATIC_IMAGE_DIR=images
+      # The video path relative to the root dir
+      - STATIC_VIDEO_DIR=videos
 
       ##################
       #   API Config   #
       ##################
-      # - API_CLIENT_ID=
-      # - API_CLIENT_SECRET=
+      - API_CLIENT_ID=
+      - API_CLIENT_SECRET=
 
       ##################
       #   Bot Config   #
       ##################
-      # - BOT_USERNAME=
-      # - BOT_OAUTH_TOKEN=
+      - BOT_USERNAME=
+      - BOT_OAUTH_TOKEN=
 
       ########################
       #   Extension Config   #
       ########################
-      # - EXTENSION_VERSION=         # The latest Extension verson number
-      # - EXTENSION_FILE_HASH=       # The latest Extension file hash
+      # The latest Extension verson number
+      - EXTENSION_VERSION=
+      # The latest Extension file hash
+      - EXTENSION_FILE_HASH=
       - EXTENSION_CLIENT_ID=nv9ue0u2753fk3n1n9ghrvd28e3r9v
 
       ##################
       #   JWT Config   #
       ##################
-      # - JWT_SECRET=
+      - JWT_SECRET=
 
       ####################
       #   Mongo Config   #
@@ -55,10 +59,14 @@ services:
       #######################
       #   SocketIO Config   #
       #######################
-      - SOCKETIO_CORS_ORIGINS=true       # true=reflect, false=off, any string
-      # - SOCKETIO_CORS_ALLOWED_HEADERS=   # The allowed headers seperated by comma. Default: none
-      # - SOCKETIO_CORS_METHODS=           # The allowed methods comma seperated. Default: GET,HEAD,PUT,PATCH,POST,DELETE
-      # - SOCKETIO_CORS_CREDENTIALS=       # Sets the Access-Control-Allow-Credentials in Response. Can be true or false. Default: true
+      # The Cors origin (true=reflect, false=off, any string)
+      - SOCKETIO_CORS_ORIGINS=true
+      # The allowed headers seperated by comma. Default: none 
+      # - SOCKETIO_CORS_ALLOWED_HEADERS=
+      # The allowed methods comma seperated. Default: GET,HEAD,PUT,PATCH,POST,DELETE
+      # - SOCKETIO_CORS_METHODS=
+      # Sets the Access-Control-Allow-Credentials in Response. Can be true or false. Default: true
+      # - SOCKETIO_CORS_CREDENTIALS=
 
     depends_on:
       - mongodb
