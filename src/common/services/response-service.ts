@@ -106,12 +106,10 @@ abstract class AbstractResponseService<T> {
   }
 
   sendBadRequest(res: T, message: string): void {
-    logger.debug(`Sending bad request with message: ${message}`);
     this.sendError(res, StatusCode.BAD_REQUEST, ErrorResponseCode.BAD_REQUEST, message);
   }
 
   sendConflictRequest(res: T, message: string): void {
-    logger.debug(`Sending conflict with message: ${messages}`);
     this.sendError(res, StatusCode.CONFLICT, ErrorResponseCode.CONFLICT, message);
   }
 }
