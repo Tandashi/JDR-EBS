@@ -2,6 +2,7 @@ import express from 'express';
 
 import TwitchBot from '@twitch-bot/index';
 
+import getLogger from '@common/logging';
 import { Result, Success } from '@common/result';
 
 import TwitchAPIService from '@services/twitch-api-service';
@@ -18,14 +19,18 @@ import {
   IRequestConfiguration,
 } from '@mongo/schema/streamer-configuration';
 
+const logger = getLogger('StreamerConfiguration Service');
+
 export default class StreamerConfigurationService {
   public static async updateChannelName(
     configurationId: string,
     channelId: string
   ): Promise<Result<StreamerConfigurationDoc>> {
     const channelInformationResult = await TwitchAPIService.getInstance().getChannelInfo(channelId);
-
     if (channelInformationResult.type === 'error') {
+      logger.debug(
+        `Getting Channel Information failed in updateChannelName: ${JSON.stringify(channelInformationResult)}`
+      );
       return channelInformationResult;
     }
 
@@ -39,6 +44,7 @@ export default class StreamerConfigurationService {
     );
 
     if (updateResult.type === 'error') {
+      logger.debug(`Updating StreamerConfiguration failed in updateChannelName: ${JSON.stringify(updateResult)}`);
       return updateResult;
     }
 
@@ -117,6 +123,7 @@ export default class StreamerConfigurationService {
     ]);
 
     if (updateResult.type === 'error') {
+      logger.debug(`Updating StreamerConfiguration failed in update: ${JSON.stringify(updateResult)}`);
       return updateResult;
     }
 
@@ -125,15 +132,28 @@ export default class StreamerConfigurationService {
 
     // If we enabled chat integration through the update
     if (!oldConfiguration.chatIntegration.enabled && chatIntegrationEnabled) {
+      logger.debug(
+        `Letting TwitchBot join channel because chatIntegration enabled changed: ${JSON.stringify({
+          old: oldConfiguration.chatIntegration.enabled,
+          new: chatIntegrationEnabled,
+        })}`
+      );
       twitchBot.join(oldConfiguration.chatIntegration.channelName, updateResultData);
     }
     // If we disabled chat integration through the update
     else if (oldConfiguration.chatIntegration.enabled && !chatIntegrationEnabled) {
+      logger.debug(
+        `Letting TwitchBot leave channel because chatIntegration enabled changed: ${JSON.stringify({
+          old: oldConfiguration.chatIntegration.enabled,
+          new: chatIntegrationEnabled,
+        })}`
+      );
       twitchBot.part(oldConfiguration.chatIntegration.channelName);
     }
     // If we didnt change the status but we might have changed something else about the configuration
     // we need to update it for the bot as well so it doesnt use outdated data
     else if (chatIntegrationEnabled) {
+      logger.debug(`Updating TwitchBot configuration`);
       twitchBot.updateConfiguration(oldConfiguration.chatIntegration.channelName, updateResultData);
     }
 

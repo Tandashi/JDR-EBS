@@ -10,6 +10,7 @@ export default class AnnounceService {
     const streamerConfigurationResult = await StreamerConfigurationDao.get(channelId);
 
     if (streamerConfigurationResult.type === 'error') {
+      logger.debug(`Getting StreamerConfiguration failed in announce: ${JSON.stringify(streamerConfigurationResult)}`);
       return;
     }
 
@@ -24,7 +25,9 @@ export default class AnnounceService {
         return;
       }
 
-      logger.debug(`Announcing in channel (${configuration.chatIntegration.channelName}): ${message}`);
+      logger.debug(
+        `Announcing: ${JSON.stringify({ channelName: configuration.chatIntegration.channelName, message: message })}`
+      );
       TwitchBot.getInstance().sendMessage(configuration.chatIntegration.channelName, message);
     }
   }

@@ -1,12 +1,15 @@
 import express from 'express';
 
+import getLogger from '@common/logging';
 import { Failure, FailureResult, Result, Success } from '@common/result';
 
-import { IProfile, ProfileDoc } from '@mongo/schema/profile';
+import { ProfileDoc } from '@mongo/schema/profile';
 import { SongDataDoc } from '@mongo/schema/song-data';
 import ProfileDao from '@mongo/dao/profile-dao';
 import SongDataDao, { GetErrors as SongDataGetErrors } from '@mongo/dao/song-data-dao';
 import StreamerConfigurationDao from '@mongo/dao/streamer-configuration-dao';
+
+const logger = getLogger('Profile Service');
 
 type UpdateErrors = 'invalid-song-id';
 type GetErrors = 'no-such-name';
@@ -15,6 +18,7 @@ export default class ProfileService {
   public static async getById(channelId: string, name: string): Promise<Result<ProfileDoc, GetErrors>> {
     const configurationResult = await StreamerConfigurationDao.get(channelId);
     if (configurationResult.type === 'error') {
+      logger.debug(`Getting StreamerConfiguration failed in getById: ${JSON.stringify(configurationResult)}`);
       return configurationResult;
     }
 
@@ -22,6 +26,9 @@ export default class ProfileService {
     const profilesFiltered = configuration.profile.profiles.filter((e) => e.name === name);
 
     if (profilesFiltered.length === 0) {
+      logger.debug(
+        `Profile name does not exist: ${JSON.stringify({ profiles: configuration.profile.profiles, name: name })}`
+      );
       return Failure<GetErrors>('no-such-name', `Profile name (${name}) does not exist`);
     }
 
@@ -31,6 +38,7 @@ export default class ProfileService {
   public static async getActive(channelId: string): Promise<Result<ProfileDoc>> {
     const configurationResult = await StreamerConfigurationDao.get(channelId);
     if (configurationResult.type === 'error') {
+      logger.debug(`Getting StreamerConfiguration failed in getActive: ${JSON.stringify(configurationResult)}`);
       return configurationResult;
     }
 
@@ -113,6 +121,7 @@ export default class ProfileService {
   public static async filterSongs(channelId: string, excludeBanlist: boolean): Promise<Result<SongDataDoc[]>> {
     const profileResult = await this.getActive(channelId);
     if (profileResult.type === 'error') {
+      logger.debug(`Getting active Profile failed in filterSongs: ${JSON.stringify(profileResult)}`);
       return profileResult;
     }
 
@@ -124,6 +133,7 @@ export default class ProfileService {
     );
 
     if (songResult.type === 'error') {
+      logger.debug(`Getting filtered songs failed in filterSongs: ${JSON.stringify(songResult)}`);
       return songResult;
     }
 

@@ -1,5 +1,9 @@
 import express from 'express';
 
+import getLogger from '@common/logging';
+import messages from '@twitch-bot/messages';
+const logger = getLogger('Response Service');
+
 export enum ErrorResponseCode {
   UNAUTHORIZED_REQUEST = 'E1000',
   BAD_REQUEST = 'E1001',
@@ -102,16 +106,19 @@ abstract class AbstractResponseService<T> {
   }
 
   sendBadRequest(res: T, message: string): void {
+    logger.debug(`Sending bad request with message: ${message}`);
     this.sendError(res, StatusCode.BAD_REQUEST, ErrorResponseCode.BAD_REQUEST, message);
   }
 
   sendConflictRequest(res: T, message: string): void {
+    logger.debug(`Sending conflict with message: ${messages}`);
     this.sendError(res, StatusCode.CONFLICT, ErrorResponseCode.CONFLICT, message);
   }
 }
 
 class APIResponseService extends AbstractResponseService<express.Response> {
   protected send(res: express.Response, statusCode: StatusCode, data: ResponseData | ResponseError): void {
+    logger.debug(`Sending API Response ${JSON.stringify({ statusCode: statusCode, data: data })}`);
     res.status(statusCode).json(<Response>{
       code: statusCode,
       ...data,
@@ -121,6 +128,7 @@ class APIResponseService extends AbstractResponseService<express.Response> {
 
 class SocketIOResponseService extends AbstractResponseService<SocketIOResponseCallback> {
   protected send(res: SocketIOResponseCallback, statusCode: StatusCode, data: ResponseData | ResponseError): void {
+    logger.debug(`Sending SocketIO Response ${JSON.stringify({ statusCode: statusCode, data: data })}`);
     res(<Response>{
       code: statusCode,
       ...data,

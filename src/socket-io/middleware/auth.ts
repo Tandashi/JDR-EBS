@@ -32,6 +32,8 @@ const AuthSecret = async (socket: Socket, token: string, next: (err?: Error) => 
     return next(new Error('No Token Provided'));
   }
 
+  logger.debug('Authenticating with Secret');
+
   const twitchUserResult = await Auth.AuthSecret(token);
   if (twitchUserResult.type === 'error') {
     switch (twitchUserResult.error) {
@@ -51,6 +53,8 @@ const AuthJWT = (socket: Socket, token: string, next: (err?: Error) => void): vo
   if (!token) {
     return next(new Error('No Token Provided'));
   }
+
+  logger.debug('Authenticating with JWT');
 
   const authResult = Auth.AuthJWT(token);
   if (authResult.type === 'error') {

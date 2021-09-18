@@ -1,8 +1,8 @@
 import { ApiClient, HelixChannel } from 'twitch';
 import { ClientCredentialsAuthProvider } from 'twitch-auth';
 
-import config from '@common/config';
 import getLogger from '@common/logging';
+import config from '@common/config';
 import { Result, Success, Failure } from '@common/result';
 
 const logger = getLogger('Twitch API Service');
