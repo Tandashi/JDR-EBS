@@ -59,6 +59,11 @@ export default class TwitchBot {
     this.configure();
   }
 
+  /**
+   * Get the TwitchBot Instance
+   *
+   * @returns The TwitchBot Instance
+   */
   public static getInstance(): TwitchBot {
     if (!this.instance) {
       this.instance = new TwitchBot();
@@ -67,6 +72,9 @@ export default class TwitchBot {
     return this.instance;
   }
 
+  /**
+   * Configure the TwitchBot to listen to IRC events
+   */
   private configure(): void {
     this.client.on('message', (channel, userstate, message, self) =>
       this.handleOnMessage(channel, userstate, message, self)
@@ -77,50 +85,69 @@ export default class TwitchBot {
     });
   }
 
+  /**
+   * Connect to all channels that have chatIntegration enabled
+   */
   private async connect(): Promise<void> {
     const configurationsResult = await StreamerConfigurationDao.getAllWithChatIntegrationEnabled();
-
-    if (configurationsResult.type === 'success') {
-      configurationsResult.data.forEach((c) => {
-        const channelName = c.chatIntegration.channelName;
-
-        if (channelName === '') {
-          return logger.error(
-            `Configuration (${c._id}) is malformed. Chat Integration is activated but channel name is emtpy.`
-          );
-        }
-
-        this.join(channelName, c);
-      });
-    }
 
     if (configurationsResult.type === 'error') {
       logger.error(
         'Unable to connect to channels. StreamerConfigurationDao returned an error while fetching channels.'
       );
+      return;
+    }
+
+    if (configurationsResult.type === 'success') {
+      configurationsResult.data.forEach((configuration) => {
+        const channelName = configuration.chatIntegration.channelName;
+
+        if (channelName === '') {
+          return logger.error(
+            `Configuration (${configuration._id}) is malformed. Chat Integration is activated but channel name is emtpy.`
+          );
+        }
+
+        this.join(channelName, configuration);
+      });
     }
   }
 
+  /**
+   * Handle all 'message' IRC Events
+   *
+   * @param channelName The channel name in which the message was sent
+   * @param userstate The user state from the user that sent the message
+   * @param message The message itself
+   * @param self If the message was sent by us (aka JustDanceRequests)
+   */
   private async handleOnMessage(
     channelName: string,
     userstate: tmi.Userstate,
     message: string,
     self: boolean
   ): Promise<void> {
+    // Ignore messages that are sent by us
     if (self) {
       return;
     }
 
+    // Get the command identifiert.
+    // Messages usually look like this:
+    //  !command param1 param2 param3 ...
     const commandIdentifier = message.split(' ')[0].toLowerCase();
     const command = this.commands[commandIdentifier];
 
+    // Check if a command with that identifier is registered
     if (!command) {
       return;
     }
 
+    // Grab the commands Configuration for the channel the message originated in
     const configuration = this.getConfiguration(channelName);
     const commandsConfiguration = configuration.chatIntegration.commands;
 
+    // Check if the command is enabled in that channel
     if (!command.enabled(commandsConfiguration)) {
       return;
     }
@@ -132,31 +159,73 @@ export default class TwitchBot {
       bot: this,
     };
 
+    // Process that comamnd
     command.process(params);
   }
 
+  /**
+   * Join the given channel by name and update the configuration
+   *
+   * @param channelName The channel name to join (e.g. Tandashii, JustDanceRequests, FayeBelle_)
+   * @param configuration The configuration of that channel to update the current one with
+   */
   public join(channelName: string, configuration: IStreamerConfiguration): void {
     this.updateConfiguration(channelName, configuration);
     this.client.join(channelName).catch(logger.error);
   }
 
+  /**
+   * Leave the channel by name.
+   * Will delete the channel configuration for that channel as well.
+   *
+   * @param channelName The name of the channel to leave  (e.g. Tandashii, JustDanceRequests, FayeBelle_)
+   */
   public part(channelName: string): void {
-    delete this.configurations[this.getUpdatedChannelName(channelName)];
+    delete this.configurations[this.getUnifiedChannelName(channelName)];
     this.client.part(channelName);
   }
 
+  /**
+   * Update the configuration for the channel.
+   *
+   * @param channelName The name of the channel whos configuration should be updated
+   * @param configuration The configuration to replace the current one with
+   */
   public updateConfiguration(channelName: string, configuration: IStreamerConfiguration): void {
-    this.configurations[this.getUpdatedChannelName(channelName)] = configuration;
+    this.configurations[this.getUnifiedChannelName(channelName)] = configuration;
   }
 
-  private getUpdatedChannelName(channelName: string): string {
+  /**
+   * Get the configuration of the channel by name.
+   *
+   * @param channelName The name of the channel to get the configuration from
+   *
+   * @returns The channel configuration
+   */
+  private getConfiguration(channelName: string): IStreamerConfiguration {
+    return this.configurations[this.getUnifiedChannelName(channelName)];
+  }
+
+  /**
+   * Unify the channel name.
+   * Should be used when dealing with channel names since IRC and Stored channel names might differ.
+   * This will provide a identical representation no matter the source of the channel name.
+   *
+   * @param channelName The channel name to unified
+   *
+   * @returns The unified channel name
+   */
+  private getUnifiedChannelName(channelName: string): string {
     return channelName.toLowerCase().replace('#', '');
   }
 
-  public getConfiguration(channelName: string): IStreamerConfiguration {
-    return this.configurations[this.getUpdatedChannelName(channelName)];
-  }
-
+  /**
+   * Send a message to the given channel.
+   *
+   * @param channelName The name of the channel the message should be sent in
+   * @param message The message to sent
+   * @param replyTo The person the message is replying to. Undefined if message is not replying to anyone.
+   */
   public sendMessage(channelName: string, message: string, replyTo?: tmi.Userstate): void {
     if (!replyTo) {
       this.client.say(channelName, AnnounceService.getChatFiendlyString(message));
@@ -165,6 +234,9 @@ export default class TwitchBot {
     }
   }
 
+  /**
+   * Start the TwitchBot.
+   */
   public start(): void {
     logger.info('Starting Twitch Bot...');
     this.client
