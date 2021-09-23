@@ -6,6 +6,11 @@ import Queue, { QueueDoc, IQueueEntry, IQueue } from '@mongo/schema/queue';
 const logger = getLogger('Queue Dao');
 
 export default class QueueDao {
+  /**
+   * Create a Queue.
+   *
+   * @returns The result of the operation
+   */
   public static async createQueue(): Promise<Result<QueueDoc>> {
     try {
       const queueData: IQueue = {
@@ -21,6 +26,15 @@ export default class QueueDao {
     }
   }
 
+  /**
+   * Set a values of the given Queue.
+   *
+   * @param queue The queue that should be updated
+   * @param enabled Wether the queue is enabled or not
+   * @param entries The entries in the Queue
+   *
+   * @returns The result of the operation
+   */
   public static async setQueue(queue: QueueDoc, enabled: boolean, entries: IQueueEntry[]): Promise<Result<QueueDoc>> {
     try {
       const newQueue = await Queue.findByIdAndUpdate(

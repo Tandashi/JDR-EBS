@@ -40,6 +40,11 @@ export default class StreamerConfigurationDao {
     },
   };
 
+  /**
+   * Get all Streamer Configurations that have ChatIntegration enabled.
+   *
+   * @returns The result of the operation
+   */
   public static async getAllWithChatIntegrationEnabled(): Promise<Result<StreamerConfigurationDoc[]>> {
     try {
       const streamerConfigurations = await StreamerConfiguration.find({
@@ -53,6 +58,13 @@ export default class StreamerConfigurationDao {
     }
   }
 
+  /**
+   * Get the Streamer Configuration of a specific channel using their channel Id.
+   *
+   * @param channelId The id of the channel
+   *
+   * @returns The result of the operation
+   */
   public static async get(channelId: string): Promise<Result<StreamerConfigurationDoc>> {
     const streamerDataResult = await StreamerDataDao.getOrCreateStreamerData(channelId, [
       {
@@ -89,6 +101,15 @@ export default class StreamerConfigurationDao {
     return Success(configuration);
   }
 
+  /**
+   * Update Streamer Configuration by Id
+   *
+   * @param id The id of the configuration that should be updated
+   * @param updateQuery The update query
+   * @param populate The population options
+   *
+   * @returns The result of the operation
+   */
   public static async update(
     id: string,
     updateQuery: UpdateQuery<IStreamerConfiguration>,
@@ -108,6 +129,11 @@ export default class StreamerConfigurationDao {
     }
   }
 
+  /**
+   * Create a new Streamer Configuration.
+   *
+   * @returns The result of the operation
+   */
   public static async createStreamerConfiguration(): Promise<Result<StreamerConfigurationDoc>> {
     try {
       const defaultProfileResult = await ProfileDao.createProfile('default');

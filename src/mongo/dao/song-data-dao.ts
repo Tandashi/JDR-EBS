@@ -10,6 +10,13 @@ export type GetErrors = 'no-such-entity';
 const logger = getLogger('SongData Dao');
 
 export default class SongDataDao {
+  /**
+   * Get Song by Id.
+   *
+   * @param songId The id of the song to get
+   *
+   * @returns The result of the operation
+   */
   public static async getSong(songId: string): Promise<Result<SongDataDoc, GetErrors>> {
     try {
       const songdata = await SongData.findById(songId);
@@ -25,6 +32,13 @@ export default class SongDataDao {
     }
   }
 
+  /**
+   * Get Songs using a filter Query.
+   *
+   * @param query The query for getting the Songs
+   *
+   * @returns The result of the operation
+   */
   private static async getSongs(query: FilterQuery<SongDataDoc> = {}): Promise<Result<SongDataDoc[]>> {
     try {
       const songData = await SongData.find(query);
@@ -47,10 +61,24 @@ export default class SongDataDao {
     }
   }
 
+  /**
+   * Get all Songs.
+   *
+   * @returns The result of the operation
+   */
   public static async getAllSongs(): Promise<Result<SongDataDoc[]>> {
     return await this.getSongs();
   }
 
+  /**
+   * Get all Songs and filter them by properties.
+   *
+   * @param ids The ids that should not be included in the result set
+   * @param game The Game the songs should be filtered for
+   * @param unlimited Wether unlimited song should be included
+   *
+   * @returns The result of the operation
+   */
   public static async getAllFiltered(
     ids: ObjectId[],
     game: GameVersion,
@@ -63,6 +91,11 @@ export default class SongDataDao {
     }
   }
 
+  /**
+   * Get all supported Games.
+   *
+   * @returns The result of the operation
+   */
   public static async getAllGames(): Promise<Result<string[]>> {
     try {
       const games = await SongData.distinct('game');

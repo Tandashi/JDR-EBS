@@ -43,6 +43,13 @@ type GetBySecretErrors = 'no-such-entity';
 const logger = getLogger('Streamer Data Dao');
 
 export default class StreamerDataDao {
+  /**
+   * Get Streamer Data by Secret.
+   *
+   * @param secret The secret to get the StreamerData by
+   *
+   * @returns The result of the operation
+   */
   public static async getBySecret(secret: string): Promise<Result<StreamerDataDoc, GetBySecretErrors>> {
     try {
       const streamerData = await StreamerData.findOne({ secret: secret });
@@ -59,6 +66,14 @@ export default class StreamerDataDao {
     }
   }
 
+  /**
+   * Update the Secret for a given channel by it's Id
+   *
+   * @param channelId The id of the channel to update the secret for
+   * @param newSecret The new secret
+   *
+   * @returns The result of the operation
+   */
   public static async updateSecret(channelId: string, newSecret: string): Promise<Result<StreamerDataDoc>> {
     try {
       const streamerData = await StreamerData.findOneAndUpdate(
@@ -79,6 +94,15 @@ export default class StreamerDataDao {
     }
   }
 
+  /**
+   * Get the Streamer Data for a given channel or
+   * create it if the Streamer Data for that channel doesn't exist yet.
+   *
+   * @param channelId The id of the channel to get / create the Streamer Data for
+   * @param populate The population options
+   *
+   * @returns The result of the operation
+   */
   public static async getOrCreateStreamerData(
     channelId: string,
     populate?: PopulationParams[]
@@ -100,7 +124,15 @@ export default class StreamerDataDao {
     }
   }
 
-  public static async createStreamerData(
+  /**
+   * Create the StreamerData for the given channel by it's Id.
+   *
+   * @param channelId The id of the channel the StreamerData should be created for
+   * @param populate The population options
+   *
+   * @returns The result of the operation
+   */
+  private static async createStreamerData(
     channelId: string,
     populate?: PopulationParams[]
   ): Promise<Result<StreamerDataDoc>> {

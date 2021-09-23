@@ -54,7 +54,7 @@ const songDataSchema: Schema = new Schema({
       'Just Dance 2021',
       'Just Dance Unlimited',
     ],
-    required: true
+    required: true,
   },
   difficulty: {
     type: Number,

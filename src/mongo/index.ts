@@ -15,6 +15,10 @@ const DEFAULT_MONGOOSE_CONNECTION_PARAMS = {
   useFindAndModify: false,
 };
 
+/**
+ * The MongoServer class.
+ * Manages everything related to the mongoDB Server.
+ */
 export default class MongoServer {
   private static instance: MongoServer;
 
@@ -22,6 +26,9 @@ export default class MongoServer {
     this.registerHandlers();
   }
 
+  /**
+   * Register Connection Handlers.
+   */
   private registerHandlers(): void {
     const connection = mongoose.connection;
 
@@ -55,6 +62,9 @@ export default class MongoServer {
     });
   }
 
+  /**
+   * Connect to the mongo database.
+   */
   public connect(): void {
     const run = async () => {
       mongoose.connect(config.mongodb.uri, DEFAULT_MONGOOSE_CONNECTION_PARAMS);
@@ -63,6 +73,11 @@ export default class MongoServer {
     run().catch((e) => logger.error(e));
   }
 
+  /**
+   * Get the MongoServer Instance.
+   *
+   * @returns The MongoServer Instance
+   */
   public static getInstance(): MongoServer {
     if (!this.instance) {
       this.instance = new MongoServer();

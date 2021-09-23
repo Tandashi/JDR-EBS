@@ -12,6 +12,13 @@ type ProfilePopulateOptions = {
 const logger = getLogger('Profile Dao');
 
 export default class ProfileDao {
+  /**
+   * Create a new Profile with a given name.
+   *
+   * @param name The name of the profile that should be created
+   *
+   * @returns The result of the operation
+   */
   public static async createProfile(name: string): Promise<Result<ProfileDoc>> {
     try {
       const profileData: IProfile = {
@@ -34,6 +41,15 @@ export default class ProfileDao {
     }
   }
 
+  /**
+   * Update a Profile by Id.
+   *
+   * @param id The id of the profile that should be updated
+   * @param updateQuery The update Query
+   * @param populate The population options for the update
+   *
+   * @returns The result of the operation
+   */
   public static async update(
     id: string,
     updateQuery: UpdateQuery<IProfile>,
