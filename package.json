@@ -11,7 +11,7 @@
   "license": "MIT",
   "scripts": {
     "start": "yarn build && yarn migrate:up && node -r dotenv/config dist/ebs.js",
-    "start-importer": "yarn build && node -r dotenv/config dist/importer.js",
+    "start-importer": "yarn build && node -r dotenv/config dist/song-importer.js",
     "build": "yarn build-ts && yarn tslint",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
