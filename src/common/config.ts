@@ -1,67 +1,228 @@
+import type URLService from '@services/url-service';
+
 import getLogger from '@common/logging';
 const logger = getLogger('Configuration');
 
 //#region Interface definitions
-interface IStaticConfig {
+/**
+ * The configuration for the static content that is served.
+ */
+export interface IStaticConfig {
+  /**
+   * The root directory of the static content as absolute path
+   */
   rootDir: string;
+  /**
+   * The static image directory relative to the root directory
+   *
+   * @see {@link URLService.getImageUrl}
+   */
   imageDir: string;
+  /**
+   * The static video directory relative to the root directory
+   *
+   * @see {@link URLService.getVideoUrl}
+   */
   videoDir: string;
 }
-
+/**
+ * The SocketIo Server configuration
+ */
 interface ISocketIOConfig {
+  /**
+   * The Cross-origin configuration for the SocketIO Server
+   */
   cors: {
+    /**
+     * The CORS origin (true=reflect, false=off, any string)
+     *
+     * @see {@link parseOrigin}
+     */
     origin: string | boolean;
+    /**
+     * The allowed headers seperated by comma
+     */
     allowedHeaders: string;
+    /**
+     * The allowed methods seperated by comma
+     */
     methods: string;
+    /**
+     * Sets the Access-Control-Allow-Credentials in Response
+     */
     credentials: boolean;
   };
 }
 
-interface IESBConfig {
+/**
+ * The Extension Backend Service configuration
+ */
+export interface IESBConfig {
+  /**
+   * The protocol the ESB is reach by (e.g. http, https)
+   */
   protocol: string;
+  /**
+   * The hostname of the server
+   */
   hostname: string;
+  /**
+   * The port the sever is running on
+   */
   port: number;
-
+  /**
+   * The public address at which the server can be reached. Used for static content addresses.
+   */
   publicAddress: string;
 
+  /**
+   * The {@link ISocketIOConfig SocketIO} configuration
+   *
+   */
   socketIO: ISocketIOConfig;
 
+  /**
+   * The {@link IStaticConfig static content} configuration
+   */
   static: IStaticConfig;
 }
 
+/**
+ * The MongoDB configuration
+ */
 interface IMongoDBConfig {
+  /**
+   * The connection URI to the MongoDB server
+   */
   uri: string;
 }
 
+/**
+ * The Twitch Release Version configuration.
+ *
+ * @see {@link URLService.getRedirectUrl}
+ */
 interface TwitchReleaseVersion {
+  /**
+   * If its a develop version or not
+   */
   isDev: false;
+  /**
+   * The version number of the latest release version (e.g. 2.0.0)
+   */
   versionNumber: string;
+  /**
+   * The file hash of that release version
+   */
   fileHash: string;
 }
 
+/**
+ * The Twitch Develop Version configuration.
+ *
+ * @see {@link URLService.getRedirectUrl}
+ */
 interface TwitchDevelopVersion {
+  /**
+   * If its a develop version or not
+   */
   isDev: true;
 }
 
-interface ITwitchConfig {
-  api: {
-    clientId: string;
-    clientSecret: string;
-  };
-  extension: {
-    version: TwitchDevelopVersion | TwitchReleaseVersion;
-    clientId: string;
-    jwtSecret: string;
-  };
-  bot: {
-    username: string;
-    oauthToken: string;
-  };
+/**
+ * The Twitch API configuration
+ */
+interface ITwitchAPIConfig {
+  /**
+   * The API client Id
+   *
+   * @see [Twitch API Docs](https://dev.twitch.tv/docs/api/)
+   */
+  clientId: string;
+  /**
+   * The API client secret for the client Id
+   *
+   * @see [Twitch API Docs](https://dev.twitch.tv/docs/api/)
+   */
+  clientSecret: string;
 }
 
+/**
+ * The Twitch Extension configuration
+ */
+export interface ITwitchExtensionConfig {
+  /**
+   * The Extension version configuration
+   *
+   * @see {@link TwitchDevelopVersion}
+   * @see {@link TwitchReleaseVersion}
+   */
+  version: TwitchDevelopVersion | TwitchReleaseVersion;
+  /**
+   * The Extension client Id
+   *
+   *
+   */
+  clientId: string;
+  /**
+   * The JWT Secret to verify / decrypt the JWT
+   *
+   * @see [Twitch Extension JWT Guide](https://dev.twitch.tv/docs/tutorials/extension-101-tutorial-series/jwt)
+   */
+  jwtSecret: string;
+}
+
+/**
+ * The Twitch Bot configuration
+ */
+interface ITwitchBotConfig {
+  /**
+   * The Bot Username
+   *
+   * @see [Twitch IRC Guide](https://dev.twitch.tv/docs/irc/guide#connecting-to-twitch-irc)
+   */
+  username: string;
+  /**
+   * The Bot's OAuth Token
+   *
+   * @see [Twitch IRC Guide](https://dev.twitch.tv/docs/irc/guide#connecting-to-twitch-irc)
+   */
+  oauthToken: string;
+}
+
+/**
+ * The Twitch configuration
+ */
+interface ITwitchConfig {
+  /**
+   * Twitch API configuration
+   */
+  api: ITwitchAPIConfig;
+  /**
+   * Twitch Extension configuration
+   */
+  extension: ITwitchExtensionConfig;
+  /**
+   * Twitch Bot configuration
+   */
+  bot: ITwitchBotConfig;
+}
+
+/**
+ * The complete configuration containing all other configurations
+ */
 export interface IConfig {
+  /**
+   * The {@link IESBConfig Extension Service Backend} configuration
+   */
   esb: IESBConfig;
+  /**
+   * The {@link IMongoDBConfig MongoDB} configuration
+   */
   mongodb: IMongoDBConfig;
+  /**
+   * The {@link ITwitchConfig Twitch} configuration
+   */
   twitch: ITwitchConfig;
 }
 //#endregion

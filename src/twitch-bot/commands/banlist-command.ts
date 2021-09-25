@@ -38,7 +38,7 @@ export default class BanlistCommand implements ICommand {
     const configuration = configurationResult.data;
     const profile = configuration.profile.active;
     const format = configuration.chatIntegration.commands.banlist.format;
-    const bannedSongs = profile.banlist.map((v) => FormatService.getInBanlistFormat(format, v)).join(', ') || '-';
+    const bannedSongs = profile.banlist.map((v) => FormatService.getFormattedSongData(format, v)).join(', ') || '-';
     // No need for the Announcement Service since we already have the channel name
     // And the command can only be executed when chatIntegration is on
     return bot.sendMessage(channel, `The following songs are banned: ${bannedSongs}`, userstate);

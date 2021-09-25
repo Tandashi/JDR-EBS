@@ -1,5 +1,5 @@
 import getLogger from '@common/logging';
-import { Result, Success, Failure } from '@common/result';
+import { Result, Success, Failure, FailureResult } from '@common/result';
 
 import { QueueDoc, IQueueEntry } from '@mongo/schema/queue';
 import StreamerDataDao from '@mongo/dao/streamer-data-dao';
@@ -14,6 +14,13 @@ const logger = getLogger('Queue Service');
 type AddToQueueErrors = 'maximum-requests-exceeded' | 'song-already-queued' | 'song-is-banned' | 'queue-is-closed';
 
 export default class QueueService {
+  /**
+   * Get the {@link QueueDoc Queue} of a specific channel by it's Id.
+   *
+   * @param channelId The id of the channel to get the {@link QueueDoc Queue} from
+   *
+   * @returns The {@link QueueDoc Queue} if successful else a {@link FailureResult Failure Result}
+   */
   public static async getQueue(channelId: string): Promise<Result<QueueDoc>> {
     logger.debug(`Getting Queue for channel '${channelId}'`);
 
@@ -26,6 +33,14 @@ export default class QueueService {
     return Success(streamDataResult.data.queue);
   }
 
+  /**
+   * Set the {@link QueueDoc Queue} status of a specific channel by it's Id.
+   *
+   * @param channelId The id of the channel to set the {@link QueueDoc Queue} status for
+   * @param enabled If the {@link QueueDoc Queue} is open or not
+   *
+   * @returns The updated {@link QueueDoc Queue} if successful else a {@link FailureResult Failure Result}
+   */
   public static async setQueueStatus(channelId: string, enabled: boolean): Promise<Result<QueueDoc>> {
     const queueResult = await this.getQueue(channelId);
     if (queueResult.type === 'error') {
@@ -47,6 +62,13 @@ export default class QueueService {
     return Success(newQueue);
   }
 
+  /**
+   * Clear the {@link QueueDoc Queue} of a specific channel by it's Id.
+   *
+   * @param channelId The id of the channel to clear the {@link QueueDoc Queue} for
+   *
+   * @returns The updated {@link QueueDoc Queue} if successful else a {@link FailureResult Failure Result}
+   */
   public static async clearQueue(channelId: string): Promise<Result<QueueDoc>> {
     const queueResult = await this.getQueue(channelId);
     if (queueResult.type === 'error') {
@@ -68,6 +90,14 @@ export default class QueueService {
     return Success(newQueue);
   }
 
+  /**
+   * Remove a {@link IQueueEntry QueueEntry} by it's index from the {@link QueueDoc Queue} of a specific channel by it's Id.
+   *
+   * @param channelId The id of the channel from whoms {@link QueueDoc Queue} the {@link IQueueEntry QueueEntry} should be removed
+   * @param index The index of the {@link IQueueEntry QueueEntry} that should be removed from the {@link QueueDoc Queue}
+   *
+   * @returns The updated {@link QueueDoc Queue} if successful else a {@link FailureResult Failure Result}
+   */
   public static async removeFromQueue(channelId: string, index: number): Promise<Result<QueueDoc>> {
     const queueResult = await this.getQueue(channelId);
     if (queueResult.type === 'error') {
@@ -93,6 +123,15 @@ export default class QueueService {
     return Success(newQueue);
   }
 
+  /**
+   * Add a {@link IQueueEntry QueueEntry} to the {@link QueueDoc Queue} of a specific channel by it's Id.
+   *
+   * @param channelId The id of the channel to whoms {@link QueueDoc Queue} the {@link IQueueEntry QueueEntry} should be added
+   * @param entry The {@link IQueueEntry QueueEntry} that should be added
+   * @param userId The id of the user that wants to add the entry
+   *
+   * @returns The updated {@link QueueDoc Queue} if successful else a {@link FailureResult Failure Result}
+   */
   public static async addToQueue(
     channelId: string,
     entry: IQueueEntry,

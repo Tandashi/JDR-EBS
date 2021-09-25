@@ -3,12 +3,12 @@ import express from 'express';
 import TwitchBot from '@twitch-bot/index';
 
 import getLogger from '@common/logging';
-import { Result, Success } from '@common/result';
+import { Result, Success, FailureResult } from '@common/result';
 
 import TwitchAPIService from '@services/twitch-api-service';
 
 import StreamerConfigurationDao from '@mongo/dao/streamer-configuration-dao';
-import {
+import type {
   StreamerConfigurationDoc,
   IStreamerConfiguration,
   IChatIntegrationConfiguration,
@@ -22,6 +22,16 @@ import {
 const logger = getLogger('StreamerConfiguration Service');
 
 export default class StreamerConfigurationService {
+  /**
+   * Update the channel name for the Chat Integration.
+   *
+   * @see {@link IChatIntegrationConfiguration.channelName ChatIntegration Configuration}
+   *
+   * @param configurationId The configuration Id for which the channel name should be updated
+   * @param channelId The Id of the channel of which the channel name should be used to update
+   *
+   * @returns The updated {@link StreamerConfigurationDoc StreamerConfiguration} if successful else a {@link FailureResult Failure Result}
+   */
   public static async updateChannelName(
     configurationId: string,
     channelId: string
@@ -51,6 +61,14 @@ export default class StreamerConfigurationService {
     return Success(updateResult.data);
   }
 
+  /**
+   * Update the {@link IStreamerConfiguration StreamerConfiguration} using the given {@link express.Request Request}.
+   *
+   * @param oldConfiguration The old configuration
+   * @param req The {@link express.Request Request} to use to update the configuration with
+   *
+   * @returns The updated {@link StreamerConfigurationDoc StreamerConfiguration} if successful else a {@link FailureResult Failure Result}
+   */
   public static async update(
     oldConfiguration: StreamerConfigurationDoc,
     req: express.Request

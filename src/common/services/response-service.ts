@@ -1,7 +1,6 @@
 import express from 'express';
 
 import getLogger from '@common/logging';
-import messages from '@twitch-bot/messages';
 const logger = getLogger('Response Service');
 
 export enum ErrorResponseCode {
@@ -42,25 +41,42 @@ enum StatusCode {
   INTERNAL_SERVER_ERROR = 500,
 }
 
-interface ResponseData {
-  data: any;
+interface ResponseData<D> {
+  /**
+   * The Response data
+   */
+  data: D;
 }
 
 interface ResponseError {
+  /**
+   * The error information
+   */
   error: {
+    /**
+     * The error code
+     */
     code: string;
+    /**
+     * The error message
+     */
     message: string;
   };
 }
 
-type Response = { code: StatusCode } & (ResponseData | ResponseError);
+type Response<D> = { code: StatusCode } & (ResponseData<D> | ResponseError);
 
-export type SocketIOResponseCallback = (response: Response) => void;
+export type SocketIOResponseCallback<D> = (response: Response<D>) => void;
 
 export default class ResponseService {
   private static apiInstance: APIResponseService;
   private static socketInstance: SocketIOResponseService;
 
+  /**
+   * Get the {@link APIResponseService API Response Service} Instance.
+   *
+   * @returns The API Response Service Instance
+   */
   public static getAPIInstance(): APIResponseService {
     if (!this.apiInstance) {
       this.apiInstance = new APIResponseService();
@@ -68,6 +84,11 @@ export default class ResponseService {
     return this.apiInstance;
   }
 
+  /**
+   * Get the {@link SocketIOResponseService SocketIO Response Service} Instance.
+   *
+   * @returns The SocketIO Response Service Instance
+   */
   public static getSocketInstance(): SocketIOResponseService {
     if (!this.socketInstance) {
       this.socketInstance = new SocketIOResponseService();
@@ -77,10 +98,25 @@ export default class ResponseService {
 }
 
 abstract class AbstractResponseService<T> {
-  protected abstract send(res: T, statusCode: StatusCode, data: ResponseData | ResponseError): void;
+  /**
+   * Send a {@link Response} via the Response method.
+   *
+   * @param res The Response method
+   * @param statusCode The StatusCode of the message
+   * @param data The data of the message
+   */
+  protected abstract send<D>(res: T, statusCode: StatusCode, data: ResponseData<D> | ResponseError): void;
 
+  /**
+   * Send an Error Response.
+   *
+   * @param res The Response method
+   * @param statusCode The StatusCode of the message
+   * @param errorResponseCode The error response code
+   * @param message The error message
+   */
   public sendError(res: T, statusCode: StatusCode, errorResponseCode: ErrorResponseCode, message: string): void {
-    this.send(res, statusCode, {
+    this.send(res, statusCode, <ResponseError>{
       error: {
         code: errorResponseCode,
         message: message,
@@ -88,7 +124,13 @@ abstract class AbstractResponseService<T> {
     });
   }
 
-  sendInternalError(res: T, errorResponseCode: ErrorResponseCode): void {
+  /**
+   * Send an Internal Error Response.
+   *
+   * @param res The Response method
+   * @param errorResponseCode The error response code
+   */
+  public sendInternalError(res: T, errorResponseCode: ErrorResponseCode): void {
     this.sendError(
       res,
       StatusCode.INTERNAL_SERVER_ERROR,
@@ -97,37 +139,80 @@ abstract class AbstractResponseService<T> {
     );
   }
 
-  sendOk(res: T, data: ResponseData): void {
+  /**
+   * Send an Okay Response.
+   *
+   * @param res The Response method
+   * @param data The data for the Response
+   */
+  public sendOk<D>(res: T, data: ResponseData<D>): void {
     this.send(res, StatusCode.OK, data);
   }
 
-  sendUnauthorized(res: T, message: string, errorResponseCode?: ErrorResponseCode): void {
+  /**
+   * Send an Unauthorized Response.
+   *
+   * @param res The Response method
+   * @param message The error message
+   * @param errorResponseCode The error response code
+   */
+  public sendUnauthorized(res: T, message: string, errorResponseCode?: ErrorResponseCode): void {
     this.sendError(res, StatusCode.UNAUTHORIZED, errorResponseCode ?? ErrorResponseCode.UNAUTHORIZED_REQUEST, message);
   }
 
-  sendBadRequest(res: T, message: string): void {
+  /**
+   * Send an Bad Request Response.
+   *
+   * @param res The Response method
+   * @param message The error message
+   */
+  public sendBadRequest(res: T, message: string): void {
     this.sendError(res, StatusCode.BAD_REQUEST, ErrorResponseCode.BAD_REQUEST, message);
   }
 
-  sendConflictRequest(res: T, message: string): void {
+  /**
+   * Send a Conflict Request Response.
+   *
+   * @param res The Response method
+   * @param message The error message
+   */
+  public sendConflictRequest(res: T, message: string): void {
     this.sendError(res, StatusCode.CONFLICT, ErrorResponseCode.CONFLICT, message);
   }
 }
 
 class APIResponseService extends AbstractResponseService<express.Response> {
-  protected send(res: express.Response, statusCode: StatusCode, data: ResponseData | ResponseError): void {
+  /**
+   * Send an API Response.
+   *
+   * @param res The Response method
+   * @param statusCode The StatusCode of the message
+   * @param data The data of the message
+   */
+  protected send<D>(res: express.Response, statusCode: StatusCode, data: ResponseData<D> | ResponseError): void {
     logger.debug(`Sending API Response ${JSON.stringify({ statusCode: statusCode, data: data })}`);
-    res.status(statusCode).json(<Response>{
+    res.status(statusCode).json(<Response<D>>{
       code: statusCode,
       ...data,
     });
   }
 }
 
-class SocketIOResponseService extends AbstractResponseService<SocketIOResponseCallback> {
-  protected send(res: SocketIOResponseCallback, statusCode: StatusCode, data: ResponseData | ResponseError): void {
+class SocketIOResponseService extends AbstractResponseService<SocketIOResponseCallback<any>> {
+  /**
+   * Send a SocketIO Response.
+   *
+   * @param res The Response method
+   * @param statusCode The StatusCode of the message
+   * @param data The data of the message
+   */
+  protected send<D>(
+    res: SocketIOResponseCallback<D>,
+    statusCode: StatusCode,
+    data: ResponseData<D> | ResponseError
+  ): void {
     logger.debug(`Sending SocketIO Response ${JSON.stringify({ statusCode: statusCode, data: data })}`);
-    res(<Response>{
+    res(<Response<D>>{
       code: statusCode,
       ...data,
     });

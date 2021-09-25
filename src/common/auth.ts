@@ -5,6 +5,13 @@ import { Failure, Result, Success } from '@common/result';
 
 import StreamerDataDao from '@mongo/dao/streamer-data-dao';
 
+/**
+ *  Authenticate using JWT.
+ *
+ * @param token The token to authenticate with
+ *
+ * @returns The TwitchUser if successful else a Failure Result
+ */
 export const AuthJWT = (token: string): Result<TwitchUser> => {
   try {
     // Verify if the token is correct
@@ -20,6 +27,13 @@ export const AuthJWT = (token: string): Result<TwitchUser> => {
   }
 };
 
+/**
+ *  Authenticate using Streamer Secret.
+ *
+ * @param token The token to authenticate with
+ *
+ * @returns The TwitchUser if successful else a Failure Result
+ */
 export const AuthSecret = async (key: string): Promise<Result<TwitchUser, 'internal' | 'no-such-entity'>> => {
   const streamerDataResult = await StreamerDataDao.getBySecret(key as string);
   if (streamerDataResult.type === 'error') {

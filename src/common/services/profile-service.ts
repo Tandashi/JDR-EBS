@@ -15,6 +15,14 @@ type UpdateErrors = 'invalid-song-id';
 type GetErrors = 'no-such-name';
 
 export default class ProfileService {
+  /**
+   * Get the {@link ProfileDoc Profile} of a specific channel by it's name and the channel Id.
+   *
+   * @param channelId The id of the channel to get the {@link ProfileDoc Profile} of
+   * @param name The name of the {@link ProfileDoc Profile}
+   *
+   * @returns The {@link ProfileDoc Profile} if successful or a {@link FailureResult Failure Result}
+   */
   public static async getById(channelId: string, name: string): Promise<Result<ProfileDoc, GetErrors>> {
     const configurationResult = await StreamerConfigurationDao.get(channelId);
     if (configurationResult.type === 'error') {
@@ -35,6 +43,13 @@ export default class ProfileService {
     return Success(profilesFiltered[0]);
   }
 
+  /**
+   * Get the active {@link ProfileDoc Profile} of a specific channel by it's Id.
+   *
+   * @param channelId The id of the channel to get the active {@link ProfileDoc Profile} of
+   *
+   * @returns The {@link ProfileDoc Profile} if successful or a {@link FailureResult Failure Result}
+   */
   public static async getActive(channelId: string): Promise<Result<ProfileDoc>> {
     const configurationResult = await StreamerConfigurationDao.get(channelId);
     if (configurationResult.type === 'error') {
@@ -45,6 +60,14 @@ export default class ProfileService {
     return Success(configurationResult.data.profile.active);
   }
 
+  /**
+   * Update the {@link ProfileDoc Profile} using the given {@link express.Request Request}.
+   *
+   * @param oldProfile The old {@link ProfileDoc Profile}
+   * @param req The {@link express.Request Request} to update the {@link ProfileDoc Profile} with.
+   *
+   * @returns The updated {@link ProfileDoc Profile} if successful or a {@link FailureResult Failure Result}
+   */
   public static async update(oldProfile: ProfileDoc, req: express.Request): Promise<Result<ProfileDoc, UpdateErrors>> {
     const promises: Promise<Result<SongDataDoc, SongDataGetErrors>>[] = [];
 
@@ -118,6 +141,17 @@ export default class ProfileService {
     return Success(updateResult.data);
   }
 
+  /**
+   * Get all Songs for a specific channel by it's Id.
+   *
+   * If {@link excludeBanlist} is true the banlist of the active profile is ignored.
+   * Else the songs will be excluded.
+   *
+   * @param channelId The id of the channel to filter the songs of
+   * @param excludeBanlist If the banlist should be excluded from the filter
+   *
+   * @returns The filtered List of {@link SongDataDoc Songs} if successful or a {@link FailureResult Failure Result}
+   */
   public static async filterSongs(channelId: string, excludeBanlist: boolean): Promise<Result<SongDataDoc[]>> {
     const profileResult = await this.getActive(channelId);
     if (profileResult.type === 'error') {

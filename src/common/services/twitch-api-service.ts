@@ -18,6 +18,11 @@ export default class TwitchAPIService {
     this.apiClient = new ApiClient({ authProvider });
   }
 
+  /**
+   * Get the TwitchAPIService Instance.
+   *
+   * @returns The TwitchAPIService Instance
+   */
   public static getInstance(): TwitchAPIService {
     if (!this.instance) {
       this.instance = new TwitchAPIService();
@@ -26,6 +31,15 @@ export default class TwitchAPIService {
     return this.instance;
   }
 
+  /**
+   * Get the channel information for a specific channel by it's id.
+   *
+   * @see [Twitch API Reference](https://dev.twitch.tv/docs/api/reference#get-channel-information)
+   *
+   * @param channelId The id of the channel to get the information about
+   *
+   * @returns The ChannelInformation if successful else a Failure Result
+   */
   public async getChannelInfo(channelId: string): Promise<Result<HelixChannel>> {
     try {
       const channelInfo = await this.apiClient.helix.channels.getChannelInfo(channelId);
