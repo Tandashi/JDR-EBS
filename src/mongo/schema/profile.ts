@@ -2,19 +2,37 @@ import { Document, Schema, Model, model } from 'mongoose';
 
 import { GameVersion, SongDataDoc } from '@mongo/schema/song-data';
 
-interface SongConfiguration {
+interface ISongConfiguration {
+  /**
+   * The Version of Just Dance that is used.
+   */
   game: GameVersion;
+  /**
+   * If an unlimited Subscription exists.
+   */
   unlimited: boolean;
 }
 
-interface ProfileConfiguration {
-  song: SongConfiguration;
+interface IProfileConfiguration {
+  /**
+   * The {@link ISongConfiguration Song Configuration} of the Profile.
+   */
+  song: ISongConfiguration;
 }
 
 export interface IProfile {
+  /**
+   * The name of the Profile.
+   */
   name: string;
+  /**
+   * The Songs that are banned.
+   */
   banlist: SongDataDoc[];
-  configuration: ProfileConfiguration;
+  /**
+   * Additional {@link IProfileConfiguration Configuration} for the Profile.
+   */
+  configuration: IProfileConfiguration;
 }
 
 export type ProfileDoc = IProfile & Document;

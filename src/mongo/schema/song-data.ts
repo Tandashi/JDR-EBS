@@ -10,16 +10,60 @@ export type GameVersion =
   | 'Just Dance Unlimited';
 
 export interface ISongData {
+  /**
+   * The unique Identifier of the Song.
+   */
   code_name: string;
+  /**
+   * The unique Identifier from JustDance Now
+   * or null if the Song didn't exist in JustDance Now.
+   */
   jdn_code_name: string | null;
+  /**
+   * The title of the Song.
+   */
   title: string;
+  /**
+   * The Artist(s) of the Song.
+   */
   artist: string;
+  /**
+   * The Game in which the Song exists.
+   */
   game: GameVersion;
+  /**
+   * The difficulty of the Song
+   * or null if not specified / unknown.
+   *
+   * **Value Ranges**: 1-4 for newer Games.
+   */
   difficulty: number | null;
+  /**
+   * The number of coaches in the Song
+   * or null if not specified / unknown.
+   *
+   * **Value Ranges**: 1-4 for newer Games.
+   */
   coaches: number | null;
+  /**
+   * The effort value of the Song
+   * or null if not specified / unknown.
+   *
+   * **Value Ranges**: 1-3 for newer Games.
+   */
   effort: number | null;
+  /**
+   * The url to the Thumbnail of the Song.
+   */
   image_url: string;
+  /**
+   * The url to the JustDance Wiki entry.
+   */
   wiki_url: string;
+  /**
+   * The video preview of the Song
+   * or null if none exists.
+   */
   preview_url: string | null;
 }
 

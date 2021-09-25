@@ -15,32 +15,77 @@ export interface IBanlistCommandConfiguration extends IToggleableCommandConfigur
 }
 
 export interface IChatIntegrationCommandConfiguration {
+  /**
+   * The Configuration regarding the SongRequests Command.
+   */
   songRequest: ISongRequestCommandConfiguration;
+  /**
+   * The Configuration regarding the Queue Command.
+   */
   queue: IQueueCommandConfiguration;
+  /**
+   * The Configuration regarding the QueuePosition Command.
+   */
   queuePosition: IQueuePositionCommandConfiguration;
+  /**
+   * The Configuration regarding the Banlist Command.
+   */
   banlist: IBanlistCommandConfiguration;
 }
 
 export interface IChatIntegrationConfiguration {
+  /**
+   * If the ChatIntegration is enabled.
+   */
   enabled: boolean;
+  /**
+   * The channel name of the Streamer.
+   */
   channelName: string;
+  /**
+   * The Comamnd Configurations.
+   */
   commands: IChatIntegrationCommandConfiguration;
 }
 
 export interface IRequestConfiguration {
+  /**
+   * The number of Song Requests a User can have siultaniously in the Queue.
+   */
   perUser: number;
+  /**
+   * If the same Song can exist multiple times in the Queue.
+   */
   duplicates: boolean;
 }
 
 export interface IProfileConfiguration {
+  /**
+   * The current active {@link ProfileDoc Profile}.
+   */
   active: ProfileDoc;
+  /**
+   * A List of {@link ProfileDoc Profiles} a user has.
+   */
   profiles: ProfileDoc[];
 }
 
 export interface IStreamerConfiguration {
+  /**
+   * The version of the Configuration.
+   */
   version: 'v1.2';
+  /**
+   * The ChatIntegration Configuration.
+   */
   chatIntegration: IChatIntegrationConfiguration;
+  /**
+   * The Requests Configuration.
+   */
   requests: IRequestConfiguration;
+  /**
+   * The {@link ProfileDoc Profile} Configuration.
+   */
   profile: IProfileConfiguration;
 }
 

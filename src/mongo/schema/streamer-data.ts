@@ -4,9 +4,21 @@ import { QueueDoc } from '@mongo/schema/queue';
 import { StreamerConfigurationDoc } from '@mongo/schema/streamer-configuration';
 
 export interface IStreamerData {
+  /**
+   * The id of the channel.
+   */
   channelId: string;
+  /**
+   * The secret to authenticate with besides JWT.
+   */
   secret: string;
+  /**
+   * The {@link StreamerConfigurationDoc Configuration} of the Extension for that channel.
+   */
   configuration: StreamerConfigurationDoc;
+  /**
+   * The {@link QueueDoc Queue} for the channel.
+   */
   queue: QueueDoc;
 }
 
@@ -16,22 +28,22 @@ const streamerDataSchema: Schema = new Schema({
   channelId: {
     type: String,
     unique: true,
-    required: true
+    required: true,
   },
   secret: {
     type: String,
     unique: true,
-    required: true
+    required: true,
   },
   configuration: {
     type: Schema.Types.ObjectId,
     ref: 'StreamerConfiguration',
-    required: true
+    required: true,
   },
   queue: {
     type: Schema.Types.ObjectId,
     ref: 'Queue',
-    required: true
+    required: true,
   },
 });
 
