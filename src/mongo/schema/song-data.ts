@@ -7,6 +7,7 @@ export type GameVersion =
   | 'Just Dance 2019'
   | 'Just Dance 2020'
   | 'Just Dance 2021'
+  | 'Just Dance 2022'
   | 'Just Dance Unlimited';
 
 export interface ISongData {
@@ -96,6 +97,7 @@ const songDataSchema: Schema = new Schema({
       'Just Dance 2019',
       'Just Dance 2020',
       'Just Dance 2021',
+      'Just Dance 2022',
       'Just Dance Unlimited',
     ],
     required: true,
