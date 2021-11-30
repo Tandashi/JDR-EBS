@@ -17,6 +17,10 @@ import type {
   IQueueCommandConfiguration,
   IBanlistCommandConfiguration,
   IRequestConfiguration,
+  IChatIntegrationAnnouncementsConfiguration,
+  IChatIntegrationAnnouncementsQueueConfiguration,
+  IChatIntegrationAnnouncementsQueueStatusConfiguration,
+  IChatIntegrationAnnouncementsQueueSongConfiguration,
 } from '@mongo/schema/streamer-configuration';
 
 const logger = getLogger('StreamerConfiguration Service');
@@ -78,6 +82,34 @@ export default class StreamerConfigurationService {
     const chatIntegration: Partial<IChatIntegrationConfiguration> | undefined = configuration?.chatIntegration;
     const chatIntegrationEnabled = chatIntegration?.enabled ?? oldConfiguration.chatIntegration.enabled;
 
+    const chatIntegrationAnnouncements: Partial<IChatIntegrationAnnouncementsConfiguration> | undefined =
+      chatIntegration?.announcements;
+    const chatIntegrationAnnouncementsQueue: Partial<IChatIntegrationAnnouncementsQueueConfiguration> | undefined =
+      chatIntegrationAnnouncements?.queue;
+    const chatIntegrationAnnouncementsQueueStatus:
+      | Partial<IChatIntegrationAnnouncementsQueueStatusConfiguration>
+      | undefined = chatIntegrationAnnouncementsQueue?.status;
+    const chatIntegrationAnnouncementsQueueStatusOpened =
+      chatIntegrationAnnouncementsQueueStatus?.opened ??
+      oldConfiguration.chatIntegration.announcements.queue.status.opened;
+    const chatIntegrationAnnouncementsQueueStatusClosed =
+      chatIntegrationAnnouncementsQueueStatus?.closed ??
+      oldConfiguration.chatIntegration.announcements.queue.status.closed;
+    const chatIntegrationAnnouncementsQueueStatusCleared =
+      chatIntegrationAnnouncementsQueueStatus?.cleared ??
+      oldConfiguration.chatIntegration.announcements.queue.status.cleared;
+    const chatIntegrationAnnouncementsQueueSong:
+      | Partial<IChatIntegrationAnnouncementsQueueSongConfiguration>
+      | undefined = chatIntegrationAnnouncementsQueue?.song;
+    const chatIntegrationAnnouncementsQueueSongFromChat =
+      chatIntegrationAnnouncementsQueueSong?.fromChat ??
+      oldConfiguration.chatIntegration.announcements.queue.song.fromChat;
+    const chatIntegrationAnnouncementsQueueSongFromExtension =
+      chatIntegrationAnnouncementsQueueSong?.fromExtension ??
+      oldConfiguration.chatIntegration.announcements.queue.song.fromExtension;
+    const chatIntegrationAnnouncementsQueueSongNextUp =
+      chatIntegrationAnnouncementsQueueSong?.nextUp ?? oldConfiguration.chatIntegration.announcements.queue.song.nextUp;
+
     const chatIntegrationCommands: Partial<IChatIntegrationCommandConfiguration> | undefined =
       chatIntegration?.commands;
     const chatIntegrationCommandsSongRequest: Partial<ISongRequestCommandConfiguration> | undefined =
@@ -108,6 +140,20 @@ export default class StreamerConfigurationService {
       chatIntegration: {
         enabled: chatIntegrationEnabled,
         channelName: oldConfiguration.chatIntegration.channelName,
+        announcements: {
+          queue: {
+            status: {
+              opened: chatIntegrationAnnouncementsQueueStatusOpened,
+              closed: chatIntegrationAnnouncementsQueueStatusClosed,
+              cleared: chatIntegrationAnnouncementsQueueStatusCleared,
+            },
+            song: {
+              fromChat: chatIntegrationAnnouncementsQueueSongFromChat,
+              fromExtension: chatIntegrationAnnouncementsQueueSongFromExtension,
+              nextUp: chatIntegrationAnnouncementsQueueSongNextUp,
+            },
+          },
+        },
         commands: {
           songRequest: {
             enabled: chatIntegrationCommandsSongRequestEnabled,

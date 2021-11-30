@@ -2,7 +2,7 @@ import { Socket } from 'socket.io';
 
 import { SocketIOResponseCallback } from '@services/response-service';
 
-export type SocketIOEventListener<D = {}> = (data: D, callback: SocketIOResponseCallback) => Promise<void>;
+export type SocketIOEventListener<D = {}> = (data: D, callback: SocketIOResponseCallback<any>) => Promise<void>;
 
 /**
  * A basic SocketIO Event

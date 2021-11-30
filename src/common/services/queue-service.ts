@@ -58,7 +58,11 @@ export default class QueueService {
     const newQueue = queueSetResult.data;
     SocketIOServer.getInstance().emitEvent(channelId, new QueueUpdatedEmitEvent(newQueue));
 
-    AnnounceService.announce(channelId, 'Queue is now ' + (enabled ? 'open' : 'closed'));
+    AnnounceService.announce(
+      channelId,
+      'Queue is now ' + (enabled ? 'open' : 'closed'),
+      enabled ? 'queue.status.opened' : 'queue.status.closed'
+    );
     return Success(newQueue);
   }
 
@@ -86,7 +90,7 @@ export default class QueueService {
     const newQueue = queueSetResult.data;
     SocketIOServer.getInstance().emitEvent(channelId, new QueueUpdatedEmitEvent(newQueue));
 
-    AnnounceService.announce(channelId, 'Queue has been cleared');
+    AnnounceService.announce(channelId, 'Queue has been cleared', 'queue.status.cleared');
     return Success(newQueue);
   }
 

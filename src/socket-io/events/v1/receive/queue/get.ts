@@ -14,7 +14,7 @@ export default class QueueGetReceiveEvent extends ReceiveSocketIOEvent {
   }
 
   listener(socket: Socket): SocketIOEventListener {
-    return async (_, callback: SocketIOResponseCallback): Promise<void> => {
+    return async (_, callback: SocketIOResponseCallback<any>): Promise<void> => {
       const user: TwitchUser = socket.handshake.auth.user;
 
       const queueResult = await QueueService.getQueue(user.channel_id);

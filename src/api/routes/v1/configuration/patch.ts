@@ -25,6 +25,82 @@ export const updateRequestValidationSchema: Schema = {
     },
     toBoolean: true,
   },
+  'chatIntegration.announcements': {
+    in: 'body',
+    isObject: {
+      errorMessage: 'Field `chatIntegration.announcements` must be an object',
+      bail: true,
+    },
+  },
+  'chatIntegration.announcements.queue': {
+    in: 'body',
+    isObject: {
+      errorMessage: 'Field `chatIntegration.announcements.queue` must be an object',
+      bail: true,
+    },
+  },
+  'chatIntegration.announcements.queue.status': {
+    in: 'body',
+    isObject: {
+      errorMessage: 'Field `chatIntegration.announcements.queue.status` must be an object',
+      bail: true,
+    },
+  },
+  'chatIntegration.announcements.queue.status.opened': {
+    in: 'body',
+    isBoolean: {
+      errorMessage: 'Field `chatIntegration.announcements.queue.status.opened` must be a boolean',
+      bail: true,
+    },
+    toBoolean: true,
+  },
+  'chatIntegration.announcements.queue.status.closed': {
+    in: 'body',
+    isBoolean: {
+      errorMessage: 'Field `chatIntegration.announcements.queue.status.closed` must be a boolean',
+      bail: true,
+    },
+    toBoolean: true,
+  },
+  'chatIntegration.announcements.queue.status.cleared': {
+    in: 'body',
+    isBoolean: {
+      errorMessage: 'Field `chatIntegration.announcements.queue.status.cleared` must be a boolean',
+      bail: true,
+    },
+    toBoolean: true,
+  },
+  'chatIntegration.announcements.queue.song': {
+    in: 'body',
+    isObject: {
+      errorMessage: 'Field `chatIntegration.announcements.queue.song` must be an object',
+      bail: true,
+    },
+  },
+  'chatIntegration.announcements.queue.song.fromChat': {
+    in: 'body',
+    isBoolean: {
+      errorMessage: 'Field `chatIntegration.announcements.queue.song.fromChat` must be a boolean',
+      bail: true,
+    },
+    toBoolean: true,
+  },
+  'chatIntegration.announcements.queue.song.fromExtension': {
+    in: 'body',
+    isBoolean: {
+      errorMessage: 'Field `chatIntegration.announcements.queue.song.fromExtension` must be a boolean',
+      bail: true,
+    },
+    toBoolean: true,
+  },
+  'chatIntegration.announcements.queue.song.nextUp': {
+    in: 'body',
+    isBoolean: {
+      errorMessage: 'Field `chatIntegration.announcements.queue.song.nextUp` must be a boolean',
+      bail: true,
+    },
+    toBoolean: true,
+  },
   'chatIntegration.commands': {
     in: 'body',
     isObject: {

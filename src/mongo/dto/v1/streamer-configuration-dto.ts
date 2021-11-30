@@ -8,6 +8,20 @@ export interface StreamerConfigurationJSONStructure {
   chatIntegration: {
     enabled: boolean;
     channelName: string;
+    announcements: {
+      queue: {
+        status: {
+          opened: boolean;
+          closed: boolean;
+          cleared: boolean;
+        };
+        song: {
+          fromChat: boolean;
+          fromExtension: boolean;
+          nextUp: boolean;
+        };
+      };
+    };
     commands: {
       songRequest: {
         enabled: boolean;
@@ -43,6 +57,20 @@ const StreamerConfigurationDto: Dto<IStreamerConfiguration, StreamerConfiguratio
       chatIntegration: {
         enabled: data.chatIntegration.enabled,
         channelName: data.chatIntegration.channelName,
+        announcements: {
+          queue: {
+            status: {
+              opened: data.chatIntegration.announcements.queue.status.closed,
+              closed: data.chatIntegration.announcements.queue.status.opened,
+              cleared: data.chatIntegration.announcements.queue.status.cleared,
+            },
+            song: {
+              fromChat: data.chatIntegration.announcements.queue.song.fromChat,
+              fromExtension: data.chatIntegration.announcements.queue.song.fromExtension,
+              nextUp: data.chatIntegration.announcements.queue.song.nextUp,
+            },
+          },
+        },
         commands: {
           songRequest: {
             enabled: data.chatIntegration.commands.songRequest.enabled,

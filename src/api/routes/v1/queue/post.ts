@@ -61,7 +61,7 @@ export default class QueuePostEndpoint {
 
     const entry = queueResult.data.entries[index];
     if (entry) {
-      AnnounceService.announce(req.user.channel_id, `Next up: ${entry.song.title}`);
+      AnnounceService.announce(req.user.channel_id, `Next up: ${entry.song.title}`, 'queue.song.nextUp');
     }
 
     return APIResponseService.sendOk(res, {
@@ -127,6 +127,12 @@ export default class QueuePostEndpoint {
           return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_ADD_TO_QUEUE);
       }
     }
+
+    AnnounceService.announce(
+      req.user.channel_id,
+      `Song "${queueSongData.song.title}" was added to the Queue`,
+      'queue.song.fromExtension'
+    );
 
     return APIResponseService.sendOk(res, {
       data: QueueDto.getJSON(addResult.data),

@@ -33,6 +33,54 @@ export interface IChatIntegrationCommandConfiguration {
   banlist: IBanlistCommandConfiguration;
 }
 
+export interface IChatIntegrationAnnouncementsConfiguration {
+  /**
+   * All announcements regarding the Queue.
+   */
+  queue: IChatIntegrationAnnouncementsQueueConfiguration;
+}
+
+export interface IChatIntegrationAnnouncementsQueueConfiguration {
+  /**
+   * Queue status changes.
+   */
+  status: IChatIntegrationAnnouncementsQueueStatusConfiguration;
+  /**
+   * Song added to Queue.
+   */
+  song: IChatIntegrationAnnouncementsQueueSongConfiguration;
+}
+
+export interface IChatIntegrationAnnouncementsQueueStatusConfiguration {
+  /**
+   * When the Queue opens.
+   */
+  opened: boolean;
+  /**
+   * When the Queue closes.
+   */
+  closed: boolean;
+  /**
+   * When the Queue got cleared.
+   */
+  cleared: boolean;
+}
+
+export interface IChatIntegrationAnnouncementsQueueSongConfiguration {
+  /**
+   * When a song was added to the Queue via chat.
+   */
+  fromChat: boolean;
+  /**
+   * When a song was added to the Queue via Extension.
+   */
+  fromExtension: boolean;
+  /**
+   * The next song that gets played.
+   */
+  nextUp: boolean;
+}
+
 export interface IChatIntegrationConfiguration {
   /**
    * If the ChatIntegration is enabled.
@@ -42,6 +90,10 @@ export interface IChatIntegrationConfiguration {
    * The channel name of the Streamer.
    */
   channelName: string;
+  /**
+   * The Configuratio for which Events should be announced in chat.
+   */
+  announcements: IChatIntegrationAnnouncementsConfiguration;
   /**
    * The Comamnd Configurations.
    */
@@ -74,7 +126,7 @@ export interface IStreamerConfiguration {
   /**
    * The version of the Configuration.
    */
-  version: 'v1.2';
+  version: 'v1.3';
   /**
    * The ChatIntegration Configuration.
    */
@@ -94,7 +146,7 @@ export type StreamerConfigurationDoc = IStreamerConfiguration & Document;
 const streamerConfigurationSchema: Schema = new Schema({
   version: {
     type: String,
-    enum: ['v1.2'],
+    enum: ['v1.3'],
     required: true,
   },
   chatIntegration: {
@@ -110,6 +162,38 @@ const streamerConfigurationSchema: Schema = new Schema({
         },
         'chatIntegration.channelName is required if chatIntegration.enabled is true.',
       ],
+    },
+    announcements: {
+      queue: {
+        status: {
+          opened: {
+            type: Boolean,
+            required: true,
+          },
+          closed: {
+            type: Boolean,
+            required: true,
+          },
+          cleared: {
+            type: Boolean,
+            required: true,
+          },
+        },
+        song: {
+          fromChat: {
+            type: Boolean,
+            required: true,
+          },
+          fromExtension: {
+            type: Boolean,
+            required: true,
+          },
+          nextUp: {
+            type: Boolean,
+            required: true,
+          },
+        },
+      },
     },
     commands: {
       songRequest: {

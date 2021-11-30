@@ -5,6 +5,7 @@ import QueueService from '@services/queue-service';
 
 import ICommand, { ICommandParameters } from '@twitch-bot/command';
 import Messages from '@twitch-bot/messages';
+import AnnounceService from '@common/services/announce-service';
 
 const logger = getLogger('SongRequest Command');
 
@@ -58,9 +59,14 @@ export default class SRCommand implements ICommand {
           break;
       }
 
-      return bot.sendMessage(channel, message, userstate);
+      return AnnounceService.announce(userstate['room-id'], message, 'queue.song.fromChat', userstate);
     }
 
-    return bot.sendMessage(channel, `Song "${songTitle}" was added to the Queue`, userstate);
+    return AnnounceService.announce(
+      userstate['room-id'],
+      `Song "${songTitle}" was added to the Queue`,
+      'queue.song.fromChat',
+      userstate
+    );
   }
 }

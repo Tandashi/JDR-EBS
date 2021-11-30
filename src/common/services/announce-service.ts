@@ -1,10 +1,20 @@
+import lodash from 'lodash';
+
 import getLogger from '@common/logging';
 
-import type { IChatIntegrationConfiguration } from '@mongo/schema/streamer-configuration';
 import StreamerConfigurationDao from '@mongo/dao/streamer-configuration-dao';
 import TwitchBot from '@twitch-bot/index';
+import { Userstate } from 'tmi.js';
 
 const logger = getLogger('Announce Service');
+
+export type IAnnouncementEvent =
+  | 'queue.status.opened'
+  | 'queue.status.closed'
+  | 'queue.status.cleared'
+  | 'queue.song.fromChat'
+  | 'queue.song.fromExtension'
+  | 'queue.song.nextUp';
 
 export default class AnnounceService {
   /**
@@ -15,7 +25,12 @@ export default class AnnounceService {
    * @param channelId The id of the channel to announce the message in
    * @param message The message that should be announced
    */
-  public static async announce(channelId: string, message: string): Promise<void> {
+  public static async announce(
+    channelId: string,
+    message: string,
+    event: IAnnouncementEvent,
+    replyTo?: Userstate
+  ): Promise<void> {
     const streamerConfigurationResult = await StreamerConfigurationDao.get(channelId);
 
     if (streamerConfigurationResult.type === 'error') {
@@ -24,20 +39,24 @@ export default class AnnounceService {
     }
 
     const configuration = streamerConfigurationResult.data;
-
     if (configuration.chatIntegration.enabled) {
       if (configuration.chatIntegration.channelName === '') {
         logger.error(
           `Configuration (${channelId}) is malformed. Chat Integration is activated but channel name is emtpy.`
         );
+        return;
+      }
 
+      const isEventEnabled = lodash.get(configuration.chatIntegration.announcements, event, false);
+      if (!isEventEnabled) {
+        logger.debug(`Not announcing since announcements are not enabled for that event type.`);
         return;
       }
 
       logger.debug(
         `Announcing: ${JSON.stringify({ channelName: configuration.chatIntegration.channelName, message: message })}`
       );
-      TwitchBot.getInstance().sendMessage(configuration.chatIntegration.channelName, message);
+      TwitchBot.getInstance().sendMessage(configuration.chatIntegration.channelName, message, replyTo);
     }
   }
 
