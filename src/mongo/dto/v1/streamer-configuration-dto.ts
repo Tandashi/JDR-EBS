@@ -60,8 +60,8 @@ const StreamerConfigurationDto: Dto<IStreamerConfiguration, StreamerConfiguratio
         announcements: {
           queue: {
             status: {
-              opened: data.chatIntegration.announcements.queue.status.closed,
-              closed: data.chatIntegration.announcements.queue.status.opened,
+              opened: data.chatIntegration.announcements.queue.status.opened,
+              closed: data.chatIntegration.announcements.queue.status.closed,
               cleared: data.chatIntegration.announcements.queue.status.cleared,
             },
             song: {
