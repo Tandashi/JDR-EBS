@@ -1,5 +1,3 @@
-import type { IStaticConfig, IESBConfig, ITwitchExtensionConfig } from '@common/config';
-
 import getLogger from '@common/logging';
 import config from '@common/config';
 
@@ -38,10 +36,26 @@ export default class URLService {
    *
    * @returns The URL for the image
    */
-  public static getImageUrl(imageName: string): string {
+  public static getImageUrlByName(imageName: string): string {
     const imageUrl = `${config.esb.publicAddress}/static/${config.esb.static.imageDir}/${imageName}`;
     logger.debug(`Getting Image URL: ${imageUrl}`);
     return imageUrl;
+  }
+
+  /**
+   * Get the Image URL for the provided image name or url.
+   *
+   * @param data The image name or a url
+   *
+   * @returns If a image name was provided the Image URL will be generated using {@link getImageUrlByName}
+   *          else it will return the prodived url
+   */
+  public static getImageUrl(data: string): string {
+    if (data.startsWith('http')) {
+      return data;
+    }
+
+    return this.getImageUrlByName(data);
   }
 
   /**
@@ -52,9 +66,25 @@ export default class URLService {
    *
    * @returns The URL for the video
    */
-  public static getVideoUrl(videoName: string): string {
+  public static getVideoUrlByName(videoName: string): string {
     const videoUrl = `${config.esb.publicAddress}/static/${config.esb.static.videoDir}/${videoName}`;
     logger.debug(`Getting Video URL: ${videoUrl}`);
     return videoUrl;
+  }
+
+  /**
+   * Get the Video URL for the provided video name or preview url.
+   *
+   * @param data The video name or a preview url
+   *
+   * @returns If a video name was provided the Video URL will be generated using {@link getVideoUrlByName}
+   *          else it will return the prodived url
+   */
+  public static getVideoUrl(data: string): string {
+    if (data.startsWith('http')) {
+      return data;
+    }
+
+    return this.getVideoUrlByName(data);
   }
 }

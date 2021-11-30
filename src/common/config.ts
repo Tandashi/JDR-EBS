@@ -15,13 +15,13 @@ export interface IStaticConfig {
   /**
    * The static image directory relative to the root directory
    *
-   * @see {@link URLService.getImageUrl}
+   * @see {@link URLService.getImageUrlByName}
    */
   imageDir: string;
   /**
    * The static video directory relative to the root directory
    *
-   * @see {@link URLService.getVideoUrl}
+   * @see {@link URLService.getVideoUrlByName}
    */
   videoDir: string;
 }
