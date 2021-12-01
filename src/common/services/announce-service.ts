@@ -20,7 +20,8 @@ export default class AnnounceService {
   /**
    * Announce a message in a specific channel by it's Id.
    *
-   * **Note:** Will only announce the message if the channel has the {@link IChatIntegrationConfiguration.enabled ChatIntegration} turned on.
+   * **Note:** Will only announce the message if the channel has the {@link IChatIntegrationConfiguration.enabled ChatIntegration} turned on
+   *           and the event type was enabled.
    *
    * @param channelId The id of the channel to announce the message in
    * @param message The message that should be announced
@@ -49,7 +50,7 @@ export default class AnnounceService {
 
       const isEventEnabled = lodash.get(configuration.chatIntegration.announcements, event, false);
       if (!isEventEnabled) {
-        logger.debug(`Not announcing since announcements are not enabled for that event type.`);
+        logger.debug(`Not announcing since announcements for event type ${event} are not enabled.`);
         return;
       }
 

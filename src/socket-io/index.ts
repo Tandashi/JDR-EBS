@@ -10,6 +10,7 @@ import config from '@common/config';
 import { AuthJWTOrSecret } from '@socket-io/middleware/auth';
 import QueueGetReceiveEvent from '@socket-io/events/v1/receive/queue/get';
 import { EmitSocketIOEvent, ReceiveSocketIOEvent } from '@socket-io/event';
+import NextUpClearReceiveEvent from './events/v1/receive/next-up/clear';
 
 const logger = getLogger('Socket.IO');
 
@@ -96,6 +97,7 @@ export default class SocketIOServer {
     socket.join(user.channel_id);
 
     this.registerEvent(socket, new QueueGetReceiveEvent());
+    this.registerEvent(socket, new NextUpClearReceiveEvent());
 
     socket.on('disconnect', () => {
       logger.debug(`Connection closed user (${socket.id})`);

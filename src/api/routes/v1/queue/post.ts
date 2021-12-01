@@ -1,6 +1,9 @@
 import express from 'express';
 import { Schema } from 'express-validator';
 
+import SocketIOServer from '@socket-io/index';
+import NextUpSetEmitEvent from '@socket-io/events/v1/emit/next-up/set';
+
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
 import QueueService from '@services/queue-service';
 import AnnounceService from '@services/announce-service';
@@ -62,6 +65,7 @@ export default class QueuePostEndpoint {
     const entry = queueResult.data.entries[index];
     if (entry) {
       AnnounceService.announce(req.user.channel_id, `Next up: ${entry.song.title}`, 'queue.song.nextUp');
+      SocketIOServer.getInstance().emitEvent(req.user.channel_id, new NextUpSetEmitEvent(entry));
     }
 
     return APIResponseService.sendOk(res, {
