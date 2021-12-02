@@ -56,7 +56,7 @@ export interface ISongData {
   /**
    * The url to the Thumbnail of the Song.
    */
-  image_url: string;
+  image_url: string | null | undefined;
   /**
    * The url to the JustDance Wiki entry.
    */
@@ -65,7 +65,7 @@ export interface ISongData {
    * The video preview of the Song
    * or null if none exists.
    */
-  preview_url: string | null;
+  preview_url: string | null | undefined;
 }
 
 export type SongDataDoc = ISongData & Document;

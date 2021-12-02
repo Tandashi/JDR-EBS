@@ -30,9 +30,12 @@ const SongDataDto: Dto<SongDataDoc, SongDataJSONStructure> = {
       difficulty: data.difficulty,
       coaches: data.coaches,
       effort: data.effort,
-      image_url: URLService.getImageUrl(data.image_url),
+      image_url: data.image_url !== null && data.image_url !== undefined ? URLService.getImageUrl(data.image_url) : '',
       wiki_url: data.wiki_url,
-      preview_url: data.preview_url !== null ? URLService.getVideoUrl(data.preview_url) : undefined,
+      preview_url:
+        data.preview_url !== null && data.preview_url !== undefined
+          ? URLService.getVideoUrl(data.preview_url)
+          : undefined,
     };
   },
 };
