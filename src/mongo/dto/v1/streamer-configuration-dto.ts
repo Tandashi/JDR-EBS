@@ -5,6 +5,12 @@ import ProfileDto, { ProfileJSONStructure } from '@mongo/dto/v1/profile-dto';
 export interface StreamerConfigurationJSONStructure {
   version: string;
 
+  theme: {
+    liveConfig: {
+      css: string;
+    };
+  };
+
   chatIntegration: {
     enabled: boolean;
     channelName: string;
@@ -54,6 +60,11 @@ const StreamerConfigurationDto: Dto<IStreamerConfiguration, StreamerConfiguratio
   getJSON: (data: IStreamerConfiguration) => {
     return {
       version: data.version,
+      theme: {
+        liveConfig: {
+          css: data.theme.liveConfig.css,
+        },
+      },
       chatIntegration: {
         enabled: data.chatIntegration.enabled,
         channelName: data.chatIntegration.channelName,

@@ -21,6 +21,8 @@ import type {
   IChatIntegrationAnnouncementsQueueConfiguration,
   IChatIntegrationAnnouncementsQueueStatusConfiguration,
   IChatIntegrationAnnouncementsQueueSongConfiguration,
+  IThemeConfiguration,
+  IThemeLiveConfigConfiguration,
 } from '@mongo/schema/streamer-configuration';
 
 const logger = getLogger('StreamerConfiguration Service');
@@ -78,6 +80,10 @@ export default class StreamerConfigurationService {
     req: express.Request
   ): Promise<Result<StreamerConfigurationDoc>> {
     const configuration: Partial<IStreamerConfiguration> = req.body;
+
+    const theme: Partial<IThemeConfiguration> | undefined = configuration?.theme;
+    const themeLiveConfig: Partial<IThemeLiveConfigConfiguration> | undefined = theme?.liveConfig;
+    const themeLiveConfigCss = themeLiveConfig?.css ?? oldConfiguration.theme.liveConfig.css;
 
     const chatIntegration: Partial<IChatIntegrationConfiguration> | undefined = configuration?.chatIntegration;
     const chatIntegrationEnabled = chatIntegration?.enabled ?? oldConfiguration.chatIntegration.enabled;
@@ -137,6 +143,11 @@ export default class StreamerConfigurationService {
 
     const updatedConfiguration: IStreamerConfiguration = {
       version: oldConfiguration.version,
+      theme: {
+        liveConfig: {
+          css: themeLiveConfigCss,
+        },
+      },
       chatIntegration: {
         enabled: chatIntegrationEnabled,
         channelName: oldConfiguration.chatIntegration.channelName,

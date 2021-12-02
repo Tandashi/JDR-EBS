@@ -14,7 +14,12 @@ const logger = getLogger('Streamer Configuration Dao');
 
 export default class StreamerConfigurationDao {
   private static DEFAULT_CONFIGURATION: Omit<IStreamerConfiguration, 'profile'> = {
-    version: 'v1.3',
+    version: 'v1.4',
+    theme: {
+      liveConfig: {
+        css: '',
+      },
+    },
     chatIntegration: {
       enabled: false,
       channelName: '',

@@ -122,11 +122,29 @@ export interface IProfileConfiguration {
   profiles: ProfileDoc[];
 }
 
+export interface IThemeLiveConfigConfiguration {
+  /**
+   * The css
+   */
+  css: string;
+}
+
+export interface IThemeConfiguration {
+  /**
+   * Theming for the live config page.
+   */
+  liveConfig: IThemeLiveConfigConfiguration;
+}
+
 export interface IStreamerConfiguration {
   /**
    * The version of the Configuration.
    */
-  version: 'v1.3';
+  version: 'v1.4';
+  /**
+   * The theming configuration
+   */
+  theme: IThemeConfiguration;
   /**
    * The ChatIntegration Configuration.
    */
@@ -146,8 +164,16 @@ export type StreamerConfigurationDoc = IStreamerConfiguration & Document;
 const streamerConfigurationSchema: Schema = new Schema({
   version: {
     type: String,
-    enum: ['v1.3'],
+    enum: ['v1.4'],
     required: true,
+  },
+  theme: {
+    liveConfig: {
+      css: {
+        type: String,
+        required: true,
+      },
+    },
   },
   chatIntegration: {
     enabled: {

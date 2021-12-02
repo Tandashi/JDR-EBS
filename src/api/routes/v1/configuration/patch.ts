@@ -10,6 +10,27 @@ import StreamerConfigurationDto from '@mongo/dto/v1/streamer-configuration-dto';
 const APIResponseService = ResponseService.getAPIInstance();
 
 export const updateRequestValidationSchema: Schema = {
+  theme: {
+    in: 'body',
+    isObject: {
+      errorMessage: 'Field `theme` must be an object',
+      bail: true,
+    },
+  },
+  'theme.liveConfig': {
+    in: 'body',
+    isObject: {
+      errorMessage: 'Field `theme.liveConfig` must be an object',
+      bail: true,
+    },
+  },
+  'theme.liveConfig.css': {
+    in: 'body',
+    isString: {
+      errorMessage: 'Field `theme.liveConfig.css` must be a string',
+      bail: true,
+    },
+  },
   chatIntegration: {
     in: 'body',
     isObject: {
