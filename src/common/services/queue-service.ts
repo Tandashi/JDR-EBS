@@ -8,6 +8,7 @@ import StreamerConfigurationDao from '@mongo/dao/streamer-configuration-dao';
 import AnnounceService from '@services/announce-service';
 import QueueUpdatedEmitEvent from '@socket-io/events/v1/emit/queue/updated';
 import SocketIOServer from '@socket-io/index';
+import NextUpClearedEmitEvent from '@socket-io/events/v1/emit/next-up/clear';
 
 const logger = getLogger('Queue Service');
 
@@ -89,6 +90,7 @@ export default class QueueService {
 
     const newQueue = queueSetResult.data;
     SocketIOServer.getInstance().emitEvent(channelId, new QueueUpdatedEmitEvent(newQueue));
+    SocketIOServer.getInstance().emitEvent(channelId, new NextUpClearedEmitEvent());
 
     AnnounceService.announce(channelId, 'Queue has been cleared', 'queue.status.cleared');
     return Success(newQueue);
