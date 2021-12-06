@@ -1,4 +1,4 @@
-import { UpdateQuery } from 'mongoose';
+import { ClientSession, UpdateQuery } from 'mongoose';
 
 import getLogger from '@common/logging';
 import { Result, Success, Failure } from '@common/result';
@@ -14,7 +14,7 @@ const logger = getLogger('Streamer Configuration Dao');
 
 export default class StreamerConfigurationDao {
   private static DEFAULT_CONFIGURATION: Omit<IStreamerConfiguration, 'profile'> = {
-    version: 'v1.4',
+    version: 'v1.5',
     theme: {
       liveConfig: {
         css: '',
@@ -45,6 +45,9 @@ export default class StreamerConfigurationDao {
           enabled: false,
         },
         queuePosition: {
+          enabled: false,
+        },
+        leave: {
           enabled: false,
         },
         banlist: {

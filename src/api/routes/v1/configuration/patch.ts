@@ -171,6 +171,20 @@ export const updateRequestValidationSchema: Schema = {
       bail: true,
     },
   },
+  'chatIntegration.commands.leave': {
+    in: 'body',
+    isObject: {
+      errorMessage: 'Field `chatIntegration.commands.leave` must be an object',
+      bail: true,
+    },
+  },
+  'chatIntegration.commands.leave.enabled': {
+    in: 'body',
+    isBoolean: {
+      errorMessage: 'Field `chatIntegration.commands.leave.enabled` must be a boolean',
+      bail: true,
+    },
+  },
   'chatIntegration.commands.banlist': {
     in: 'body',
     isObject: {

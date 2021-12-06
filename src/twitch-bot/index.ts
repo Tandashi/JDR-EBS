@@ -14,8 +14,9 @@ import { IStreamerConfiguration } from '@mongo/schema/streamer-configuration';
 import ICommand, { ICommandParameters } from '@twitch-bot/command';
 import SRCommand from '@twitch-bot/commands/sr-command';
 import QueueCommand from '@twitch-bot/commands/queue-command';
-import QueuePositionCommand from './commands/queue-position-command';
+import QueuePositionCommand from '@twitch-bot/commands/queue-position-command';
 import BanlistCommand from '@twitch-bot/commands/banlist-command';
+import LeaveCommand from '@twitch-bot/commands/leave-command';
 
 const logger = getLogger('Twitch Bot');
 
@@ -39,6 +40,9 @@ export default class TwitchBot {
 
     '!bl': new BanlistCommand(),
     '!banlist': new BanlistCommand(),
+
+    '!l': new LeaveCommand(),
+    '!leave': new LeaveCommand(),
   };
 
   private constructor() {

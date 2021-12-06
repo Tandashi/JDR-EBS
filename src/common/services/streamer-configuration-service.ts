@@ -23,6 +23,7 @@ import type {
   IChatIntegrationAnnouncementsQueueSongConfiguration,
   IThemeConfiguration,
   IThemeLiveConfigConfiguration,
+  ILeaveCommandConfiguration,
 } from '@mongo/schema/streamer-configuration';
 
 const logger = getLogger('StreamerConfiguration Service');
@@ -130,6 +131,10 @@ export default class StreamerConfigurationService {
       chatIntegrationCommands?.queuePosition;
     const chatIntegrationCommandsQueuePositionEnabled =
       chatIntegrationCommandsQueuePosition?.enabled ?? oldConfiguration.chatIntegration.commands.queuePosition.enabled;
+    const chatIntegrationCommandsLeave: Partial<ILeaveCommandConfiguration> | undefined =
+      chatIntegrationCommands?.leave;
+    const chatIntegrationCommandsLeaveEnabled =
+      chatIntegrationCommandsLeave?.enabled ?? oldConfiguration.chatIntegration.commands.leave.enabled;
     const chatIntegrationCommandsBanlist: Partial<IBanlistCommandConfiguration> | undefined =
       chatIntegrationCommands?.banlist;
     const chatIntegrationCommandsBanlistEnabled =
@@ -174,6 +179,9 @@ export default class StreamerConfigurationService {
           },
           queuePosition: {
             enabled: chatIntegrationCommandsQueuePositionEnabled,
+          },
+          leave: {
+            enabled: chatIntegrationCommandsLeaveEnabled,
           },
           banlist: {
             enabled: chatIntegrationCommandsBanlistEnabled,
