@@ -66,7 +66,7 @@ export default class LeaveCommand implements ICommand {
         return bot.sendMessage(channel, `Please provide a number as the position you'd like to remove.`, userstate);
       }
 
-      indexToRemove = parsedRemovePosition;
+      indexToRemove = parsedRemovePosition - 1;
     }
 
     const removeEntry = queueEntriesOfUser[indexToRemove];
