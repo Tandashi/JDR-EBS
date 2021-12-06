@@ -1,4 +1,4 @@
-import { PopulateOptions } from 'mongoose';
+import mongoose, { ClientSession, PopulateOptions } from 'mongoose';
 
 import getLogger from '@common/logging';
 import { Result, Success, Failure } from '@common/result';
@@ -107,20 +107,39 @@ export default class StreamerDataDao {
     channelId: string,
     populate?: PopulationParams[]
   ): Promise<Result<StreamerDataDoc>> {
+    const session = await mongoose.connection.startSession();
+    session.startTransaction({ writeConcern: { w: 'majority' } });
+
     try {
-      const streamerData = await StreamerData.findOne({
-        channelId: channelId,
-      }).populate(populate);
+      let result: Result<StreamerDataDoc> | undefined = undefined;
+      const streamerData = await StreamerData.findOne(
+        {
+          channelId: channelId,
+        },
+        {},
+        { session }
+      ).populate(populate);
 
       if (!streamerData) {
-        return await this.createStreamerData(channelId, populate);
+        logger.info('Streamer Data was not found creating.');
+        result = await this.createStreamerData(channelId, session, populate);
+      } else {
+        result = Success(streamerData);
       }
 
-      return Success(streamerData);
+      await session.commitTransaction();
+
+      if (!result) {
+        throw Error('Result should have been set');
+      }
+
+      return result;
     } catch (e) {
       logger.error(e);
 
       return Failure('internal', 'Could not retrive StreamerData');
+    } finally {
+      session.endSession();
     }
   }
 
@@ -134,14 +153,15 @@ export default class StreamerDataDao {
    */
   private static async createStreamerData(
     channelId: string,
+    session: ClientSession,
     populate?: PopulationParams[]
   ): Promise<Result<StreamerDataDoc>> {
-    const queueResult = await QueueDao.createQueue();
+    const queueResult = await QueueDao.createQueue(session);
     if (queueResult.type === 'error') {
       return queueResult;
     }
 
-    const configurationResult = await StreamerConfigurationDao.createStreamerConfiguration();
+    const configurationResult = await StreamerConfigurationDao.createStreamerConfiguration(session);
     if (configurationResult.type === 'error') {
       return configurationResult;
     }
@@ -154,7 +174,7 @@ export default class StreamerDataDao {
         configuration: configurationResult.data._id,
       };
 
-      const streamerData = await new StreamerData(streamerDataData).save();
+      const streamerData = await new StreamerData(streamerDataData).save({ session });
 
       const populatedData = await streamerData.populate(populate ?? []).execPopulate();
 

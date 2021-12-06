@@ -2,6 +2,7 @@ import getLogger from '@common/logging';
 import { Result, Success, Failure } from '@common/result';
 
 import Queue, { QueueDoc, IQueueEntry, IQueue } from '@mongo/schema/queue';
+import { ClientSession } from 'mongoose';
 
 const logger = getLogger('Queue Dao');
 
@@ -11,13 +12,13 @@ export default class QueueDao {
    *
    * @returns The result of the operation
    */
-  public static async createQueue(): Promise<Result<QueueDoc>> {
+  public static async createQueue(session: ClientSession): Promise<Result<QueueDoc>> {
     try {
       const queueData: IQueue = {
         enabled: false,
         entries: [],
       };
-      const queue = await new Queue(queueData).save();
+      const queue = await new Queue(queueData).save({ session });
 
       return Success(queue);
     } catch (e) {

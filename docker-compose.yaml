@@ -79,5 +79,6 @@ services:
   mongodb:
     container_name: 'JDR-MongoDB'
     image: 'mongo:latest'
+    command: '--replSet rs0'
     volumes:
       - ~/JDR-EBS/db-data:/data/db

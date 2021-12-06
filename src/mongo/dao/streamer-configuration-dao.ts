@@ -156,9 +156,9 @@ export default class StreamerConfigurationDao {
    *
    * @returns The result of the operation
    */
-  public static async createStreamerConfiguration(): Promise<Result<StreamerConfigurationDoc>> {
+  public static async createStreamerConfiguration(session: ClientSession): Promise<Result<StreamerConfigurationDoc>> {
     try {
-      const defaultProfileResult = await ProfileDao.createProfile('default');
+      const defaultProfileResult = await ProfileDao.createProfile('default', session);
       if (defaultProfileResult.type === 'error') {
         return defaultProfileResult;
       }
@@ -171,7 +171,7 @@ export default class StreamerConfigurationDao {
           profiles: [defaultProfile._id],
         },
       };
-      const configuration = await new StreamerConfiguration(configurationData).save();
+      const configuration = await new StreamerConfiguration(configurationData).save({ session });
       return Success(configuration);
     } catch (e) {
       logger.error(e);

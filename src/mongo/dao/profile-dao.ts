@@ -1,4 +1,4 @@
-import { PopulateOptions, UpdateQuery } from 'mongoose';
+import { ClientSession, PopulateOptions, UpdateQuery } from 'mongoose';
 
 import getLogger from '@common/logging';
 import { Result, Success, Failure } from '@common/result';
@@ -19,7 +19,7 @@ export default class ProfileDao {
    *
    * @returns The result of the operation
    */
-  public static async createProfile(name: string): Promise<Result<ProfileDoc>> {
+  public static async createProfile(name: string, session: ClientSession): Promise<Result<ProfileDoc>> {
     try {
       const profileData: IProfile = {
         name: name,
@@ -32,7 +32,7 @@ export default class ProfileDao {
         },
       };
 
-      const profile = await new Profile(profileData).save();
+      const profile = await new Profile(profileData).save({ session });
 
       return Success(profile);
     } catch (e) {
