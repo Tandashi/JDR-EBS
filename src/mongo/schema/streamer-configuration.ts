@@ -176,7 +176,8 @@ const streamerConfigurationSchema: Schema = new Schema({
     liveConfig: {
       css: {
         type: String,
-        required: true,
+        required: false,
+        default: '',
       },
     },
   },
