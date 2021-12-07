@@ -1,7 +1,7 @@
 import getLogger from '@common/logging';
 import { Result, Success, Failure, FailureResult } from '@common/result';
 
-import { QueueDoc, IQueueEntry } from '@mongo/schema/queue';
+import { QueueDoc, IQueueEntry, IQueueEntryUserState } from '@mongo/schema/queue';
 import StreamerDataDao from '@mongo/dao/streamer-data-dao';
 import QueueDao from '@mongo/dao/queue-dao';
 import StreamerConfigurationDao from '@mongo/dao/streamer-configuration-dao';
@@ -13,6 +13,7 @@ import NextUpClearedEmitEvent from '@socket-io/events/v1/emit/next-up/clear';
 const logger = getLogger('Queue Service');
 
 type AddToQueueErrors = 'maximum-requests-exceeded' | 'song-already-queued' | 'song-is-banned' | 'queue-is-closed';
+type UpdateUserStateErrors = 'no-such-entity';
 
 export default class QueueService {
   /**
@@ -205,6 +206,52 @@ export default class QueueService {
 
     const newQueue = queueSetResult.data;
     SocketIOServer.getInstance().emitEvent(channelId, new QueueUpdatedEmitEvent(newQueue));
+
+    return Success(newQueue);
+  }
+
+  /**
+   * Add a {@link IQueueEntry QueueEntry} to the {@link QueueDoc Queue} of a specific channel by it's Id.
+   *
+   * @param channelName The channel name of the streamer the entries should be updated in
+   * @param username The username of the user who's userState should be updated in the channel
+   * @param userState The new userState of the user
+   *
+   * @returns The updated {@link QueueDoc Queue} if successful else a {@link FailureResult Failure Result}
+   */
+  public static async updateUserState(
+    channelName: string,
+    username: string,
+    userState: IQueueEntryUserState
+  ): Promise<Result<QueueDoc, UpdateUserStateErrors>> {
+    const streamerDataResult = await StreamerDataDao.getByChannelName(channelName, [
+      { path: 'queue' },
+      { path: 'configuration' },
+    ]);
+
+    if (streamerDataResult.type === 'error') {
+      return streamerDataResult;
+    }
+
+    const streamerData = streamerDataResult.data;
+
+    const queue = streamerData.queue;
+    queue.entries = queue.entries.map((entry) => {
+      if (entry.username.toLowerCase() === username.toLowerCase()) {
+        entry.userState = userState;
+      }
+
+      return entry;
+    });
+
+    const queueSetResult = await QueueDao.setQueue(queue, queue.enabled, queue.entries);
+    if (queueSetResult.type === 'error') {
+      logger.debug(`Setting Queue failed in updateUserState: ${JSON.stringify(queueSetResult)}`);
+      return queueSetResult;
+    }
+
+    const newQueue = queueSetResult.data;
+    SocketIOServer.getInstance().emitEvent(streamerData.channelId, new QueueUpdatedEmitEvent(newQueue));
 
     return Success(newQueue);
   }

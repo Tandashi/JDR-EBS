@@ -39,6 +39,7 @@ type ConfigurationPopulateOption = {
 type PopulationParams = QueuePopulateOption | ConfigurationPopulateOption;
 
 type GetBySecretErrors = 'no-such-entity';
+type GetByChannelNameErrors = 'no-such-entity';
 
 const logger = getLogger('Streamer Data Dao');
 
@@ -63,6 +64,35 @@ export default class StreamerDataDao {
       logger.error(e);
 
       return Failure('internal', 'Could not get Streamer Data with secret');
+    }
+  }
+
+  /**
+   * Get Streamer Data by Channel Name.
+   *
+   * @param channelName The channel name of the streamer data
+   *
+   * @returns The result of the operation
+   */
+  public static async getByChannelName(
+    channelName: string,
+    populate?: PopulationParams[]
+  ): Promise<Result<StreamerDataDoc, GetByChannelNameErrors>> {
+    try {
+      const streamerDatas = await StreamerData.find().populate('configuration').populate(populate).exec();
+      const streamerData = streamerDatas.filter(
+        (data) => data.configuration.chatIntegration.channelName.toLowerCase() === channelName.toLowerCase()
+      );
+
+      if (!streamerData.length) {
+        return Failure<GetByChannelNameErrors>('no-such-entity', `Invalid channel name '${channelName}'`);
+      }
+
+      return Success(streamerData[0]);
+    } catch (e) {
+      logger.error(e);
+
+      return Failure('internal', 'Could not get Streamer Data by channel name');
     }
   }
 

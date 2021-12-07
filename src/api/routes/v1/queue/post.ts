@@ -103,7 +103,13 @@ export default class QueuePostEndpoint {
     const songdata = getSongResult.data;
     const queueSongData: IQueueEntryFromExtension = {
       userId: req.user.user_id,
-      username: req.body.username,
+      username: req.body.username ?? 'unknown (mobile)',
+      userState: req.body.username
+        ? {
+            inChat: true,
+            lastSeen: undefined,
+          }
+        : undefined,
       fromChat: false,
       song: {
         id: songdata.id,

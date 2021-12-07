@@ -30,6 +30,10 @@ export default class SRCommand implements ICommand {
       {
         userId: userstate['user-id'],
         username: userstate['display-name'],
+        userState: {
+          inChat: true,
+          lastSeen: undefined,
+        },
         fromChat: true,
         song: {
           title: songTitle,

@@ -2,6 +2,7 @@
 // Registers the import aliases
 import 'module-alias/register';
 import tmi from 'tmi.js';
+import { DateTime } from 'luxon';
 
 import getLogger from '@common/logging';
 import config from '@common/config';
@@ -17,6 +18,7 @@ import QueueCommand from '@twitch-bot/commands/queue-command';
 import QueuePositionCommand from '@twitch-bot/commands/queue-position-command';
 import BanlistCommand from '@twitch-bot/commands/banlist-command';
 import LeaveCommand from '@twitch-bot/commands/leave-command';
+import QueueService from '@common/services/queue-service';
 
 const logger = getLogger('Twitch Bot');
 
@@ -85,14 +87,36 @@ export default class TwitchBot {
     );
 
     this.client.on('connected', () => {
-      this.connect();
+      this.connectToChannels();
+    });
+
+    this.client.on('join', async (channelName, username, self) => {
+      if (self) return;
+
+      logger.info(`User ${username} joined the channel ${channelName}`);
+
+      QueueService.updateUserState(channelName.substr(1), username, {
+        inChat: true,
+        lastSeen: undefined,
+      });
+    });
+
+    this.client.on('part', async (channelName, username, self) => {
+      if (self) return;
+
+      logger.info(`User ${username} left the channel ${channelName}`);
+
+      QueueService.updateUserState(channelName.substr(1), username, {
+        inChat: false,
+        lastSeen: DateTime.now().toMillis(),
+      });
     });
   }
 
   /**
    * Connect to all channels that have chatIntegration enabled
    */
-  private async connect(): Promise<void> {
+  private async connectToChannels(): Promise<void> {
     const configurationsResult = await StreamerConfigurationDao.getAllWithChatIntegrationEnabled();
 
     if (configurationsResult.type === 'error') {
