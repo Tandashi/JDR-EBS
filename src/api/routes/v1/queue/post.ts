@@ -26,6 +26,7 @@ export const addRequestValidationSchema: Schema = {
       bail: true,
     },
   },
+  /* Add again once the mobile bug is fixed
   username: {
     in: 'body',
     exists: {
@@ -37,6 +38,7 @@ export const addRequestValidationSchema: Schema = {
       bail: true,
     },
   },
+  */
 };
 
 export const announceRequestValidationSchema: Schema = {
