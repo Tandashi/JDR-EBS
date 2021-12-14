@@ -131,8 +131,6 @@ const queueSchema: Schema = new Schema({
           required: true,
         },
         userState: {
-          required: false,
-
           inChat: {
             type: Boolean,
             required: true,

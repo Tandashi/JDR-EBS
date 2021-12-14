@@ -64,7 +64,7 @@ export default class QueuePostEndpoint {
       return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RETRIVE_QUEUE);
     }
 
-    const entry = queueResult.data.entries[index];
+    const entry = queueResult.data.toObject().entries[index];
     if (entry) {
       AnnounceService.announce(req.user.channel_id, `Next up: ${entry.song.title}`, 'queue.song.nextUp');
       SocketIOServer.getInstance().emitEvent(req.user.channel_id, new NextUpSetEmitEvent(entry));
@@ -105,7 +105,7 @@ export default class QueuePostEndpoint {
     const songdata = getSongResult.data;
     const queueSongData: IQueueEntryFromExtension = {
       userId: req.user.user_id,
-      username: req.body.username ?? 'unknown (mobile)',
+      username: req.body.username ?? 'Unknown (mobile)',
       userState: req.body.username
         ? {
             inChat: true,

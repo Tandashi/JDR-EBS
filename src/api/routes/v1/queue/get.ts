@@ -15,7 +15,10 @@ export default class QueueGetEndpoint {
     }
 
     APIResponseService.sendOk(res, {
-      data: QueueDto.getJSON(queueResult.data),
+      // Convert to lean Object so we preserve undefined
+      // Else undefined schema props will be converted to {}
+      // from mongoose in Documents
+      data: QueueDto.getJSON(queueResult.data.toObject()),
     });
   }
 }

@@ -26,13 +26,13 @@ export default class QueueService {
   public static async getQueue(channelId: string): Promise<Result<QueueDoc>> {
     logger.debug(`Getting Queue for channel '${channelId}'`);
 
-    const streamDataResult = await StreamerDataDao.getOrCreateStreamerData(channelId, [{ path: 'queue' }]);
-    if (streamDataResult.type === 'error') {
-      logger.debug(`Getting StreamerData failed in getQueue: ${JSON.stringify(streamDataResult)}`);
-      return streamDataResult;
+    const streamerDataResult = await StreamerDataDao.getOrCreateStreamerData(channelId, [{ path: 'queue' }]);
+    if (streamerDataResult.type === 'error') {
+      logger.debug(`Getting StreamerData failed in getQueue: ${JSON.stringify(streamerDataResult)}`);
+      return streamerDataResult;
     }
 
-    return Success(streamDataResult.data.queue);
+    return Success(streamerDataResult.data.queue);
   }
 
   /**
