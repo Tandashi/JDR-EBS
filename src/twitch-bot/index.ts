@@ -8,6 +8,7 @@ import getLogger from '@common/logging';
 import config from '@common/config';
 
 import AnnounceService from '@services/announce-service';
+import QueueService from '@services/queue-service';
 
 import StreamerConfigurationDao from '@mongo/dao/streamer-configuration-dao';
 import { IStreamerConfiguration } from '@mongo/schema/streamer-configuration';
@@ -18,7 +19,6 @@ import QueueCommand from '@twitch-bot/commands/queue-command';
 import QueuePositionCommand from '@twitch-bot/commands/queue-position-command';
 import BanlistCommand from '@twitch-bot/commands/banlist-command';
 import LeaveCommand from '@twitch-bot/commands/leave-command';
-import QueueService from '@common/services/queue-service';
 
 const logger = getLogger('Twitch Bot');
 
@@ -38,7 +38,7 @@ export default class TwitchBot {
     '!queue': new QueueCommand(),
 
     '!qp': new QueuePositionCommand(),
-    '!queuePosition': new QueuePositionCommand(),
+    '!queueposition': new QueuePositionCommand(),
 
     '!bl': new BanlistCommand(),
     '!banlist': new BanlistCommand(),
