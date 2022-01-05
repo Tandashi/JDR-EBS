@@ -95,7 +95,7 @@ export default class TwitchBot {
 
       logger.info(`User ${username} joined the channel ${channelName}`);
 
-      QueueService.updateUserState(channelName.substr(1), username, {
+      QueueService.updateUserState(this.getUnifiedChannelName(channelName), username, {
         inChat: true,
         lastSeen: undefined,
       });
@@ -106,7 +106,7 @@ export default class TwitchBot {
 
       logger.info(`User ${username} left the channel ${channelName}`);
 
-      QueueService.updateUserState(channelName.substr(1), username, {
+      QueueService.updateUserState(this.getUnifiedChannelName(channelName), username, {
         inChat: false,
         lastSeen: DateTime.now().toMillis(),
       });

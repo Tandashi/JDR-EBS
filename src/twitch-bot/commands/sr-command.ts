@@ -15,7 +15,7 @@ export default class SRCommand implements ICommand {
   }
 
   async process({ channel, userstate, message, bot }: ICommandParameters): Promise<void> {
-    const songTitle = message.substr(message.indexOf(' ') + 1);
+    const songTitle = message.substring(message.indexOf(' ') + 1);
     if (!songTitle) {
       return bot.sendMessage(channel, Messages.NO_SONG_TITLE_PROVIDED, userstate);
     }
