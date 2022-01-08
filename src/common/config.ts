@@ -1,5 +1,3 @@
-import type URLService from '@services/url-service';
-
 import getLogger from '@common/logging';
 const logger = getLogger('Configuration');
 
