@@ -63,7 +63,7 @@ export default class SRCommand implements ICommand {
           break;
       }
 
-      return AnnounceService.announce(userstate['room-id'], message, 'queue.song.fromChat', userstate);
+      return bot.sendMessage(channel, message, userstate);
     }
 
     return AnnounceService.announce(
