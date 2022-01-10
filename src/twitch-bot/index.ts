@@ -199,7 +199,7 @@ export default class TwitchBot {
    */
   public join(channelName: string, configuration: IStreamerConfiguration): void {
     this.updateConfiguration(channelName, configuration);
-    this.client.join(channelName).catch(logger.error);
+    this.client.join(channelName).catch((e) => logger.error(e));
   }
 
   /**
@@ -210,7 +210,7 @@ export default class TwitchBot {
    */
   public part(channelName: string): void {
     delete this.configurations[this.getUnifiedChannelName(channelName)];
-    this.client.part(channelName);
+    this.client.part(channelName).catch((e) => logger.error(e));
   }
 
   /**
