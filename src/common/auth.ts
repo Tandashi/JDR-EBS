@@ -12,7 +12,7 @@ import StreamerDataDao from '@mongo/dao/streamer-data-dao';
  *
  * @returns The TwitchUser if successful else a Failure Result
  */
-export const AuthJWT = (token: string): Result<TwitchUser> => {
+export const AuthJWT = (token: string): Result<TwitchUser, 'jwt-verify-failed'> => {
   try {
     // Verify if the token is correct
     // Decode the secret since Twitch provides it as a base64 string
@@ -23,7 +23,7 @@ export const AuthJWT = (token: string): Result<TwitchUser> => {
     // Return the Twitch User
     return Success(jwt as TwitchUser);
   } catch (e) {
-    return Failure('internal', e);
+    return Failure('jwt-verify-failed', e);
   }
 };
 
