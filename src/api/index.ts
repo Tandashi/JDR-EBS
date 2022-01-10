@@ -6,12 +6,10 @@ import express from 'express';
 import cors from 'cors';
 
 import config from '@common/config';
-import getLogger from '@common/logging';
 import BaseRouter from '@api/routes/router';
 import StreamlabsRouter from '@api/routes/streamlabs/router';
+import HealthRouter from '@api/routes/health/router';
 import { logErrors } from '@api/middleware/error-handler';
-
-const logger = getLogger('API');
 
 export default class APIServer {
   private static instance: APIServer;
@@ -26,6 +24,7 @@ export default class APIServer {
   private registerRoutes(): void {
     this.app.use('/api', BaseRouter);
     this.app.use('/streamlabs', StreamlabsRouter);
+    this.app.use('/health', HealthRouter);
   }
 
   private registerMiddleware(): void {
