@@ -90,6 +90,21 @@ export default class TwitchBot {
       this.connectToChannels();
     });
 
+    this.client.on('notice', async (channelName, msgid, message) => {
+      logger.info(`Got notice (${channelName} | ${msgid}): ${message}`);
+
+      if (msgid === 'msg_banned') {
+        logger.info(`Removing Chat Integration for ${channelName}.`);
+        StreamerConfigurationDao.updateByChannelName(
+          this.getUnifiedChannelName(channelName),
+          {
+            'chatIntegration.enabled': false,
+          },
+          []
+        );
+      }
+    });
+
     this.client.on('join', async (channelName, username, self) => {
       if (self) return;
 

@@ -52,7 +52,7 @@ export default class StreamerConfigurationService {
     }
 
     const channelName = channelInformationResult.data.displayName;
-    const updateResult = await StreamerConfigurationDao.update(
+    const updateResult = await StreamerConfigurationDao.updateById(
       configurationId,
       {
         $set: { 'chatIntegration.channelName': channelName },
@@ -196,7 +196,7 @@ export default class StreamerConfigurationService {
       profile: oldConfiguration.profile,
     };
 
-    const updateResult = await StreamerConfigurationDao.update(oldConfiguration._id, updatedConfiguration, [
+    const updateResult = await StreamerConfigurationDao.updateById(oldConfiguration._id, updatedConfiguration, [
       {
         path: 'profile.active',
       },

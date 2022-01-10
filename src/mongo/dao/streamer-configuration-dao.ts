@@ -1,4 +1,4 @@
-import { ClientSession, UpdateQuery } from 'mongoose';
+import { ClientSession, FilterQuery, UpdateQuery } from 'mongoose';
 
 import getLogger from '@common/logging';
 import { Result, Success, Failure } from '@common/result';
@@ -124,30 +124,68 @@ export default class StreamerConfigurationDao {
   }
 
   /**
-   * Update Streamer Configuration by Id
+   * Update Streamer Configuration by channel name
    *
-   * @param id The id of the configuration that should be updated
+   * @param channelName The users channel name
    * @param updateQuery The update query
    * @param populate The population options
    *
    * @returns The result of the operation
    */
-  public static async update(
+  public static async updateByChannelName(
+    channelName: string,
+    updateQuery: UpdateQuery<IStreamerConfiguration>,
+    populate: ConfigurationProfilePopulateOptions[]
+  ): Promise<Result<StreamerConfigurationDoc>> {
+    return this.update(
+      { 'chatIntegration.channelName': { $regex: channelName, $options: 'i' } },
+      updateQuery,
+      populate
+    );
+  }
+
+  /**
+   * Update Streamer Configuration by id
+   *
+   * @param id The configuration id
+   * @param updateQuery The update query
+   * @param populate The population options
+   *
+   * @returns The result of the operation
+   */
+  public static async updateById(
     id: string,
     updateQuery: UpdateQuery<IStreamerConfiguration>,
     populate: ConfigurationProfilePopulateOptions[]
   ): Promise<Result<StreamerConfigurationDoc>> {
+    return this.update({ _id: id }, updateQuery, populate);
+  }
+
+  /**
+   * Update Streamer Configuration using a FilterQuery
+   *
+   * @param filterQuery The filter query
+   * @param updateQuery The update query
+   * @param populate The population options
+   *
+   * @returns The result of the operation
+   */
+  private static async update(
+    filterQuery: FilterQuery<StreamerConfigurationDoc>,
+    updateQuery: UpdateQuery<IStreamerConfiguration>,
+    populate: ConfigurationProfilePopulateOptions[]
+  ): Promise<Result<StreamerConfigurationDoc>> {
     try {
-      const configuration = await StreamerConfiguration.findByIdAndUpdate(id, updateQuery, { new: true });
+      const configuration = await StreamerConfiguration.findOneAndUpdate(filterQuery, updateQuery, { new: true });
 
       if (!configuration) {
-        throw new Error('Could not update StreamerConfiguration. findOneAndUpdate returned null.');
+        throw new Error('Could not update StreamerConfiguration because findOneAndUpdate returned null.');
       }
 
       const populatedConfiguration = await configuration.populate(populate).execPopulate();
       return Success(populatedConfiguration);
     } catch (e) {
-      return Failure('internal', 'Could not update Streamer Configuration');
+      return Failure('internal', `Could not update Streamer Configuration. ${e}`);
     }
   }
 
