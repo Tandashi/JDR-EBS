@@ -11,7 +11,7 @@ import AnnounceService from '@services/announce-service';
 import QueueService from '@services/queue-service';
 
 import StreamerConfigurationDao from '@mongo/dao/streamer-configuration-dao';
-import { IStreamerConfiguration } from '@mongo/schema/streamer-configuration';
+import { IStreamerConfiguration, StreamerConfigurationDoc } from '@mongo/schema/streamer-configuration';
 
 import ICommand, { ICommandParameters } from '@twitch-bot/command';
 import SRCommand from '@twitch-bot/commands/sr-command';
@@ -47,24 +47,6 @@ export default class TwitchBot {
     '!leave': new LeaveCommand(),
   };
 
-  private constructor() {
-    this.client = new tmi.Client({
-      options: { messagesLogLevel: 'info' },
-      connection: {
-        reconnect: true,
-        secure: true,
-      },
-      identity: {
-        username: config.twitch.bot.username,
-        password: `oauth:${config.twitch.bot.oauthToken}`,
-      },
-      channels: [],
-      logger,
-    });
-
-    this.configure();
-  }
-
   /**
    * Get the TwitchBot Instance
    *
@@ -81,14 +63,10 @@ export default class TwitchBot {
   /**
    * Configure the TwitchBot to listen to IRC events
    */
-  private configure(): void {
+  private configureClient(): void {
     this.client.on('message', (channel, userstate, message, self) =>
       this.handleOnMessage(channel, userstate, message, self)
     );
-
-    this.client.on('connected', () => {
-      this.connectToChannels();
-    });
 
     this.client.on('notice', async (channelName, msgid, message) => {
       logger.info(`Got notice (${channelName} | ${msgid}): ${message}`);
@@ -129,16 +107,17 @@ export default class TwitchBot {
   }
 
   /**
-   * Connect to all channels that have chatIntegration enabled
+   * Initialize the StreamerConfigurations for the Bot
+   *
+   * **Note**: This should be called before {@link createClient}
    */
-  private async connectToChannels(): Promise<void> {
+  private async initializeConfigurations(): Promise<void> {
     const configurationsResult = await StreamerConfigurationDao.getAllWithChatIntegrationEnabled();
 
     if (configurationsResult.type === 'error') {
       logger.error(
         'Unable to connect to channels. StreamerConfigurationDao returned an error while fetching channels.'
       );
-      return;
     }
 
     if (configurationsResult.type === 'success') {
@@ -151,9 +130,30 @@ export default class TwitchBot {
           );
         }
 
-        this.join(channelName, configuration);
+        this.updateConfiguration(channelName, configuration);
       });
     }
+  }
+
+  /**
+   * Create the Client
+   */
+  private async createClient(): Promise<void> {
+    const channelsToConnectTo = Object.keys(this.configurations);
+
+    this.client = new tmi.Client({
+      options: { messagesLogLevel: 'info' },
+      connection: {
+        reconnect: true,
+        secure: true,
+      },
+      identity: {
+        username: config.twitch.bot.username,
+        password: `oauth:${config.twitch.bot.oauthToken}`,
+      },
+      channels: channelsToConnectTo,
+      logger,
+    });
   }
 
   /**
@@ -280,8 +280,14 @@ export default class TwitchBot {
   /**
    * Start the TwitchBot.
    */
-  public start(): void {
+  public async start(): Promise<void> {
     logger.info('Starting Twitch Bot...');
+
+    await this.initializeConfigurations();
+
+    await this.createClient();
+    this.configureClient();
+
     this.client
       .connect()
       .then(() => {
