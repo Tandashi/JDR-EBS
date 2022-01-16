@@ -142,7 +142,7 @@ export default class TwitchBot {
     const channelsToConnectTo = Object.keys(this.configurations);
 
     this.client = new tmi.Client({
-      options: { messagesLogLevel: 'info' },
+      options: { messagesLogLevel: 'debug' },
       connection: {
         reconnect: true,
         secure: true,
