@@ -263,31 +263,37 @@ export const updateRequestValidationSchema: Schema = {
 
 export default class StreamerConfigurationPatchEndpoint {
   public static async update(req: express.Request, res: express.Response): Promise<void> {
+    // Grab the current configuration of the channel
     const configurationResult = await StreamerConfigurationDao.get(req.user.channel_id);
+    // Check if errors occured
     if (configurationResult.type === 'error') {
       return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_RETRIVE_STREAMER_CONFIGURATION);
     }
 
+    // Get the configuration data
     let configuration = configurationResult.data;
+    // Check if the channel name is set. If not we just set it.
     if (!configuration.chatIntegration.channelName) {
       const configurationResult = await StreamerConfigurationService.updateChannelName(
         configuration._id,
         req.user.channel_id
       );
-
+      // Check if an error occured during the channel name update
       if (configurationResult.type === 'error') {
         return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_UPDATE_CHANNEL_NAME);
       }
-
+      // Set the configuration to the freshly updated one so
+      // we don't work with outdated data
       configuration = configurationResult.data;
     }
 
+    // Update the channel configuration using the HTTP Request
     const updateResult = await StreamerConfigurationService.update(configuration, req);
+    // Check if updating caused an error
     if (updateResult.type === 'error') {
       return APIResponseService.sendInternalError(res, ErrorResponseCode.COULD_NOT_UPDATE_CHANNEL_NAME);
     }
 
-    configuration = updateResult.data;
-    APIResponseService.sendOk(res, { data: StreamerConfigurationDto.getJSON(configuration) });
+    APIResponseService.sendOk(res, { data: StreamerConfigurationDto.getJSON(updateResult.data) });
   }
 }

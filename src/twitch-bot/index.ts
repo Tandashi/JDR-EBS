@@ -71,15 +71,23 @@ export default class TwitchBot {
     this.client.on('notice', async (channelName, msgid, message) => {
       logger.info(`Got notice (${channelName} | ${msgid}): ${message}`);
 
-      if (msgid === 'msg_banned') {
-        logger.info(`Removing Chat Integration for ${channelName}.`);
-        StreamerConfigurationDao.updateByChannelName(
-          this.getUnifiedChannelName(channelName),
-          {
-            'chatIntegration.enabled': false,
-          },
-          []
-        );
+      switch (msgid) {
+        case 'msg_banned':
+        case 'msg_channel_suspended':
+          logger.info(`Removing Chat Integration for ${channelName}, as well as the channel name.`);
+
+          StreamerConfigurationDao.updateByChannelName(
+            this.getUnifiedChannelName(channelName),
+            {
+              'chatIntegration.channelName': '',
+              'chatIntegration.enabled': false,
+            },
+            []
+          );
+          break;
+
+        default:
+          return;
       }
     });
 
