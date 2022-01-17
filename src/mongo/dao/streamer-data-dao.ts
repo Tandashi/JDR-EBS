@@ -210,8 +210,6 @@ export default class StreamerDataDao {
 
       return Success(populatedData);
     } catch (e) {
-      logger.error(e);
-
       return Failure('internal', 'Could not create Streamer Data');
     }
   }

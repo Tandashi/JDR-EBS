@@ -6,6 +6,7 @@ import configurationRouter from '@web/routes/api/v1/configuration/router';
 import profileRouter from '@web/routes/api/v1/profile/router';
 import gamesRouter from '@web/routes/api/v1/games/router';
 import streamerDataRouter from '@web/routes/api/v1/streamer-data/router';
+import userDataRouter from '@web/routes/api/v1/user-data/router';
 
 const router = Router();
 
@@ -15,5 +16,6 @@ router.use('/configuration', configurationRouter);
 router.use('/profile', profileRouter);
 router.use('/games', gamesRouter);
 router.use('/streamerdata', streamerDataRouter);
+router.use('/userdata', userDataRouter);
 
 export default router;
