@@ -74,6 +74,11 @@ export default class TwitchBot {
       switch (msgid) {
         case 'msg_banned':
         case 'msg_channel_suspended':
+          // The reason why we also remove the channel name is that
+          // msg_channel_suspended can also happen when the channel was renamed.
+          // In this case we can not just remove the complete streamerdata since the userid
+          // did not change and we don't want to remove the configuration when they just changed
+          // their name
           logger.info(`Removing Chat Integration for ${channelName}, as well as the channel name.`);
 
           StreamerConfigurationDao.updateByChannelName(
