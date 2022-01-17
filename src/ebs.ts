@@ -2,13 +2,13 @@
 // Registers the import aliases
 import 'module-alias/register';
 
-import APIServer from '@api/index';
+import WebServer from '@web/index';
 import TwitchBot from '@twitch-bot/index';
 import SocketIOServer from '@socket-io/index';
 import MongoServer from '@mongo/index';
 
 const MONGO = MongoServer.getInstance();
-const API = APIServer.getInstance();
+const WEB_SERVER = WebServer.getInstance();
 const BOT = TwitchBot.getInstance();
 const SOCKETIO = SocketIOServer.getInstance();
 
@@ -16,7 +16,7 @@ const SOCKETIO = SocketIOServer.getInstance();
 MONGO.connect();
 
 // Start Socket.IO and API Server
-SOCKETIO.start(API.app);
+SOCKETIO.start(WEB_SERVER.app);
 
 // Start Twitch Bot
 BOT.start();

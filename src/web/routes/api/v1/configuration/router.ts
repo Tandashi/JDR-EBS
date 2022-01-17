@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { checkSchema } from 'express-validator';
 
-import { checkValidation } from '@api/middleware/validation';
-import { AuthJWT, AuthJWTOrSecret, BroadcasterOnly } from '@api/middleware/auth';
+import { checkValidation } from '@web/middleware/validation';
+import { AuthJWT, AuthJWTOrSecret, BroadcasterOnly } from '@web/middleware/auth';
 
 import StreamerConfigurationGetEndpoint from './get';
 import StreamerConfigurationPatchEndpoint, { updateRequestValidationSchema } from './patch';

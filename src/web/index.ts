@@ -6,13 +6,13 @@ import express from 'express';
 import cors from 'cors';
 
 import config from '@common/config';
-import BaseRouter from '@api/routes/router';
-import StreamlabsRouter from '@api/routes/streamlabs/router';
-import HealthRouter from '@api/routes/health/router';
-import { logErrors } from '@api/middleware/error-handler';
+import APIRouter from '@web/routes/api/router';
+import StreamlabsRouter from '@web/routes/streamlabs/router';
+import HealthRouter from '@web/routes/health/router';
+import { logErrors } from '@web/middleware/error-handler';
 
-export default class APIServer {
-  private static instance: APIServer;
+export default class WebServer {
+  private static instance: WebServer;
   public app: express.Application;
 
   private constructor() {
@@ -22,7 +22,7 @@ export default class APIServer {
   }
 
   private registerRoutes(): void {
-    this.app.use('/api', BaseRouter);
+    this.app.use('/api', APIRouter);
     this.app.use('/streamlabs', StreamlabsRouter);
     this.app.use('/health', HealthRouter);
   }
@@ -35,9 +35,9 @@ export default class APIServer {
     this.app.use(logErrors);
   }
 
-  public static getInstance(): APIServer {
+  public static getInstance(): WebServer {
     if (!this.instance) {
-      this.instance = new APIServer();
+      this.instance = new WebServer();
     }
 
     return this.instance;

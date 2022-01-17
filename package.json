@@ -21,7 +21,7 @@
   "_moduleAliases": {
     "@socket-io": "dist/socket-io",
     "@twitch-bot": "dist/twitch-bot",
-    "@api": "dist/api",
+    "@web": "dist/web",
     "@common": "dist/common",
     "@mongo": "dist/mongo",
     "@services": "dist/common/services",

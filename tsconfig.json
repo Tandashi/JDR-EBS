@@ -13,7 +13,7 @@
     "paths": {
       "@socket-io/*": ["src/socket-io/*"],
       "@twitch-bot/*": ["src/twitch-bot/*"],
-      "@api/*": ["src/api/*"],
+      "@web/*": ["src/web/*"],
       "@common/*": ["src/common/*"],
       "@mongo/*": ["src/mongo/*"],
       "@services/*": ["src/common/services/*"],

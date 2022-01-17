@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import v1Router from '@api/routes/v1/router';
+import v1Router from '@web/routes/api/v1/router';
 
 const router = Router();
 

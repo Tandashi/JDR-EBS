@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { AuthJWT } from '@api/middleware/auth';
+import { AuthJWT } from '@web/middleware/auth';
 
 import GamesGetEndpoint from './get';
 

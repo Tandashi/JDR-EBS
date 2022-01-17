@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { checkSchema } from 'express-validator';
 
-import { AuthJWT } from '@api/middleware/auth';
-import { checkValidation } from '@api/middleware/validation';
+import { AuthJWT } from '@web/middleware/auth';
+import { checkValidation } from '@web/middleware/validation';
 
 import SongDataGetEndpoint, { getRequestValidationSchema } from './get';
 

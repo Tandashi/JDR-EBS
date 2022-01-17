@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { AuthJWT, BroadcasterOnly } from '@api/middleware/auth';
+import { AuthJWT, BroadcasterOnly } from '@web/middleware/auth';
 
 import StreamerDataGetEndpoint from './get';
 import StreamerDataPatchEndpoint from './patch';

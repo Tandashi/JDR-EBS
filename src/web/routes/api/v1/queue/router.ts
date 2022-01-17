@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { checkSchema } from 'express-validator';
 
-import { AuthJWTOrSecret, AuthJWT } from '@api/middleware/auth';
-import { checkValidation } from '@api/middleware/validation';
+import { AuthJWTOrSecret, AuthJWT } from '@web/middleware/auth';
+import { checkValidation } from '@web/middleware/validation';
 
 import QueueGetEndpoint from './get';
 import QueuePostEndpoint, { addRequestValidationSchema, announceRequestValidationSchema } from './post';
