@@ -76,13 +76,15 @@ export default class SocketIOServer {
   /**
    * Emit an Event to all the connected Sockets in the room of the provided channel Id.
    *
-   * @param channelId The channel Id in which the Event should be emitted
+   * @param roomId The room Id in which the Event should be emitted (can be either a channelId or userId)
+   *               - In case of a channelId it will emite the Event to all connected channel members
+   *               - In case of a userId it will emite the Event just to that user
    * @param event The Event that should be emitted
    */
-  public emitEvent(channelId: string, event: EmitSocketIOEvent<any>): void {
-    logger.debug(`Emitting Event (${event.name}) to channel '${channelId}' with data ${JSON.stringify(event.data())}`);
+  public emitEvent(roomId: string, event: EmitSocketIOEvent<any>): void {
+    logger.debug(`Emitting Event (${event.name}) to room '${roomId}' with data ${JSON.stringify(event.data())}`);
 
-    this.io.to(channelId).emit(event.name, event.data());
+    this.io.to(roomId).emit(event.name, event.data());
   }
 
   /**
@@ -95,6 +97,8 @@ export default class SocketIOServer {
     logger.debug(`Connection from user (${socket.id}). Joining room '${user.channel_id}'`);
     // Let socket join channel room
     socket.join(user.channel_id);
+    // Let socket join user room for direct events
+    socket.join(user.user_id);
 
     this.registerEvent(socket, new QueueGetReceiveEvent());
     this.registerEvent(socket, new NextUpClearReceiveEvent());
