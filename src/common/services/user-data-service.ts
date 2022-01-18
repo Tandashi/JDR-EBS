@@ -12,13 +12,10 @@ const logger = getLogger('UserData Service');
 type UpdateErrors = 'invalid-song-id';
 
 export default class UserDataService {
-  public static async setFavouriteSongs(
-    channelId: string,
-    songs: SongDataDoc[]
-  ): Promise<Result<UserDataDocPopulated>> {
-    logger.debug(`Setting favourite songs from userdata for channel (${channelId})`);
-    return await UserDataDao.updateByChannelId(
-      channelId,
+  public static async setFavouriteSongs(userId: string, songs: SongDataDoc[]): Promise<Result<UserDataDocPopulated>> {
+    logger.debug(`Setting favourite songs from userdata for user (${userId})`);
+    return await UserDataDao.updateByUserId(
+      userId,
       {
         favouriteSongs: songs.map((e) => e._id),
       },
@@ -104,19 +101,15 @@ export default class UserDataService {
     }
 
     const updateUserData: IUserDataUnpopulated = {
-      channelId: oldUserData.channelId,
+      userId: oldUserData.userId,
       favouriteSongs: songDatas,
     };
 
-    const updateResult = await UserDataDao.updateByChannelId<UserDataDocPopulated>(
-      updateUserData.channelId,
-      updateUserData,
-      [
-        {
-          path: 'favouriteSongs',
-        },
-      ]
-    );
+    const updateResult = await UserDataDao.updateByUserId<UserDataDocPopulated>(updateUserData.userId, updateUserData, [
+      {
+        path: 'favouriteSongs',
+      },
+    ]);
 
     if (updateResult.type === 'error') {
       return updateResult;

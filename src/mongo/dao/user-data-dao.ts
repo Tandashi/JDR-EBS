@@ -17,16 +17,16 @@ export type UserDataPopulateOptions = {
 
 export default class UserDataDao {
   /**
-   * Get the Streamer Data for a given channel or
-   * create it if the Streamer Data for that channel doesn't exist yet.
+   * Get the User Data for a user
+   * create it if the Iser Data for that user doesn't exist yet.
    *
-   * @param channelId The id of the channel to get / create the Streamer Data for
+   * @param userId The id of the user to get / create the User Data for
    * @param populate The population options
    *
    * @returns The result of the operation
    */
   public static async getOrCreateUserData<T = UserDataDocUnpopulated | UserDataDocPopulated>(
-    channelId: string,
+    userId: string,
     populate?: UserDataPopulateOptions[]
   ): Promise<Result<T>> {
     const session = await mongoose.connection.startSession();
@@ -36,7 +36,7 @@ export default class UserDataDao {
       let result: Result<T> | undefined = undefined;
       const userData = (await UserData.findOne(
         {
-          channelId: channelId,
+          userId: userId,
         },
         {},
         { session }
@@ -44,7 +44,7 @@ export default class UserDataDao {
 
       if (!userData) {
         logger.info('User Data was not found creating.');
-        result = await this.createUserData<T>(channelId, session, populate);
+        result = await this.createUserData<T>(userId, session, populate);
       } else {
         result = Success(userData);
       }
@@ -66,13 +66,13 @@ export default class UserDataDao {
   }
 
   private static async createUserData<T = UserDataDocUnpopulated | UserDataDocPopulated>(
-    channelId: string,
+    userId: string,
     session: ClientSession,
     populate?: UserDataPopulateOptions[]
   ): Promise<Result<T>> {
     try {
       const userDataData: IUserDataUnpopulated = {
-        channelId: channelId,
+        userId: userId,
         favouriteSongs: [],
       };
 
@@ -89,19 +89,19 @@ export default class UserDataDao {
   /**
    * Update UserData by user's channel id
    *
-   * @param channelId the channel id of the user whos user data should be updated
+   * @param userId the channel id of the user whos user data should be updated
    * @param updateQuery The update query
    * @param populate The population options
    *
    * @returns The result of the operation
    */
-  public static async updateByChannelId<T = UserDataDocUnpopulated | UserDataDocPopulated>(
-    channelId: string,
+  public static async updateByUserId<T = UserDataDocUnpopulated | UserDataDocPopulated>(
+    userId: string,
     updateQuery: UpdateQuery<IUserDataUnpopulated>,
     populate: UserDataPopulateOptions[]
   ): Promise<Result<T>> {
     try {
-      const configuration = await UserData.findOneAndUpdate({ channelId }, updateQuery, { new: true });
+      const configuration = await UserData.findOneAndUpdate({ userId: userId }, updateQuery, { new: true });
 
       if (!configuration) {
         throw new Error('Could not update UserData because findOneAndUpdate returned null.');

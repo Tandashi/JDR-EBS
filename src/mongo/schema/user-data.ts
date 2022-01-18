@@ -4,9 +4,9 @@ import { SongDataDoc } from '@mongo/schema/song-data';
 
 interface IUserData {
   /**
-   * The id of the channel.
+   * The id of the user.
    */
-  channelId: string;
+  userId: string;
   /**
    * The list of favourited songs
    */
@@ -32,7 +32,7 @@ export type UserDataDocPopulated = IUserDataPopulated & Document;
 export type UserDataDocUnpopulated = IUserDataUnpopulated & Document;
 
 const userDataSchema: Schema = new Schema({
-  channelId: {
+  userId: {
     type: String,
     unique: true,
     required: true,

@@ -10,7 +10,7 @@ const APIResponseService = ResponseService.getAPIInstance();
 
 export default class UserDataGetEndpoint {
   public static async get(req: express.Request, res: express.Response): Promise<void> {
-    const userDataResult = await UserDataDao.getOrCreateUserData<UserDataDocPopulated>(req.user.channel_id, [
+    const userDataResult = await UserDataDao.getOrCreateUserData<UserDataDocPopulated>(req.user.user_id, [
       {
         path: 'favouriteSongs',
       },

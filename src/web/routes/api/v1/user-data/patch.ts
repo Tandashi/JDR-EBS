@@ -25,7 +25,7 @@ export const updateRequestValidationSchema: Schema = {
 
 export default class ProfilePatchEndpoint {
   public static async update(req: express.Request, res: express.Response): Promise<void> {
-    const userDataResult = await UserDataDao.getOrCreateUserData(req.user.channel_id, [
+    const userDataResult = await UserDataDao.getOrCreateUserData(req.user.user_id, [
       {
         path: 'favouriteSongs',
       },
