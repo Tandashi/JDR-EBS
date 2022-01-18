@@ -152,16 +152,37 @@ export default class ProfileService {
    *
    * @returns The filtered List of {@link SongDataDoc Songs} if successful or a {@link FailureResult Failure Result}
    */
-  public static async filterSongs(channelId: string, excludeBanlist: boolean): Promise<Result<SongDataDoc[]>> {
+  public static async filterSongsWithChannelId(
+    channelId: string,
+    excludeBanlist: boolean
+  ): Promise<Result<SongDataDoc[]>> {
     const profileResult = await this.getActive(channelId);
     if (profileResult.type === 'error') {
       logger.debug(`Getting active Profile failed in filterSongs: ${JSON.stringify(profileResult)}`);
       return profileResult;
     }
 
-    const songConfiguration = profileResult.data.configuration.song;
+    return this.filterSongsWithProfile(profileResult.data, excludeBanlist);
+  }
+
+  /**
+   * Get all Songs for a specific profile.
+   *
+   * If {@link excludeBanlist} is true the banlist of the profile is ignored.
+   * Else the songs will be excluded.
+   *
+   * @param profile The profile to filter the songs with
+   * @param excludeBanlist If the banlist should be excluded from the filter
+   *
+   * @returns The filtered List of {@link SongDataDoc Songs} if successful or a {@link FailureResult Failure Result}
+   */
+  public static async filterSongsWithProfile(
+    profile: ProfileDoc,
+    excludeBanlist: boolean
+  ): Promise<Result<SongDataDoc[]>> {
+    const songConfiguration = profile.configuration.song;
     const songResult = await SongDataDao.getAllFiltered(
-      excludeBanlist ? [] : profileResult.data.banlist.map((e) => e._id),
+      excludeBanlist ? [] : profile.banlist.map((e) => e._id),
       songConfiguration.game,
       songConfiguration.unlimited
     );

@@ -1,10 +1,13 @@
 import express from 'express';
 import { Schema } from 'express-validator';
 
+import SocketIOServer from '@socket-io/index';
+
 import ResponseService, { ErrorResponseCode } from '@services/response-service';
 import ProfileService from '@services/profile-service';
 
 import ProfileDto from '@mongo/dto/v1/profile-dto';
+import SongDataFilteredUpdatedEmitEvent from '@socket-io/events/v1/emit/songdata/updated';
 
 const APIResponseService = ResponseService.getAPIInstance();
 
@@ -113,5 +116,13 @@ export default class ProfilePatchEndpoint {
     APIResponseService.sendOk(res, {
       data: ProfileDto.getJSON(updateResult.data),
     });
+
+    const songDatasResult = await ProfileService.filterSongsWithProfile(updateResult.data, false);
+    if (songDatasResult.type === 'success') {
+      SocketIOServer.getInstance().emitChannelEvent(
+        req.user.channel_id,
+        new SongDataFilteredUpdatedEmitEvent(songDatasResult.data)
+      );
+    }
   }
 }

@@ -41,7 +41,7 @@ export default class SongDataGetEndpoint {
   public static async getFiltered(req: express.Request, res: express.Response): Promise<void> {
     const excludeBanlist = req.query.excludeBanlist;
 
-    const filteredResult = await ProfileService.filterSongs(
+    const filteredResult = await ProfileService.filterSongsWithChannelId(
       req.user.channel_id,
       (excludeBanlist as unknown as boolean) ?? false
     );
