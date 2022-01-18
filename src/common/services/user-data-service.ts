@@ -6,6 +6,8 @@ import UserDataDao from '@mongo/dao/user-data-dao';
 import SongDataDao, { GetErrors as SongDataGetErrors } from '@mongo/dao/song-data-dao';
 import { SongDataDoc } from '@mongo/schema/song-data';
 import { IUserDataUnpopulated, UserDataDoc, UserDataDocPopulated } from '@mongo/schema/user-data';
+import SocketIOServer from '@socket-io/index';
+import UserDataUpdatedEmitEvent from '@socket-io/events/v1/emit/userdata/updated';
 
 const logger = getLogger('UserData Service');
 
@@ -114,6 +116,8 @@ export default class UserDataService {
     if (updateResult.type === 'error') {
       return updateResult;
     }
+
+    SocketIOServer.getInstance().emitEvent(req.user.user_id, new UserDataUpdatedEmitEvent(updateResult.data));
 
     return Success(updateResult.data);
   }
