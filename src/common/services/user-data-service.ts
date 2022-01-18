@@ -117,7 +117,7 @@ export default class UserDataService {
       return updateResult;
     }
 
-    SocketIOServer.getInstance().emitEvent(req.user.user_id, new UserDataUpdatedEmitEvent(updateResult.data));
+    SocketIOServer.getInstance().emitUserEvent(req.user.user_id, new UserDataUpdatedEmitEvent(updateResult.data));
 
     return Success(updateResult.data);
   }

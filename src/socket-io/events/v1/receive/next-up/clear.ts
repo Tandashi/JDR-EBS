@@ -12,7 +12,7 @@ export default class NextUpClearReceiveEvent extends ReceiveSocketIOEvent {
   listener(socket: Socket): SocketIOEventListener {
     return async (): Promise<void> => {
       const user: TwitchUser = socket.handshake.auth.user;
-      SocketIOServer.getInstance().emitEvent(user.channel_id, new NextUpClearedEmitEvent());
+      SocketIOServer.getInstance().emitChannelEvent(user.channel_id, new NextUpClearedEmitEvent());
     };
   }
 }

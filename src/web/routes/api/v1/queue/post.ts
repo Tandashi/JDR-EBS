@@ -67,7 +67,7 @@ export default class QueuePostEndpoint {
     const entry = queueResult.data.toObject().entries[index];
     if (entry) {
       AnnounceService.announce(req.user.channel_id, `Next up: ${entry.song.title}`, 'queue.song.nextUp');
-      SocketIOServer.getInstance().emitEvent(req.user.channel_id, new NextUpSetEmitEvent(entry));
+      SocketIOServer.getInstance().emitChannelEvent(req.user.channel_id, new NextUpSetEmitEvent(entry));
     }
 
     return APIResponseService.sendOk(res, {

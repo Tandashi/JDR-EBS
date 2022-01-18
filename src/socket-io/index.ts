@@ -74,17 +74,37 @@ export default class SocketIOServer {
   }
 
   /**
-   * Emit an Event to all the connected Sockets in the room of the provided channel Id.
+   * Emit an Event to all the connected Sockets in the room of the provided room Id.
    *
-   * @param roomId The room Id in which the Event should be emitted (can be either a channelId or userId)
-   *               - In case of a channelId it will emite the Event to all connected channel members
-   *               - In case of a userId it will emite the Event just to that user
+   * @param roomId The room Id in which the Event should be emitted
+   *               - For channels it's just the channelId. The Event will be emited to all members in the channel.
+   *               - For users it's `{userId}-user`. The Event will be emited to the user directly.
    * @param event The Event that should be emitted
    */
-  public emitEvent(roomId: string, event: EmitSocketIOEvent<any>): void {
+  private emitEvent(roomId: string, event: EmitSocketIOEvent<any>): void {
     logger.debug(`Emitting Event (${event.name}) to room '${roomId}' with data ${JSON.stringify(event.data())}`);
 
     this.io.to(roomId).emit(event.name, event.data());
+  }
+
+  /**
+   * Emit an Event to all the connected Sockets in the channel of the provided channel Id.
+   *
+   * @param channelId The channel Id in which the Event should be emitted
+   * @param event The Event that should be emitted
+   */
+  public emitChannelEvent(channelId: string, event: EmitSocketIOEvent<any>): void {
+    this.emitEvent(channelId, event);
+  }
+
+  /**
+   * Emit an Event to a specific user using it's userId
+   *
+   * @param userId The user Id to which the Event should be emitted to
+   * @param event The Event that should be emitted
+   */
+  public emitUserEvent(userId: string, event: EmitSocketIOEvent<any>): void {
+    this.emitEvent(`${userId}-user`, event);
   }
 
   /**
@@ -94,11 +114,11 @@ export default class SocketIOServer {
    */
   private onConnection(socket: socketIO.Socket): void {
     const user: TwitchUser = socket.handshake.auth.user;
-    logger.debug(`Connection from user (${socket.id}). Joining room '${user.channel_id}'`);
+    logger.debug(`Connection from user (${socket.id})`);
     // Let socket join channel room
     socket.join(user.channel_id);
     // Let socket join user room for direct events
-    socket.join(user.user_id);
+    socket.join(`${user.user_id}-user`);
 
     this.registerEvent(socket, new QueueGetReceiveEvent());
     this.registerEvent(socket, new NextUpClearReceiveEvent());

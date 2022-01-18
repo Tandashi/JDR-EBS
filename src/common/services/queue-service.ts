@@ -58,7 +58,7 @@ export default class QueueService {
     }
 
     const newQueue = queueSetResult.data;
-    SocketIOServer.getInstance().emitEvent(channelId, new QueueUpdatedEmitEvent(newQueue));
+    SocketIOServer.getInstance().emitChannelEvent(channelId, new QueueUpdatedEmitEvent(newQueue));
 
     AnnounceService.announce(
       channelId,
@@ -90,8 +90,8 @@ export default class QueueService {
     }
 
     const newQueue = queueSetResult.data;
-    SocketIOServer.getInstance().emitEvent(channelId, new QueueUpdatedEmitEvent(newQueue));
-    SocketIOServer.getInstance().emitEvent(channelId, new NextUpClearedEmitEvent());
+    SocketIOServer.getInstance().emitChannelEvent(channelId, new QueueUpdatedEmitEvent(newQueue));
+    SocketIOServer.getInstance().emitChannelEvent(channelId, new NextUpClearedEmitEvent());
 
     AnnounceService.announce(channelId, 'Queue has been cleared', 'queue.status.cleared');
     return Success(newQueue);
@@ -125,7 +125,7 @@ export default class QueueService {
     }
 
     const newQueue = queueSetResult.data;
-    SocketIOServer.getInstance().emitEvent(channelId, new QueueUpdatedEmitEvent(newQueue));
+    SocketIOServer.getInstance().emitChannelEvent(channelId, new QueueUpdatedEmitEvent(newQueue));
 
     return Success(newQueue);
   }
@@ -205,7 +205,7 @@ export default class QueueService {
     }
 
     const newQueue = queueSetResult.data;
-    SocketIOServer.getInstance().emitEvent(channelId, new QueueUpdatedEmitEvent(newQueue));
+    SocketIOServer.getInstance().emitChannelEvent(channelId, new QueueUpdatedEmitEvent(newQueue));
 
     return Success(newQueue);
   }
@@ -251,7 +251,7 @@ export default class QueueService {
     }
 
     const newQueue = queueSetResult.data;
-    SocketIOServer.getInstance().emitEvent(streamerData.channelId, new QueueUpdatedEmitEvent(newQueue));
+    SocketIOServer.getInstance().emitChannelEvent(streamerData.channelId, new QueueUpdatedEmitEvent(newQueue));
 
     return Success(newQueue);
   }

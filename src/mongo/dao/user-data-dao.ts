@@ -82,6 +82,8 @@ export default class UserDataDao {
 
       return Success(populatedData);
     } catch (e) {
+      logger.error(e);
+
       return Failure('internal', 'Could not create User Data');
     }
   }
