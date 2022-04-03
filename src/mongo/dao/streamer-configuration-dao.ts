@@ -14,7 +14,7 @@ const logger = getLogger('Streamer Configuration Dao');
 
 export default class StreamerConfigurationDao {
   private static DEFAULT_CONFIGURATION: Omit<IStreamerConfiguration, 'profile'> = {
-    version: 'v1.5',
+    version: 'v1.6',
     theme: {
       liveConfig: {
         css: '',
@@ -48,6 +48,9 @@ export default class StreamerConfigurationDao {
           enabled: false,
         },
         leave: {
+          enabled: false,
+        },
+        toggleQueue: {
           enabled: false,
         },
         banlist: {

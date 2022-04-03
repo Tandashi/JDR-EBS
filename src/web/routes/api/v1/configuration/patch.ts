@@ -209,6 +209,22 @@ export const updateRequestValidationSchema: Schema = {
       bail: true,
     },
   },
+  'chatIntegration.commands.toggleQueue': {
+    in: 'body',
+    optional: { options: { nullable: true } },
+    isObject: {
+      errorMessage: 'Field `chatIntegration.commands.toggleQueue` must be an object',
+      bail: true,
+    },
+  },
+  'chatIntegration.commands.toggleQueue.enabled': {
+    in: 'body',
+    optional: { options: { nullable: true } },
+    isBoolean: {
+      errorMessage: 'Field `chatIntegration.commands.toggleQueue.enabled` must be a boolean',
+      bail: true,
+    },
+  },
   'chatIntegration.commands.banlist': {
     in: 'body',
     optional: { options: { nullable: true } },

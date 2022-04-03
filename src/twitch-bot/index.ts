@@ -19,6 +19,7 @@ import QueueCommand from '@twitch-bot/commands/queue-command';
 import QueuePositionCommand from '@twitch-bot/commands/queue-position-command';
 import BanlistCommand from '@twitch-bot/commands/banlist-command';
 import LeaveCommand from '@twitch-bot/commands/leave-command';
+import ToggleQueueCommand from '@twitch-bot/commands/toggle-queue-command';
 
 const logger = getLogger('Twitch Bot');
 
@@ -45,6 +46,12 @@ export default class TwitchBot {
 
     '!l': new LeaveCommand(),
     '!leave': new LeaveCommand(),
+
+    '!oq': new ToggleQueueCommand(true),
+    '!openqueue': new ToggleQueueCommand(true),
+
+    '!cq': new ToggleQueueCommand(false),
+    '!closequeue': new ToggleQueueCommand(false),
   };
 
   /**

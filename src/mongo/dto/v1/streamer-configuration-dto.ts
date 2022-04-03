@@ -41,6 +41,9 @@ export interface StreamerConfigurationJSONStructure {
       leave: {
         enabled: boolean;
       };
+      toggleQueue: {
+        enabled: boolean;
+      };
       banlist: {
         enabled: boolean;
         format: string;
@@ -97,6 +100,9 @@ const StreamerConfigurationDto: Dto<IStreamerConfiguration, StreamerConfiguratio
           },
           leave: {
             enabled: data.chatIntegration.commands.leave.enabled,
+          },
+          toggleQueue: {
+            enabled: data.chatIntegration.commands.toggleQueue.enabled,
           },
           banlist: {
             enabled: data.chatIntegration.commands.banlist.enabled,

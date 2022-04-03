@@ -10,6 +10,7 @@ export interface ISongRequestCommandConfiguration extends IToggleableCommandConf
 export interface IQueueCommandConfiguration extends IToggleableCommandConfiguration {}
 export interface IQueuePositionCommandConfiguration extends IToggleableCommandConfiguration {}
 export interface ILeaveCommandConfiguration extends IToggleableCommandConfiguration {}
+export interface IToggleQueueCommandConfiguration extends IToggleableCommandConfiguration {}
 
 export interface IBanlistCommandConfiguration extends IToggleableCommandConfiguration {
   format: string;
@@ -36,6 +37,10 @@ export interface IChatIntegrationCommandConfiguration {
    * The Configuration regarding the Leave Command.
    */
   leave: ILeaveCommandConfiguration;
+  /**
+   * The Configuration regarding the Open / Close Queue Commands.
+   */
+  toggleQueue: IToggleQueueCommandConfiguration;
 }
 
 export interface IChatIntegrationAnnouncementsConfiguration {
@@ -145,7 +150,7 @@ export interface IStreamerConfiguration {
   /**
    * The version of the Configuration.
    */
-  version: 'v1.5';
+  version: 'v1.6';
   /**
    * The theming configuration
    */
@@ -169,7 +174,7 @@ export type StreamerConfigurationDoc = IStreamerConfiguration & Document;
 const streamerConfigurationSchema: Schema = new Schema({
   version: {
     type: String,
-    enum: ['v1.5'],
+    enum: ['v1.6'],
     required: true,
   },
   theme: {
@@ -247,6 +252,12 @@ const streamerConfigurationSchema: Schema = new Schema({
         },
       },
       leave: {
+        enabled: {
+          type: Boolean,
+          required: true,
+        },
+      },
+      toggleQueue: {
         enabled: {
           type: Boolean,
           required: true,

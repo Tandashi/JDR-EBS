@@ -24,6 +24,7 @@ import type {
   IThemeConfiguration,
   IThemeLiveConfigConfiguration,
   ILeaveCommandConfiguration,
+  IToggleQueueCommandConfiguration,
 } from '@mongo/schema/streamer-configuration';
 
 const logger = getLogger('StreamerConfiguration Service');
@@ -119,22 +120,32 @@ export default class StreamerConfigurationService {
 
     const chatIntegrationCommands: Partial<IChatIntegrationCommandConfiguration> | undefined =
       chatIntegration?.commands;
+
     const chatIntegrationCommandsSongRequest: Partial<ISongRequestCommandConfiguration> | undefined =
       chatIntegrationCommands?.songRequest;
     const chatIntegrationCommandsSongRequestEnabled =
       chatIntegrationCommandsSongRequest?.enabled ?? oldConfiguration.chatIntegration.commands.songRequest.enabled;
+
     const chatIntegrationCommandsQueue: Partial<IQueueCommandConfiguration> | undefined =
       chatIntegrationCommands?.queue;
     const chatIntegrationCommandsQueueEnabled =
       chatIntegrationCommandsQueue?.enabled ?? oldConfiguration.chatIntegration.commands.queue.enabled;
+
     const chatIntegrationCommandsQueuePosition: Partial<IQueueCommandConfiguration> | undefined =
       chatIntegrationCommands?.queuePosition;
     const chatIntegrationCommandsQueuePositionEnabled =
       chatIntegrationCommandsQueuePosition?.enabled ?? oldConfiguration.chatIntegration.commands.queuePosition.enabled;
+
     const chatIntegrationCommandsLeave: Partial<ILeaveCommandConfiguration> | undefined =
       chatIntegrationCommands?.leave;
     const chatIntegrationCommandsLeaveEnabled =
       chatIntegrationCommandsLeave?.enabled ?? oldConfiguration.chatIntegration.commands.leave.enabled;
+
+    const chatIntegrationCommandsToggleQueue: Partial<IToggleQueueCommandConfiguration> | undefined =
+      chatIntegrationCommands?.toggleQueue;
+    const chatIntegrationCommandsToggleQueueEnabled =
+      chatIntegrationCommandsToggleQueue?.enabled ?? oldConfiguration.chatIntegration.commands.toggleQueue.enabled;
+
     const chatIntegrationCommandsBanlist: Partial<IBanlistCommandConfiguration> | undefined =
       chatIntegrationCommands?.banlist;
     const chatIntegrationCommandsBanlistEnabled =
@@ -182,6 +193,9 @@ export default class StreamerConfigurationService {
           },
           leave: {
             enabled: chatIntegrationCommandsLeaveEnabled,
+          },
+          toggleQueue: {
+            enabled: chatIntegrationCommandsToggleQueueEnabled,
           },
           banlist: {
             enabled: chatIntegrationCommandsBanlistEnabled,
