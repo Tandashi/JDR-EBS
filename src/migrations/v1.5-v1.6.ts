@@ -3,7 +3,7 @@ import { MigrationInterface } from 'mongo-migrate-ts';
 
 import { IStreamerConfiguration } from '@mongo/schema/streamer-configuration';
 
-export class LeaveCommandMigration implements MigrationInterface {
+export class ToggleQueueCommandMigration implements MigrationInterface {
   async up(db: Db): Promise<void> {
     const documentIterator = db.collection('streamerconfigurations').find({ version: 'v1.5' });
 
