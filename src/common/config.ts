@@ -7,21 +7,21 @@ const logger = getLogger('Configuration');
  */
 export interface IStaticConfig {
   /**
-   * The root directory of the static content as absolute path
+   * The base address under which the static content is accessible
    */
-  rootDir: string;
+  address: string;
   /**
-   * The static image directory relative to the root directory
+   * The path under which the images are accessible
    *
    * @see {@link URLService.getImageUrlByName}
    */
-  imageDir: string;
+  imagePath: string;
   /**
-   * The static video directory relative to the root directory
+   * The path under which the videos are accessible
    *
    * @see {@link URLService.getVideoUrlByName}
    */
-  videoDir: string;
+  videoPath: string;
 }
 /**
  * The SocketIo Server configuration
@@ -254,9 +254,9 @@ if (!APP_PUBLIC_ADDRESS) {
   process.exit(1);
 }
 
-const STATIC_ROOT_DIR = process.env['STATIC_ROOT_DIR'] || 'static';
-const STATIC_IMAGE_DIR = process.env['STATIC_IMAGE_DIR'] || 'images';
-const STATIC_VIDEO_DIR = process.env['STATIC_VIDEO_DIR'] || 'videos';
+const STATIC_BASE_ADDRESS = process.env['STATIC_BASE_ADDRESS'] || 'http://localhost:3000';
+const STATIC_IMAGE_PATH = process.env['STATIC_IMAGE_PATH'] || 'images';
+const STATIC_VIDEO_PATH = process.env['STATIC_VIDEO_PATH'] || 'videos';
 
 const SOCKETIO_CORS_ORIGIN = parseOrigin(process.env.SOCKETIO_CORS_ORIGINS);
 const SOCKETIO_CORS_ALLOWED_HEADERS = process.env.SOCKETIO_CORS_ALLOWED_HEADERS || '';
@@ -342,9 +342,9 @@ const config: IConfig = {
     },
 
     static: {
-      rootDir: STATIC_ROOT_DIR,
-      imageDir: STATIC_IMAGE_DIR,
-      videoDir: STATIC_VIDEO_DIR,
+      address: STATIC_BASE_ADDRESS,
+      imagePath: STATIC_IMAGE_PATH,
+      videoPath: STATIC_VIDEO_PATH,
     },
   },
   mongodb: {

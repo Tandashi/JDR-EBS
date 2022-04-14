@@ -30,14 +30,14 @@ export default class URLService {
 
   /**
    * Get the URL for the given image.
-   * Uses the configured {@link IESBConfig.publicAddress public address} as well as the {@link IStaticConfig.imageDir static image directory} to generate the Image URL.
+   * Uses the configured {@link IStaticConfig.address public address} as well as the {@link IStaticConfig.imagePath static image path} to generate the Image URL.
    *
    * @param imageName The name of the image the URL should be provided for
    *
    * @returns The URL for the image
    */
   public static getImageUrlByName(imageName: string): string {
-    const imageUrl = `${config.esb.publicAddress}/static/${config.esb.static.imageDir}/${imageName}`;
+    const imageUrl = `${config.esb.static.address}/${config.esb.static.imagePath}/${imageName}`;
     logger.debug(`Getting Image URL: ${imageUrl}`);
     return imageUrl;
   }
@@ -60,14 +60,14 @@ export default class URLService {
 
   /**
    * Get the URL for the given video.
-   * Uses the configured {@link IESBConfig.publicAddress public address} as well as the {@link IStaticConfig.videoDir static video directory} to generate the Video URL.
+   * Uses the configured {@link IStaticConfig.address public address} as well as the {@link IStaticConfig.videoPath static video path} to generate the Video URL.
    *
    * @param videoName The name of the video the URL should be provided for
    *
    * @returns The URL for the video
    */
   public static getVideoUrlByName(videoName: string): string {
-    const videoUrl = `${config.esb.publicAddress}/static/${config.esb.static.videoDir}/${videoName}`;
+    const videoUrl = `${config.esb.static.address}/${config.esb.static.videoPath}/${videoName}`;
     logger.debug(`Getting Video URL: ${videoUrl}`);
     return videoUrl;
   }

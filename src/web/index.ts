@@ -30,7 +30,6 @@ export default class WebServer {
   private registerMiddleware(): void {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
-    this.app.use('/static', express.static(config.esb.static.rootDir));
     this.app.use(cors());
     this.app.use(logErrors);
   }
