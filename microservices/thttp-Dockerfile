@@ -1,0 +1,7 @@
+FROM alpine:3.15.4
+
+RUN apk add thttpd
+
+EXPOSE 80
+
+ENTRYPOINT ["thttpd", "-D", "-d", "/var/www/html"]
