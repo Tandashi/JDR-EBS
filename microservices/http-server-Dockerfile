@@ -1,0 +1,9 @@
+FROM rust:alpine3.15
+
+RUN apk add libressl-dev
+RUN apk add musl-dev
+RUN cargo install http-server
+
+EXPOSE 80
+
+ENTRYPOINT ["http-server", "-h", "0.0.0.0", "-p", "80", "--cors", "/var/www/html"] 

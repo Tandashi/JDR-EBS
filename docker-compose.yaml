@@ -84,10 +84,10 @@ services:
 
   thttpd-static:
     container_name: 'JDR-Static-Content'
-    image: 'thttpd:latest'
+    image: 'http:latest'
     build:
       context: .
-      dockerfile: microservices/thttpd-Dockerfile
+      dockerfile: microservices/http-server-Dockerfile
 
     ports:
       - '3001:80'
